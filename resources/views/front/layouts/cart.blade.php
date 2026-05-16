@@ -1,21 +1,11 @@
-@props(['product', 'variants', 'seats'])
-
-<div id="bottomSheet" class="bottom-sheet">
+<div id="bottomSheet" class="bottom-sheet" data-product="">
     <div class="sheet-content">
-        <div class="handle">
-            @php
-                $total = 0;
-                $deliveryFee = 50;
-                if(session()->has('cart')) {
-                    foreach(session('cart') as $item) {
-                        $total += $item['price'] * $item['quantity'];
-                    }
-                }                
-            @endphp
-
-            @if(session()->has('cart') && count(session('cart')) > 0)
-                Order {{ count(session('cart')) }} for ₹{{ $total }}               
-
+        <div class="handle">                       
+            @if($qty > 0)                
+                <div>
+                    <span class="cart-count">{{ getCartCount() }}</span> for 
+                    <span class="cart-total grandTotal"></span>
+                </div>
                 <div class="tab-content tab1 active">
                     <span class="sprites tab1_icon"></span>
                 </div>
@@ -26,11 +16,12 @@
                     <span class="sprites tab3_icon"></span>
                 </div>
             @else
-                Order
-            @endif                                             
+                <span class="manage-qty">{{ $qty }}</span> 
+            @endif   
         </div>
+
         <div class="scroll-order">                        
-            @if(session()->has('cart') && count(session('cart')) > 0)
+            @if($qty > 0)
                 <ul class="custom-tabs">
                     <li class="tab-link active" data-tab="tab1">Dine in</li>
                     <li class="tab-link" data-tab="tab2">Takeaway</li>
@@ -40,28 +31,31 @@
                 <form id="placeOrder" name="placeOrder" method="POST" action="{{ route('submit.order') }}">
                     @csrf
                     <div class="basket-page__content__products">
-                        @foreach(session('cart') as $id => $value)                                                            
-                            <div class="cart-row">                                
-                                <div class="item-name">
-                                    {{ $value['quantity'] }} x {{ $value['name'] }}
+                        @foreach(session('cart') as $id => $value)       
+                            @php
+                                $qty = $value['quantity'];
+                            @endphp
 
+                            <div class="cart-row cart-{{ $id }}">                                
+                                <div class="item-name">
+                                    <span class="manage-qty manage-qty-{{ $id }}">{{ $qty }} </span> x {{ $value['name'] }}
                                     @if(!empty($value['variant_name']))                                                        
                                         ({{ $value['variant_name'] }})
                                     @endif
-                                </div>                                                                
+                                </div>
                                 <div class="calculate">
                                     <div class="flex-inner">
-                                        @if($value['quantity'] > 0)
+                                        @if($qty > 0)
                                             <div class="qty-box flex align-items-center">
-                                                <a href="javascript:0" class="sub-icon sub-qty" data-id="{{ $id }}">
+                                                <a href="javascript:0" class="sub-icon qty-decrease {{ $qty <= 1 ? 'disabled' : '' }}" data-id="{{ $id }}">
                                                     <span class="sprites"></span>                                                        
                                                 </a>
-                                                <a href="javascript:0" class="add-icon add-qty" data-id="{{ $id }}">
+                                                <a href="javascript:0" class="add-icon qty-increase" data-id="{{ $id }}">
                                                     <span class="sprites"></span>
                                                 </a>
                                             </div>
                                         @else
-                                            <a href="javascript:0" class="add-to-cart add-icon add-qty" data-id="{{ $id }}">
+                                            <a href="javascript:0" class="add-to-cart add-icon qty-increase" data-id="{{ $id }}">
                                                 <span class="sprites"></span>
                                             </a>
                                         @endif                                                                
@@ -76,8 +70,8 @@
             
                     <div class="basket-page__content__total">
                         <p>Total:</p>                        
-                        <input type="hidden" id="baseTotal" value="{{ $total }}">
-                        <p>₹<span id="grandTotal">{{ round($total) }}</span></p>
+                        <input type="hidden" id="baseTotal" value="{{ $total }}">                        
+                        <span class="cart-total grandTotal">₹0</span>
                     </div>
 
                     <div class="basket-page__content__delivery">
@@ -102,11 +96,11 @@
                             <select name="seat_id" id="seat_id" class="form-select mb-3">
                                 <option value="">Table</option>
                                 @foreach ($seats as $value)
-                                    {{-- @if(empty($value->area_id))
+                                    @if(empty($value->area_id))
                                         <option value="{{ $value->id }}">
                                             {{ $value->table_name }}
                                         </option>
-                                    @endif --}}
+                                    @endif
                                     @if($value->area_id == NULL)
                                         <option value="{{ $value->id }}">{{ $value->table_name }}</option>
                                     @elseif($value->area_id == '')
@@ -194,4 +188,4 @@
         </div>
     </div>
     <div class="sheet-overlay"></div>
-</div> 
+</div>

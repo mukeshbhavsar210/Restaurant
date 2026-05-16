@@ -2,6 +2,8 @@
 <html>
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
     <title>@yield('title')</title>
 	{{-- <link rel="stylesheet" type="text/css" href="{{ asset('front-assets/css/style.min.css') }}" />	 --}}
 	<link rel="stylesheet" type="text/css" href="{{ asset('front-assets/css/style.css') }}" />
@@ -66,7 +68,6 @@
 <script src="{{ asset('front-assets/js/slick.min.js') }}"></script>
 <script src="{{ asset('front-assets/js/documentReady.js') }}"></script>
 <script>
-
     $(document).ready(function(){
 	    let message = sessionStorage.getItem('successMessage');
 
@@ -136,87 +137,101 @@
 			}, 300);
 		}
 	});
-
-	function animateProductImage(button){
-		let card = button.closest('.product-card');
-		let img = card.find('.product-img');
-
-		if(img.length === 0) return;
-
-		let clone = img.clone();
-		let offset = img.offset();
-
-		clone.css({
-			position: 'absolute',
-			top: offset.top,
-			left: offset.left,
-			width: img.width(),
-			height: img.height(),
-			zIndex: 9999,
-			pointerEvents: 'none'
-		});
-
-		$('body').append(clone);
-
-		clone.animate({
-			top: offset.top - 20,
-			opacity: 0.8
-		}, 250).animate({
-			top: offset.top,
-			opacity: 1
-		}, 250, function () {
-
-			clone.remove();
-		});
-	}
-
-	$(document).on('click', '.add-qty', function () {
-		animateProductImage($(this));
-	});
+	
 
 	// Increase
-    $(document).on('click', '.add-qty', function () {
-		// save opened modal id
-		let modalId = $('.modal.show').attr('id');
+	$(document).on('click', '.qty-increase', function () {
+		let productId = $(this).data('id');
+		let button = $(this);
 
-		if(modalId){
-			localStorage.setItem('openModal', modalId);
-		}
+		$.ajax({
+			url: '/cart/increase/' + productId,
+			type: 'GET',
 
-        let id = $(this).data('id');
-        $.ajax({
-			url: "/cart/increase",
-			type: "POST",
-			data: {
-				id: id,
-				_token: $('meta[name="csrf-token"]').attr('content')
-			},
-			success: function (res) {
-				location.reload();
+			success: function (response) {
+				// update only current product qty
+				$('.cart-section-' + productId)
+					$('.manage-qty-' + productId).text(response.qty);
+
+				// modal qty
+				$('.modal-' + productId)
+					.find('.manage-modal-qty').text(response.qty);
+
+				// target decrease buttons
+				let modalDecreaseBtn = $('.modal-' + productId).find('.qty-decrease');				
+				let decreaseBtn = $('.cart-' + productId).find('.qty-decrease');
+
+				// add/remove disabled class
+				if(response.qty <= 1){
+					modalDecreaseBtn.addClass('disabled');					
+				} else {
+					modalDecreaseBtn.removeClass('disabled');					
+				}
+
+				if(response.qty <= 1){
+					decreaseBtn.addClass('disabled');
+				} else {
+					decreaseBtn.removeClass('disabled');
+				}
+
+				// total cart count
+				$('.cart-count')
+					.show().text(response.cartCount);
+
+				// total amount
+				$('.cart-total')
+					.text('₹' + response.cartTotal);
 			}
 		});
-    });
+	});
 
     // Decrease
-    $(document).on('click', '.sub-qty', function () {
-		// save opened modal id
-		let modalId = $('.modal.show').attr('id');
+	$(document).on('click', '.qty-decrease', function () {
+		let productId = $(this).data('id');
+		let button = $(this);
 
-		if(modalId){
-			localStorage.setItem('openModal', modalId);
-		}
+		$.ajax({
+			url: '/cart/decrease/' + productId,
+			type: 'GET',
 
-        let id = $(this).data('id');
-        $.ajax({
-            url: "/cart/decrease",
-            type: "POST",
-            data: { id: id },
-            success: function (res) {
-                console.log(res);
-                location.reload();
-            }
-        });
-    }); 
+			success: function (response) {
+				// update only current product qty
+				$('.cart-section-' + productId)
+					$('.manage-qty-' + productId).text(response.qty);
+
+				// modal qty
+				$('.modal-' + productId)
+					.find('.manage-modal-qty').text(response.qty);
+
+				// target decrease buttons
+				let modalDecreaseBtn = $('.modal-' + productId).find('.qty-decrease');				
+				let decreaseBtn = $('.cart-' + productId).find('.qty-decrease');
+
+				// add/remove disabled class
+				if(response.qty <= 1){
+					modalDecreaseBtn.addClass('disabled');					
+				} else {
+					modalDecreaseBtn.removeClass('disabled');					
+				}
+
+				if(response.qty <= 1){
+					decreaseBtn.addClass('disabled');
+				} else {
+					decreaseBtn.removeClass('disabled');
+				}
+
+				// total cart count
+				$('.cart-count')
+					.show().text(response.cartCount);
+
+				// total amount
+				$('.cart-total')
+					.text('₹' + response.cartTotal);				
+			}
+		});
+	});
+
+	
 	
     $.ajaxSetup({
         headers: {
@@ -255,13 +270,13 @@
 		$('#variant_price').val(price);
 	});
 
-	$(window).scroll(function () {
-		if ($(this).scrollTop() > 10) {
-			$('#bottomSheet').removeClass('active_bottom');
-		} else {
-			//$('#bottomSheet').addClass('active_bottom');
-		}
-	});	  
+	// $(window).scroll(function () {
+	// 	if ($(this).scrollTop() > 10) {
+	// 		$('#bottomSheet').removeClass('active_bottom');
+	// 	} else {
+	// 		$('#bottomSheet').addClass('active_bottom');
+	// 	}
+	// });	  
 </script>
 
 @yield('customJs')

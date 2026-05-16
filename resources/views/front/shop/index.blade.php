@@ -2,12 +2,14 @@
 
 @section('content')
     <section class="subcategories-section"> 
-        <div class="subcategories-section__item no-wrap no-user-select">
-            <a href="{{ route('front.menu', [$category->slug]) }}" class="{{ empty($menuSlug) ? 'active' : '' }}">
-                All
-            </a>
-        </div>
-
+        @if($menus)
+            <div class="subcategories-section__item no-wrap no-user-select">
+                <a href="{{ route('front.menu', [$category->slug]) }}" class="{{ empty($menuSlug) ? 'active' : '' }}">
+                    All
+                </a>
+            </div>    
+        @endif
+        
         @foreach($menus as $menu)
             <div class="subcategories-section__item text-overflow">
                 <a href="{{ route('front.menu', [$category->slug, $menu->slug]) }}" class="{{ $menuSlug == $menu->slug ? 'active' : '' }}">
@@ -20,8 +22,12 @@
     <section class="menu-products-section menu-products-section--grid">
         <div class="menu-grid">                    
             @if ($products->isNotEmpty())
-                @foreach ($products as $product)                                    
-                    <x-products :product="$product" :seats="$seats" :variants="$variants" />
+                @foreach ($products as $product)  
+                    @php
+                        $qty = getProductQty($product->id);
+                    @endphp
+
+                    <x-products :product="$product" :seats="$seats" :variants="$variants" :qty="$qty" />
                 @endforeach
             @endif
         
@@ -29,9 +35,9 @@
                 {{-- {{ $products->withQueryString()->links() }} --}}
             </div>
         </div>                      
-    </section>
+    </section>    
 
-    <x-cart :seats="$seats"  />
+    @include('front/layouts/cart', ['product' => $product])    
 @endsection
 
 @section('customJs')

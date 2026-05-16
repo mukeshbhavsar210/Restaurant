@@ -30,14 +30,26 @@
                                     aria-expanded="{{ $loop->first ? 'true' : 'false' }}" 
                                     aria-controls="collapse_{{ $value->id }}">
 
-                                    @if($value->image)
-                                        <img src="{{ asset('uploads/category/'.$value->image) }}" style="height: 60px; width:60px; margin-right:10px;" class="shadow-sm rounded" />
-                                    @else
-                                        <img src="{{ asset('admin-assets/images/default-150x150.png') }}" alt="" height="90" class="me-3 align-self-center rounded" />
-                                    @endif
+                                    <div class="container">
+                                        <div class="row">
+                                            <div class="col-11">
+                                                <div class="flex">
+                                                    @if($value->image)
+                                                        <img src="{{ asset('uploads/category/'.$value->image) }}" style="height: 50px; width:50px; margin-right:10px;" class="shadow-sm rounded" />
+                                                    @endif
 
-                                    <h5 class="mb-0">{{ $value->name }}</h5>
-                                    <span class="counts_small">{{ $value->menus_count }}</span>  
+                                                    <h5 class="mb-0 mt-2">{{ $value->name }}</h5>                                                    
+                                                    <span class="counts_small mt-2">{{ $value->menus_count }}</span>  
+                                                </div>
+                                            </div>
+                                            <div class="col-1">
+                                                <div class="flex">
+                                                    <a href="javascript:0" class="btn btn-outline-primary mt-1" data-bs-toggle="modal" data-bs-target="#addMenuModal_{{ $value->id }}">Add</a>
+                                                    <a href="{{ route('category.delete', $value->id) }}" class="delete-icon mt-2"><span class="sprites"></span></a> 
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
                             </button>
                         </div>
                         
@@ -46,45 +58,33 @@
                             aria-labelledby="heading_{{ $value->id }}" 
                             data-bs-parent="#categoryAccordion">
 
-                            <div class="accordion-body">                                
-                                <a href="javascript:0" class="btn btn-primary float-right" data-bs-toggle="modal" data-bs-target="#addMenuModal_{{ $value->id }}">Add Menu</a>
-                                <a href="{{ route('category.delete', $value->id) }}" class="btn btn-outline-danger">Delete</a> 
-
-                                <div class="row mt-2">
+                            <div class="accordion-body">                                                                
+                                <div class="chip-extra">
                                     @if ($value->menus->count())                                    
                                         @foreach ($value->menus as $menu)
-                                            <div class="col-md-2 col-6">
-                                                <div class="card border-show">
-                                                    <div class="controls">
-                                                        <p>
-                                                            @if($menu->veg_nonveg == 'Non-veg')
-                                                                <span class="sprites nonveg-icon"></span>
-                                                            @elseif($menu->veg_nonveg == 'Egg')
-                                                                <span class="sprites egg-icon"></span>
-                                                            @elseif($menu->veg_nonveg == 'Veg')
-                                                                <span class="sprites veg-icon"></span>
-                                                            @else                                                                
-                                                            @endif
-                                                        </p>
-                                                        <p>
-                                                            <a href="{{ route('menu.delete', $menu->id) }}" class="delete-icon">
-                                                                <span class="sprites"></span>
-                                                            </a>
-                                                        </p>
-                                                    </div>
-
-                                                    @if($menu->image)
-                                                        <img src="{{ asset('uploads/menu/'.$menu->image) }}" class="card-img-top img-fluid bg-light-alt" />
-                                                    @else
-                                                        <img src="{{ asset('admin-assets/images/default-150x150.png') }}" alt="" class="card-img-top img-fluid bg-light-alt" />
-                                                    @endif
-                                                                                                    
-                                                    <h4 class="menu-title">{{ $menu->name }}</h4>                                                
-                                                </div>
-                                            </div>
+                                            <div class="chip-unique">                                                                                                        
+                                                <div>{{ $menu->name }}</div>
+                                                <div class="icons">
+                                                    <p>
+                                                        @if($menu->veg_nonveg == 'Non-veg')
+                                                            <span class="sprites nonveg-icon"></span>
+                                                        @elseif($menu->veg_nonveg == 'Egg')
+                                                            <span class="sprites egg-icon"></span>
+                                                        @elseif($menu->veg_nonveg == 'Veg')
+                                                            <span class="sprites veg-icon"></span>
+                                                        @else                                                                
+                                                        @endif
+                                                    </p>
+                                                    <p>
+                                                        <a href="{{ route('menu.delete', $menu->id) }}" class="delete-icon">
+                                                            <span class="sprites"></span>
+                                                        </a>
+                                                    </p>
+                                                </div>                                                    
+                                            </div>                                                
                                         @endforeach                                                                      
                                     @endif                                    
-                                </div>
+                                </div>                                
                             </div>
                         </div>
                     </div>
@@ -104,11 +104,6 @@
                                             <label>Item Name</label>
                                             <input type="text" name="name" id="name" class="form-control slug-source" data-target="#slug" placeholder="Enter menu name">
                                             <input type="hidden" name="slug" id="slug">                        
-                                        </div>
-
-                                        <div class="form-group">
-                                            <label for="image">Item Picture</label>
-                                            <input type="file" class="form-control" name="image" />
                                         </div>
 
                                         <input type="hidden" name="default_category_id" value="{{ $value->id }}">
@@ -144,32 +139,7 @@
                                                 <input type="radio" class="btn-check" name="veg_nonveg" value="Egg" id="btnradio4" autocomplete="off">
                                                 <label class="btn btn-outline-secondary" for="btnradio4">Egg</label>
                                             </div>
-                                        </div>
-
-                                        {{-- <div class="vegContainer">
-                                            <div class="btn-group" name="veg_nonveg" id="options" data-toggle="buttons">
-                                                <label class="btn btn-default active">
-                                                <input type="radio" checked name="veg_nonveg" id="option1" class="btn-check" value="Veg">
-                                                    <div class="innerView">
-                                                        <img src="{{ asset('admin-assets/img/veg.svg') }}" alt="" >
-                                                    </div>                                          
-                                                </label>
-            
-                                                <label class="btn btn-default" >
-                                                <input type="radio" name="veg_nonveg" id="option2" class="btn-check" value="Non-veg" >
-                                                    <div class="innerView">
-                                                        <img src="{{ asset('admin-assets/img/non-veg.svg') }}" alt="" >
-                                                    </div>
-                                                </label>
-                                                
-                                                <label class="btn btn-default" >
-                                                <input type="radio" name="veg_nonveg" id="option3" class="btn-check" value="Egg" >
-                                                    <div class="innerView">
-                                                        <img src="{{ asset('admin-assets/img/egg.svg') }}" alt="" >
-                                                    </div>
-                                                </label>
-                                            </div>
-                                        </div> --}}
+                                        </div>                                       
 
                                         @error('name')
                                             <small class="text-danger">Please add Menu item</small>

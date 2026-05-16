@@ -71,26 +71,7 @@ class MenuController extends Controller {
             $menu->categories()->sync($categories);
 
             //$data->category_id = $request->category;
-            $menu->save(); // 🔥 Save first to get ID
-
-            // Image upload
-            if ($request->hasFile('image')) {
-                $file = $request->file('image');
-                $extension = $file->getClientOriginalExtension();
-
-                $fileName = $menu->id . '_' . $menu->slug . '.' . $extension;
-
-                $path = public_path('/uploads/menu/' . $fileName);
-
-                $manager = new ImageManager(new Driver());
-                $image = $manager->read($file);
-
-                $image->toJpeg(100)->save($path);
-                $image->cover(400, 300)->save($path);
-
-                $menu->image = $fileName;
-                $menu->save(); // update with image
-            }            
+            $menu->save(); // 🔥 Save first to get ID                    
 
             return redirect()->route('categories.index')->with('success','Menu Item added successfully.');
         } else {

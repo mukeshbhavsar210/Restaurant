@@ -25,6 +25,41 @@ function getCategories() {
         ->get();
     }
 
+
+    if (!function_exists('getCartCount')) {
+        function getCartCount() {
+            $cart = session()->get('cart', []);
+            return array_sum(array_column($cart, 'quantity'));
+        }
+    }
+
+    if (!function_exists('getProductQty')) {
+        function getProductQty($productId) {
+            $cart = session()->get('cart', []);
+            return isset($cart[$productId])
+                ? $cart[$productId]['quantity']
+                : 0;
+        }
+    }
+
+
+
+    function getCartTotal() {
+        $cart = session()->get('cart', []);
+        $total = 0;
+        foreach ($cart as $item) {
+            $total += $item['price'] * $item['quantity'];
+        }
+
+        return $total;
+    }
+
+
+    function getCartCount() {
+        return count(session()->get('cart', []));
+    }
+
+
 function getProducts(){
     return Menu::orderBy('name','ASC')->orderBy('id','DESC')->get();
 } 
