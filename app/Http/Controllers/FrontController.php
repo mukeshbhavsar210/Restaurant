@@ -17,104 +17,37 @@ use App\Models\Variant;
 use Illuminate\Support\Facades\DB;
 
 class FrontController extends Controller {
-    public function show() {
+    public function index() {
         $popularCategory = Category::where('name', 'Popular')
             ->with(['products' => function ($query) {
                 $query->latest();
             }])
             ->first();
 
-        $products = Product::with('category','variants')->latest()->get();
+        $products = Product::with('category', 'variants')->latest()->get();
         $areas = Area::with('seat')->latest()->get();
-        $seats = Seat::with('area')->latest()->get();             
+        $seats = Seat::with('area')->latest()->get();
+
+        // cart session
+        $cart = session()->get('cart', []);
+
+       //dd(session('cart'));
 
         return view('front.home.index', [
             'products' => $products,
             'popularProducts' => $popularCategory?->products ?? collect(),
             'popularCategory' => $popularCategory,
             'areas' => $areas,
-            'seats' => $seats,
-        ]);
+            'seats' => $seats,            
+            //'qty' => getCartQty(),
+            'total' => getCartTotal(),
+            'cartCount' => getCartCount(),
+            //'productQty' => getProductQty(),
+        ]);        
     }
 
 
-
-    public function index_old(Request $request, $menuSlug = null) {
-        // Categories with menus
-        $categories = getCategories();
-        $seats = Seat::orderBy('id','DESC')->get();  
-
-        // ✅ Default to 'popular' if no slug
-        if (empty($menuSlug)) {
-            $menuSlug = Category::whereRaw("LOWER(name) = 'popular'")
-                ->value('slug');
-        }   
-
-        // Base query        
-        $products = Product::with('category','variants')->where('status', 1);
-        $variants = Variant::get();
-
-        // ✅ Filter by menu slug (ONLY if exists)
-        if (!empty($menuSlug)) {
-            $products->whereHas('category', function ($q) use ($menuSlug) {
-                $q->where('slug', $menuSlug);
-            });
-        }
-
-        // ✅ Price filter
-        if ($request->filled('price_min') && $request->filled('price_max')) {
-            $min = (int) $request->price_min;
-            $max = (int) $request->price_max;
-
-            if ($max == 1000) {
-                $max = 1000000; // max cap
-            }
-
-            $products->whereBetween('price', [$min, $max]);
-        }
-
-        // ✅ Search
-        if ($request->filled('search')) {
-            $products->where('title', 'like', '%' . $request->search . '%');
-        }
-
-        // ✅ Sorting
-        switch ($request->get('sort')) {
-            case 'latest':
-                $products->orderBy('id', 'DESC');
-                break;
-
-            case 'price_asc':
-                $products->orderBy('price', 'ASC');
-                break;
-
-            case 'price_desc':
-                $products->orderBy('price', 'DESC');
-                break;
-
-            default:
-                $products->orderBy('id', 'DESC');
-                break;
-        }
-
-        // Pagination
-        $products = $products->orderBy('id', 'DESC')->paginate(10);        
-
-        // Pass data
-        return view('front.shop.index', [
-            'categories'   => $categories,
-            'products'     => $products,
-            'variants'     => $variants,
-            'seats'        => $seats,
-            'menuSelected' => $menuSlug, 
-            'priceMax'     => $request->price_max ?? 1000,
-            'priceMin'     => $request->price_min ?? 0,
-        ]);
-    }
-
-
-
-    public function index($categorySlug = null, $menuSlug = null) {
+    public function category($categorySlug = null, $menuSlug = null) {
         $category = Category::where('slug', $categorySlug)->firstOrFail();
         $menus = $category->menus;
         $seats = Seat::orderBy('id','DESC')->get();  
@@ -143,10 +76,167 @@ class FrontController extends Controller {
 
         $products = $query->get();
 
-        return view('front.shop.index', compact(
-            'products', 'category', 'menus', 'seats', 'variants', 'menuSlug'
-        ));
+        // product qty array
+        $cart = session()->get('cart', []);
+
+       //dd($qty);
+       //dd(session('cart'));
+
+       return view('front.shop.index', [
+            'products' => $products,
+            'category' => $category,
+            'menus' => $menus,
+            'seats' => $seats,
+            'variants' => $variants,
+            'menuSlug' => $menuSlug,
+            //'qty' => getCartQty(),
+            'total' => getCartTotal(),
+            'cartCount' => getCartCount(),
+        ]);       
     }
+
+    //Add to Cart
+    public function addToCart(Request $request, $id) {
+        $product = Product::findOrFail($id);        
+
+        if (!$product) {
+            abort(404);
+        }
+
+        // Variant values
+        $variantName  = $request->variant_name ?? null;
+        $variantPrice = $request->variant_price ?? $product->price;
+
+        // Unique cart key for variants
+        $cartKey = $id . '_' . ($variantName ?? 'default');
+
+        $cart = session()->get('cart', []);
+
+        // If already exists        
+        if(isset($cart[$id])) {
+            $cart[$id]['quantity']++;
+        } else {
+            $cart[$id] = [
+                "product_id"    => $product->id,
+                "name"          => $product->name,
+                "quantity"      => 1,                
+                "price"         => $variantPrice,
+                "variant_name"  => $variantName,
+                "image"         => $product->image
+            ];
+        }
+
+        session()->put('cart', $cart);
+
+        // total
+        $total = 0;
+
+        foreach($cart as $item){
+            $total += $item['price'] * $item['quantity'];
+        }
+
+        if ($request->wantsJson()) {
+            return response()->json([
+                'message' => 'Product added to cart successfully!'
+            ]);
+        }        
+
+        return response()->json([
+            'status' => true,
+            'qty' => $cart[$id]['quantity'] ?? 0,
+            'cartCount' => count($cart),
+            'cartTotal' => $total,
+            'message' => 'Added to cart'
+        ]);
+    }
+
+    public function increaseCart($id) {
+        $cart = session()->get('cart', []);
+
+        // increase qty
+        if(isset($cart[$id])) {
+            $cart[$id]['quantity']++;
+        }
+
+        // update session
+        session()->put('cart', $cart);
+
+        // total
+        $total = 0;
+
+        foreach($cart as $item){
+            $total += $item['price'] * $item['quantity'];
+        }
+
+        return response()->json([
+            'status' => true,
+            'qty' => $cart[$id]['quantity'],
+            'cartCount' => getCartCount(),
+            'cartTotal' => getCartTotal(),
+        ]);
+    }
+
+
+    public function decreaseCart($id) {
+        $cart = session()->get('cart', []);
+
+        if (isset($cart[$id])) {
+
+            // stop at 1
+            if ($cart[$id]['quantity'] <= 1) {
+
+                return response()->json([
+                    'status' => false,
+                    'qty' => 1
+                ]);
+            }
+
+            $cart[$id]['quantity']--;
+
+            session()->put('cart', $cart);
+
+            return response()->json([
+                'status' => true,
+                'qty' => $cart[$id]['quantity'],
+                'cartCount' => getCartCount(),
+                'cartTotal' => getCartTotal(),
+            ]);
+        }
+    }
+
+    // public function decreaseCart($id) {
+    //     $cart = session()->get('cart', []);
+
+    //     if(isset($cart[$id])) {
+
+    //         $cart[$id]['quantity']--;
+
+    //         // remove if qty = 0
+    //         if($cart[$id]['quantity'] <= 0){
+    //             unset($cart[$id]);
+    //         }
+    //     }
+
+    //     session()->put('cart', $cart);
+
+    //     // total
+    //     $total = 0;
+
+    //     foreach($cart as $item){
+    //         $total += $item['price'] * $item['quantity'];
+    //     }
+
+    //     return response()->json([
+    //         'qty' => $cart[$id]['quantity'] ?? 0,
+    //         'cartCount' => count($cart),
+    //         'cartTotal' => $total,
+    //         'status' => true,
+    //         'cartCount' => getCartCount(),
+    //         'productQty' => getProductQty($id),
+    //     ]);
+    // }
+
+    
 
     //Wishlist page
     public function wishlist() {
@@ -157,7 +247,6 @@ class FrontController extends Controller {
 
         return view('front.home.wishlist', $data);        
     }
-
 
     //Slug
     public function area_index(Request $request, $areaSlug = null,) {
@@ -182,7 +271,6 @@ class FrontController extends Controller {
         return view('front.shop.index',$data);
     }
 
-
     //Area Slug
     public function restaurant(Request $request, $areaSlug = null) {       
         $areaSelected = ' ';
@@ -206,112 +294,19 @@ class FrontController extends Controller {
         
         return view('front.home.restaurant',$data);
     }
-    
-
-    //Add to Cart
-    public function addToCart(Request $request, $id) {
-        $product = Product::find($id);
-
-        if (!$product) {
-            abort(404);
-        }
-
-        // Variant values
-        $variantName  = $request->variant_name ?? null;
-        $variantPrice = $request->variant_price ?? $product->price;
-
-        // Unique cart key for variants
-        $cartKey = $id . '_' . ($variantName ?? 'default');
-
-        $cart = session()->get('cart', []);
-
-        // If already exists
-        if (isset($cart[$cartKey])) {
-            $cart[$cartKey]['quantity']++;
-        } else {
-            $cart[$cartKey] = [
-                "product_id"    => $product->id,
-                "name"          => $product->name,
-                "quantity"      => 1,                
-                "price"         => $variantPrice,
-                "variant_name"  => $variantName,
-                "image"         => $product->image
-            ];
-        }
-
-        session()->put('cart', $cart);
-
-        if ($request->wantsJson()) {
-            return response()->json([
-                'message' => 'Product added to cart successfully!'
-            ]);
-        }
-
-        return redirect()->back()->with(
-            'success',
-            'Product added to cart successfully!'
-        );
-    }
-
-    // public function addToCart($id){
-    //     $product = Product::find($id);
-
-    //     if (!$product) {
-    //         abort(404);
-    //     }
-
-    //     $cart = session()->get('cart');
-
-    //     if (!$cart) {
-    //         $cart = [
-    //             $id => [
-    //                 "name" => $product->name,
-    //                 "quantity" => 1,
-    //                 "price" => $product->price,
-    //                 //"seat" => $product->seat,   
-    //                 "image" => $product->image,                 
-    //             ]
-    //         ];
-
-    //         session()->put('cart', $cart);
-    //         return redirect()->back()->with('success', 'Product added');
-    //     }
-
-    //     if (isset($cart[$id])) {
-    //         $cart[$id]['quantity']++;
-    //         session()->put('cart', $cart);
-    //         return redirect()->back()->with('success', 'Product added');
-    //     }
-
-    //     $cart[$id] = [
-    //         "name" => $product->name,
-    //         "quantity" => 1,
-    //         "price" => $product->price,
-    //         //"seat" => $product->seat,
-    //         "image" => $product->image            
-    //     ];
-
-    //     session()->put('cart', $cart);
-
-    //     if (request()->wantsJson()) {
-    //         return response()->json(['message' => 'Product added to cart successfully!']);
-    //     }
-
-    //     return redirect()->route('front.home')->with('success','Product added to cart successfully!');
-    // }
 
     //remove Item from cart
-    public function removeCartItem(Request $request) {
-        if ($request->id) {
-            $cart = session()->get('cart');
-            if (isset($cart[$request->id])) {
-                unset($cart[$request->id]);
-                session()->put('cart', $cart);
-            }
+    // public function removeCartItem(Request $request) {
+    //     if ($request->id) {
+    //         $cart = session()->get('cart');
+    //         if (isset($cart[$request->id])) {
+    //             unset($cart[$request->id]);
+    //             session()->put('cart', $cart);
+    //         }
 
-            session()->flash('success', 'Product removed successfully');
-        }
-    }
+    //         session()->flash('success', 'Product removed successfully');
+    //     }
+    // }
 
     //Clear Cart
     public function clearCart(){

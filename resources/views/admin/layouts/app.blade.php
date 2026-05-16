@@ -85,7 +85,6 @@
     </div>
 </div>
 
-
 <div class="startbar d-print-none">
     <div class="brand">
         <a href="" class="logo" title=""><span><img class="logo-sm" src="{{ asset('front-assets/images/logo.png') }}" alt="" /></span></a>

@@ -8,13 +8,17 @@
     @if($popularProducts->isNotEmpty())    
         <div class="menu-grid">
             @foreach($popularProducts as $product)
-                <x-products :product="$product" :variants="$product->variants" />
+                @php
+                    $qty = getProductQty($product->id);
+                @endphp               
+
+                <x-products :product="$product" :variants="$product->variants" :seats="$seats" :qty="$qty" />
             @endforeach
         </div>
     @endif
-</section>   
+</section> 
 
-<x-cart :seats="$seats"  />
+@include('front/layouts/cart', ['product' => $product])
 
 @endsection
 

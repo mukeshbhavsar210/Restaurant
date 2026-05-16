@@ -11,17 +11,85 @@ $(document).ready(function(){
 		let modalId = $(this).data('modal');
 		$('#' + modalId).removeClass('active');
 		localStorage.removeItem('activeModal');
+
+		setTimeout(function () {
+			location.reload();
+		}, 100);
+	});
+
+	// CLOSE MODAL
+	$(document).on('click', '.add-to-cart-button', function () {
+		setTimeout(function () {
+			location.reload();
+		}, 100);
 	});
 
 	if(localStorage.getItem('cartModal') == 'active'){
         $('#cartModal').addClass('active');
     }
 
-	$(document).on('submit', '.cart-form', function () {
-		let modalId = $(this).data('modal');
-		localStorage.setItem('openModal', modalId);
-	});
+	// $(document).on('submit', '.cart-form', function () {
+	// 	let modalId = $(this).data('modal');
+	// 	localStorage.setItem('openModal', modalId);
+	// });
 
+
+	//Page refresh keep open modal
+	let activeModal = localStorage.getItem('activeModal');
+    if(activeModal){
+        $('#' + activeModal).addClass('active');
+
+        // optional remove storage after reopen
+        localStorage.removeItem('activeModal');
+    }
+
+	$(document).on('submit', '.cart-form', function (e) {
+		e.preventDefault();
+
+		let form = $(this);
+		let url = form.attr('action');
+		let productId = form.data('id');
+
+		$.ajax({
+			url: url,
+			type: 'GET',
+			data: form.serialize(),
+
+			success: function (response) {
+				$('.cart-count').text(response.cartCount);
+
+				 // cart total
+    			$('.cart-total').text('₹' + response.cartTotal);				
+
+				// show/hide cart count
+				if(response.cartCount > 0){
+					//$('.default-count').show();
+					//$('.default-count').removeClass('d-none');
+					//$('.control-count').addClass('d-none');
+				} else {
+					//$('.control-count').addClass('d-none');
+				}
+
+				$('.bottom-sheet').addClass('refresh');
+			
+				setTimeout(function () {
+					$('.bottom-sheet').removeClass('refresh');
+				}, 1000);
+
+				// refresh page after 1 second
+				// setTimeout(function () {
+				// 	location.reload();
+				// }, 900);
+						
+				// KEEP MODAL OPEN
+				let modalId = form.data('modal');
+
+				if(modalId){
+					$('#' + modalId).addClass('active');
+				}
+			}
+		});
+	});
 	
 
 	$('.product-slider').slick({
@@ -50,18 +118,13 @@ $(document).ready(function(){
     });
 
 
-
-
-
     $('.handle').on('click', function () {
 		$('#bottomSheet').toggleClass('active_bottom');
 	});  
+
 	$('.sheet-overlay').on('click', function () {
 		$('#bottomSheet').removeClass('active_bottom');
 	}); 
-
-	
-
 
         $('.tab-link').click(function () {
             var tabID = $(this).data('tab');
@@ -141,7 +204,7 @@ $(document).ready(function(){
 			}
 
 			// Update total
-			$('#grandTotal').text(finalTotal.toFixed(2));
+			$('.grandTotal').text('₹' + Math.round(finalTotal));
 
 			// Optional delivery fee text
 			if(activeTab == 'tab3'){
@@ -157,67 +220,7 @@ $(document).ready(function(){
 				$('.btn-primary').addClass('disabled');
 			}
 		}
-		
-		//Validation
-		// function checkFields() {
-		// 	let activeTab = $('.tab-link.active').data('tab');
-
-		// 	let notes      = $.trim($('textarea[name="notes"]').val());
-		// 	let dineinTime = $('select[name="dinein_time"]').val();
-		// 	let seatId     = $('select[name="seat_id"]').val();
-
-		// 	let time       = $('select[name="time"]').val();
-		// 	let name       = $.trim($('input[name="customer_name"]').val());
-		// 	let email      = $.trim($('input[name="customer_email"]').val());
-		// 	let phone      = $.trim($('input[name="customer_phone"]').val());
-		// 	let address    = $.trim($('textarea[name="address"]').val());
-
-		// 	let valid = false;
-
-		// 	// Dine in
-		// 	if (activeTab == 'tab1') {
-		// 		if (
-		// 			notes !== '' &&
-		// 			dineinTime !== '' &&
-		// 			seatId !== ''
-		// 		) {
-		// 			valid = true;
-		// 		}
-		// 	}
-
-		// 	// Takeaway
-		// 	else if (activeTab == 'tab2') {
-		// 		if (
-		// 			notes !== '' &&
-		// 			time !== '' &&
-		// 			name !== '' &&
-		// 			email !== '' &&
-		// 			phone !== ''
-		// 		) {
-		// 			valid = true;
-		// 		}
-		// 	}
-
-		// 	// Delivery
-		// 	else if (activeTab == 'tab3') {
-		// 		if (
-		// 			notes !== '' &&
-		// 			time !== '' &&
-		// 			name !== '' &&
-		// 			email !== '' &&
-		// 			phone !== '' &&
-		// 			address !== ''
-		// 		) {
-		// 			valid = true;
-		// 		}
-		// 	}
-
-		// 	if (valid) {
-		// 		$('.btn-primary').removeClass('disabled');
-		// 	} else {
-		// 		$('.btn-primary').addClass('disabled');
-		// 	}
-		// }
+			
 
 		// Inputs / textarea / select
 		$('input, textarea, select').on('keyup change', checkFields);

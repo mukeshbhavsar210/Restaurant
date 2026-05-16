@@ -9,7 +9,7 @@ class Menu extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['name','slug','image',];
+    protected $fillable = ['name','slug','veg_nonveg',];
 
     // public function category(){
     //     return $this->belongsTo(Category::class);

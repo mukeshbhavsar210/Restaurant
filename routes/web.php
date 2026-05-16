@@ -23,9 +23,8 @@ use Illuminate\Support\Str;
 
 //Front pages routes
 Route::controller(FrontController::class)->group(function() {
-    Route::get('/', 'show')->name('front.home');    
-    //Route::get('/menu/{menuSlug?}','index')->name('front.menu');
-    Route::get('/menu/{slug?}/{subSlug?}', 'index')->name('front.menu');
+    Route::get('/', 'index')->name('front.home');    
+    Route::get('/menu/{slug?}/{subSlug?}', 'category')->name('front.menu');
 
     // In your routes/web.php
     Route::post('order', 'placeOrder')->name('submit.order');
@@ -39,7 +38,10 @@ Route::controller(FrontController::class)->group(function() {
 
     //add to cart
     Route::get('cart', 'showCartTable');
-    Route::get('add-to-cart/{id}', 'addToCart')->name('front.addCart');
+    //Route::get('add-to-cart/{id}', 'addToCart')->name('front.addCart');
+    Route::get('/cart/add/{id}', 'addToCart')->name('front.addCart');
+    Route::get('/cart/increase/{id}', 'increaseCart')->name('cart.increase');
+    Route::get('/cart/decrease/{id}', 'decreaseCart')->name('cart.decrease');
     Route::delete('remove-from-cart', 'removeCartItem');
     Route::get('clear-cart', 'clearCart');
 
