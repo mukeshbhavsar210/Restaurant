@@ -12,8 +12,10 @@ use App\Models\View;
 use App\Models\Theme;
 use Illuminate\Support\Facades\Mail;
 
-function getCategories() {
-    return Category::orderByRaw("
+function getCategories()
+{
+    return Category::whereHas('products')
+        ->orderByRaw("
             CASE 
                 WHEN name = 'Popular' THEN 0
                 ELSE 1
@@ -23,7 +25,7 @@ function getCategories() {
         ->with('menus')
         ->take(10)
         ->get();
-    }
+}
 
 
     if (!function_exists('getCartCount')) {

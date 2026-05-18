@@ -14,6 +14,7 @@ use Illuminate\Routing\Controllers\HasMiddleware;
 use Illuminate\Routing\Controllers\Middleware;
 use Illuminate\Support\Facades\Validator;
 use App\Models\TempImage;
+use App\Models\OrderItem;
 use App\Models\Theme;
 use Illuminate\Support\Facades\File;
 use Intervention\Image\ImageManager;
@@ -21,29 +22,58 @@ use Intervention\Image\ImageManager;
 use Intervention\Image\Laravel\Facades\Image;
 use Intervention\Image\Drivers\Gd\Driver;
 use App\Models\User;
+use Illuminate\Support\Facades\DB;
+
 
 class ConfigurationController extends Controller implements HasMiddleware
 {
     public static function middleware(): array {
     return [
-            new Middleware('permission:view permissions', only: ['index']),
-            new Middleware('permission:edit permissions', only: ['edit']),
-            new Middleware('permission:create permissions', only: ['create']),
-            new Middleware('permission:delete permissions', only: ['destroy']),
+            // new Middleware('permission:view permissions', only: ['index']),
+            // new Middleware('permission:edit permissions', only: ['edit']),
+            // new Middleware('permission:create permissions', only: ['create']),
+            // new Middleware('permission:delete permissions', only: ['destroy']),
         ];
     }
 
     public function index(){
         $configurations = Configuration::get();
         $payments = Payment::get();        
-        $branches = Area::get();
+        $branches = Area::withCount('seat as total_seats')->with('seats')->get();
         $theme = Theme::get();
+        $areas = Area::orderBy('area_name','ASC')->get();
+        $seats = Seat::where('area_id',NULL)->with('seat')->get();
+        $tableRunning = OrderItem::with('seat')->get();
+
+        $totalTable = DB::table('seats')
+                    ->select(DB::raw('count(*) as total_tables'))
+                    ->get()[0]->total_tables;
+
+        $totalArea = DB::table('areas')
+                    ->select(DB::raw('count(*) as total_tables'))
+                    ->get()[0]->total_tables;
+
+        $tableIndividual = DB::table('seats')
+                    //->join('areas','seatings.area_id','=','areas.id')
+                    ->select(DB::raw('count(*) as number'), 'area_id')
+                    ->groupBy('area_id')
+                    ->get()[0]->number;
+
+        //$seatings = $seatings->paginate(10);
+
+        //dd($branches);
 
         return view("admin.configurations.list", [
             'configurations' => $configurations,
             'branches' => $branches,
             'payments' => $payments,
             'theme' => $theme,
+            'areas' => $areas,
+            'seats' => $seats,
+            'tableIndividual' => $tableIndividual,
+            'totalTable' => $totalTable,
+            'totalArea' => $totalArea,
+            'tableRunning' => $tableRunning,
         ]);
     }
 
@@ -84,16 +114,16 @@ class ConfigurationController extends Controller implements HasMiddleware
             $data->address = $request->address;
 
             //Image upload
-            if ($request->hasFile('image')) { 
-                $file = $request->file('image');
+            if ($request->hasFile('logo')) { 
+                $file = $request->file('logo');
                 $extenstion = $file->getClientOriginalExtension();
-                $fileName = $data->name.'_'.time().'.'.$extenstion;
+                $fileName = $data->name.'.'.$extenstion;
                 $path = public_path().'/uploads/logo/'.$fileName;
                 $manager = new ImageManager(new Driver());
-                $image = $manager->read($file);
-                $image->toJpeg(80)->save($path);
-                $image->cover(300,300)->save($path);
-                $data->image = $fileName;
+                $logo = $manager->read($file);
+                $logo->toJpeg(80)->save($path);
+                $logo->cover(300,300)->save($path);
+                $data->logo = $fileName;
             }
 
             $data->save();

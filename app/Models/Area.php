@@ -11,7 +11,11 @@ class Area extends Model
 
     public function seat(){
         return $this->hasMany(Seat::class);
-    }    
+    }
+
+    public function seats(){
+        return $this->hasMany(Seat::class);
+    }
 
     public function categories(){
         return $this->hasMany(Category::class);

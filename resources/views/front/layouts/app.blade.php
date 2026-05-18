@@ -68,23 +68,6 @@
 <script src="{{ asset('front-assets/js/slick.min.js') }}"></script>
 <script src="{{ asset('front-assets/js/documentReady.js') }}"></script>
 <script>
-    $(document).ready(function(){
-	    let message = sessionStorage.getItem('successMessage');
-
-		if(message){
-			$('#customAlert').html(
-				'<div class="custom-success-alert">'+message+'</div>'
-			);
-
-			setTimeout(function(){
-				$('.custom-success-alert').fadeOut();
-			}, 3000);
-
-			sessionStorage.removeItem('successMessage');
-		}
-	});
-
-
     $("#placeOrder").submit(function(event){
         event.preventDefault();
 
@@ -107,7 +90,7 @@
                     );
 
                     // redirect
-                    window.location.href = "{{ route('front.menu') }}";
+                    window.location.href = "{{ route('front.home') }}";
                 }else{
                     console.log(response.errors);
                 }
@@ -118,122 +101,9 @@
                 console.log("Something went wrong");
             }
         });
-    });
+    });	
 
-
-	$(document).ready(function () {
-		let openModal = localStorage.getItem('openModal');
-
-		if(openModal){
-			let modal = $('#' + openModal);
-			// remove animation
-			modal.removeClass('fade');
-			// open instantly
-			modal.modal('show');
-			localStorage.removeItem('openModal');
-			// optional add fade back
-			setTimeout(function(){
-				modal.addClass('fade');
-			}, 300);
-		}
-	});
-	
-
-	// Increase
-	$(document).on('click', '.qty-increase', function () {
-		let productId = $(this).data('id');
-		let button = $(this);
-
-		$.ajax({
-			url: '/cart/increase/' + productId,
-			type: 'GET',
-
-			success: function (response) {
-				// update only current product qty
-				$('.cart-section-' + productId)
-					$('.manage-qty-' + productId).text(response.qty);
-
-				// modal qty
-				$('.modal-' + productId)
-					.find('.manage-modal-qty').text(response.qty);
-
-				// target decrease buttons
-				let modalDecreaseBtn = $('.modal-' + productId).find('.qty-decrease');				
-				let decreaseBtn = $('.cart-' + productId).find('.qty-decrease');
-
-				// add/remove disabled class
-				if(response.qty <= 1){
-					modalDecreaseBtn.addClass('disabled');					
-				} else {
-					modalDecreaseBtn.removeClass('disabled');					
-				}
-
-				if(response.qty <= 1){
-					decreaseBtn.addClass('disabled');
-				} else {
-					decreaseBtn.removeClass('disabled');
-				}
-
-				// total cart count
-				$('.cart-count')
-					.show().text(response.cartCount);
-
-				// total amount
-				$('.cart-total')
-					.text('₹' + response.cartTotal);
-			}
-		});
-	});
-
-    // Decrease
-	$(document).on('click', '.qty-decrease', function () {
-		let productId = $(this).data('id');
-		let button = $(this);
-
-		$.ajax({
-			url: '/cart/decrease/' + productId,
-			type: 'GET',
-
-			success: function (response) {
-				// update only current product qty
-				$('.cart-section-' + productId)
-					$('.manage-qty-' + productId).text(response.qty);
-
-				// modal qty
-				$('.modal-' + productId)
-					.find('.manage-modal-qty').text(response.qty);
-
-				// target decrease buttons
-				let modalDecreaseBtn = $('.modal-' + productId).find('.qty-decrease');				
-				let decreaseBtn = $('.cart-' + productId).find('.qty-decrease');
-
-				// add/remove disabled class
-				if(response.qty <= 1){
-					modalDecreaseBtn.addClass('disabled');					
-				} else {
-					modalDecreaseBtn.removeClass('disabled');					
-				}
-
-				if(response.qty <= 1){
-					decreaseBtn.addClass('disabled');
-				} else {
-					decreaseBtn.removeClass('disabled');
-				}
-
-				// total cart count
-				$('.cart-count')
-					.show().text(response.cartCount);
-
-				// total amount
-				$('.cart-total')
-					.text('₹' + response.cartTotal);				
-			}
-		});
-	});
-
-	
-	
-    $.ajaxSetup({
+	$.ajaxSetup({
         headers: {
             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
         }
@@ -268,15 +138,7 @@
 		// Update hidden fields
 		$('#variant_name').val(name);
 		$('#variant_price').val(price);
-	});
-
-	// $(window).scroll(function () {
-	// 	if ($(this).scrollTop() > 10) {
-	// 		$('#bottomSheet').removeClass('active_bottom');
-	// 	} else {
-	// 		$('#bottomSheet').addClass('active_bottom');
-	// 	}
-	// });	  
+	});	  
 </script>
 
 @yield('customJs')

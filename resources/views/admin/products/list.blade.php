@@ -46,9 +46,8 @@
                 <thead class="table-light">
                     <tr>
                         <th class="border-top-0">Product</th>
-                        <th class="border-top-0" width="350">Description</th>
-                        <th class="border-top-0 text-end" width="100">Category</th>
-                        <th class="border-top-0 text-end" width="100">Price</th>
+                        <th class="border-top-0" width="150">Category</th>
+                        <th class="border-top-0 text-end" width="150">Price</th>
                         <th class="border-top-0 text-end" width="100">Status</th>
                         <th class="border-top-0 text-end" width="100">Action</th>
                     </tr>
@@ -86,18 +85,11 @@
                                         </a>
                                         <div class="flex-grow-1 text-truncate">
                                             <h5 class="product-title">{{ $value->name }}</h5>
-                                            @if($value->variants->count() > 0)                                            
-                                                @foreach($value->variants as $variant)
-                                                    <span class="tiny-font">{{ $variant->name }} : ₹{{ round($variant->price) }},</span>
-                                                @endforeach                                            
-                                            @endif
+                                            <p>{{ $value->description }}</p>                                            
                                         </div>
                                     </div>
-                                </td>     
-                                <td>
-                                    <p>{{ $value->description }}</p>
                                 </td>   
-                                <td class="text-end">
+                                <td>
                                     <h5 class="mb-0">{{ $value->category->name }}</h5>
                                     @if($value->menu)
                                         <p class="tiny-font text-muted">{{ $value->menu->name }}</p>
@@ -110,9 +102,14 @@
                                         @else
                                             ₹{{ round($value->price) }}
                                         @endif                                    
-                                    </h5>                                
-                                    <p class="text-muted tiny-font"><del>₹{{ round($value->discounted_price) }}</del></p>
-                                </td>
+                                    </h5>                                                                    
+
+                                    @if($value->variants->count() > 0)                                            
+                                        @foreach($value->variants as $variant)
+                                            <p class="tiny-font mb-0 text-muted">{{ $variant->name }} : ₹{{ round($variant->price) }}</p>
+                                        @endforeach                                            
+                                    @endif
+                                </td>                                
                                 <td class="text-end">
                                     <div class="pull-right">
                                         @if ($value->status == 1)  
@@ -122,7 +119,7 @@
                                         @endif
                                     </div>
                                 </td> 
-                                <td class="text-end">               
+                                <td class="text-end">
                                     <a href="{{ route('products.edit', $value->id) }}">
                                         <svg class="filament-link-icon w-4 h-4 mr-1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
                                             <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z"></path>
@@ -268,8 +265,7 @@
                 </form>
         </div>
     </div>
-</div>
-    
+</div>    
 @endsection
 
 @section('customJs')

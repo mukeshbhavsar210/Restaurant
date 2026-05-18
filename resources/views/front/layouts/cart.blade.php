@@ -16,7 +16,7 @@
                     <span class="sprites tab3_icon"></span>
                 </div>
             @else
-                <span class="manage-qty">{{ $qty }}</span> 
+                <span class="manage-qty">Order</span> 
             @endif   
         </div>
 
@@ -38,7 +38,7 @@
 
                             <div class="cart-row cart-{{ $id }}">                                
                                 <div class="item-name">
-                                    <span class="manage-qty manage-qty-{{ $id }}">{{ $qty }} </span> x {{ $value['name'] }}
+                                    <span class="manage-qty manage-qty-{{ $id }}">{{ $qty }}</span> x {{ $value['name'] }}
                                     @if(!empty($value['variant_name']))                                                        
                                         ({{ $value['variant_name'] }})
                                     @endif
@@ -46,10 +46,11 @@
                                 <div class="calculate">
                                     <div class="flex-inner">
                                         @if($qty > 0)
-                                            <div class="qty-box flex align-items-center">
-                                                <a href="javascript:0" class="sub-icon qty-decrease {{ $qty <= 1 ? 'disabled' : '' }}" data-id="{{ $id }}">
-                                                    <span class="sprites"></span>                                                        
+                                            <div class="qty-box flex align-items-center">  
+                                                <a href="javascript:0" class="sub-icon sub-icon-control-{{ $id }} {{ $qty <= 1 ? 'qty-remove' : 'qty-decrease' }}" data-id="{{ $id }}">
+                                                    <span class="sprites"></span>
                                                 </a>
+                  
                                                 <a href="javascript:0" class="add-icon qty-increase" data-id="{{ $id }}">
                                                     <span class="sprites"></span>
                                                 </a>
@@ -96,11 +97,11 @@
                             <select name="seat_id" id="seat_id" class="form-select mb-3">
                                 <option value="">Table</option>
                                 @foreach ($seats as $value)
-                                    @if(empty($value->area_id))
+                                    {{-- @if(empty($value->area_id))
                                         <option value="{{ $value->id }}">
                                             {{ $value->table_name }}
                                         </option>
-                                    @endif
+                                    @endif --}}
                                     @if($value->area_id == NULL)
                                         <option value="{{ $value->id }}">{{ $value->table_name }}</option>
                                     @elseif($value->area_id == '')
@@ -189,3 +190,5 @@
     </div>
     <div class="sheet-overlay"></div>
 </div>
+
+{{-- <div class="trash">Trash</div> --}}
