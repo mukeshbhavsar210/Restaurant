@@ -43,7 +43,7 @@
         <div class="collapse " id="extra">
             <ul class="nav flex-column">
                 <li class="nav-item">
-                    <a href="{{ route('roles.index') }}" class="nav-link {{ (\Request::route()->getName() == 'roles.index') || (\Request::route()->getName() == 'roles.edit') ? 'active' : '' }}">
+                    <a href="{{ route('roles.index') }}" class="nav-link {{ (\Request::route()->getName() == 'roles.index') ? 'active' : '' }}">
                         <p>Roles</p>
                     </a>
                 </li> 

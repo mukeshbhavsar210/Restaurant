@@ -5,14 +5,17 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Seat extends Model
-{
+class Seat extends Model {
     use HasFactory;   
-    
+
     public function seat(){
-        //return $this->belongsTo(Order::class, 'id');
-        return $this->belongsTo(OrderItem::class);
+        return $this->hasMany(Seat::class, 'area_id');
     }
+    
+    // public function seat(){
+    //     //return $this->belongsTo(Order::class, 'id');
+    //     return $this->belongsTo(OrderItem::class);
+    // }
 
     // public function area(){
     //     return $this->belongsTo(Area::class, 'id');

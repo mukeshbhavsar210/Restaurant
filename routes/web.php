@@ -29,8 +29,7 @@ Route::controller(FrontController::class)->group(function() {
     // In your routes/web.php
     Route::post('order', 'placeOrder')->name('submit.order');
     Route::post('/cart/increase', 'increase')->name('cart.increase');
-    Route::post('/cart/decrease', 'decrease')->name('cart.decrease');
-    //Route::post('order', 'order_store')->name('submit.order');
+    Route::post('/cart/decrease', 'decrease')->name('cart.decrease');    
     Route::get('area/{areaSlug?}', 'restaurant')->name('front.restaurant');
     Route::post('/add-to-wishlist', 'addToWishlist')->name('front.addToWishlist');
     Route::get('/page/{slug}', 'page')->name('front.page');
@@ -42,7 +41,7 @@ Route::controller(FrontController::class)->group(function() {
     Route::get('/cart/add/{id}', 'addToCart')->name('front.addCart');
     Route::get('/cart/increase/{id}', 'increaseCart')->name('cart.increase');
     Route::get('/cart/decrease/{id}', 'decreaseCart')->name('cart.decrease');
-    Route::delete('remove-from-cart', 'removeCartItem');
+    Route::get('/cart/remove/{id}', 'removeCart');    
     Route::get('clear-cart', 'clearCart');
 
     //add to wishlist

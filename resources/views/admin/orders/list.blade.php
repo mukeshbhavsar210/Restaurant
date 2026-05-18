@@ -61,9 +61,10 @@
                     <table class="table mb-0">
                         <thead class="table-light">
                             <tr>
-                                <th class="border-top-0">Order#</th>                            
-                                <th class="border-top-0" width="250">Notes</th>
-                                <th class="border-top-0 text-end" width="80">Qty</th>
+                                <th class="border-top-0">Order#</th>
+                                <th class="border-top-0" width="350">Items Notes</th>
+                                <th class="border-top-0" width="150">Table/Outlet</th>
+                                <th class="border-top-0 text-end" width="80">Total Qty</th>
                                 <th class="border-top-0 text-end" width="80">Price</th>
                                 <th class="border-top-0 text-end" width="80">Total</th>
                                 <th class="border-top-0 text-end" width="180">Order On</th>
@@ -75,35 +76,45 @@
                                 <tr>
                                     <td>
                                         <div class="product-row">
-                                            @php
-                                                $productImage = optional($value->items->first()?->product?->product_images->first());
-                                            @endphp
+                                            <div class="img-group d-flex justify-content-end">
+                                                @foreach($value->items as $item)
+                                                    @php
+                                                        $productImage = optional($item->product?->product_images->first());
+                                                    @endphp
 
-                                            <a href="{{ route('orders.detail',$value->id) }}">
-                                                @if (!empty($productImage->image))
-                                                    <img src="{{ asset('uploads/product/small/'.$productImage->image) }}" height="90" class="me-3 rounded">
-                                                @else
-                                                    <img src="{{ asset('admin-assets/img/default-150x150.png') }}" height="90" class="me-3 rounded">
-                                                @endif
-                                            </a>   
-                                            
-                                            <div class="flex-grow-1 text-truncate">
-                                                <h5 class="product-title">{{ $value->items->first()?->product_name }}</h5>
-                                                <p class="text-muted">
-                                                    <b>{{ $value->seat?->table_name }}</b><br />                                             
-                                                    Outlet: {{ $value->seat?->area?->area_name }}<br />
-                                                    @if($value->dinein_time)
-                                                        {{ $value->dinein_time }}<br />    
-                                                    @elseif($value->ready_time)
-                                                        {{ $value->ready_time }}<br /> 
-                                                    @endif                                                                                                        
-                                                </p>
-                                            </div>                                                
+                                                    <a href="{{ route('orders.detail', $value->id) }}" class="user-avatar position-relative d-inline-block ms-n2">
+                                                        @if (!empty($productImage->image))
+                                                            <img src="{{ asset('uploads/product/small/'.$productImage->image) }}" class="thumb-md shadow-sm rounded-circle">
+                                                        @else
+                                                            <img src="{{ asset('admin-assets/img/default-150x150.png') }}" class="thumb-md shadow-sm rounded-circle">
+                                                        @endif
+
+                                                        <span class="order-product-qty">{{ $item->quantity }}</span>
+                                                    </a>                                                    
+                                                @endforeach
+                                            </div>                                                                                                                                                                                    
                                         </div>
                                     </td>
-                                    <td>{{ $value->notes }}</td>  
+                                    <td>         
+                                        @foreach($value->items as $item)
+                                            <span class="product-title">{{ $item->product_name }},</span>
+                                        @endforeach    
+                                        <p>{{ $value->notes }}</p>                                        
+                                    </td>
+                                    <td>
+                                        <p class="text-muted"><b>{{ $value->seat?->table_name }}</b> ({{ $value->seat?->capacity }})</p>                                        
+                                        <p class="text-muted tiny-font">
+                                            {{ $value->seat?->area?->area_name }}<br />
+                                            Ready time:
+                                            @if($value->dinein_time)
+                                                {{ $value->dinein_time }}<br />    
+                                            @elseif($value->ready_time)
+                                                {{ $value->ready_time }}<br /> 
+                                            @endif  
+                                        </p>
+                                    </td>  
                                     <td class="text-end">{{ $value->items->sum('quantity') }}</td>
-                                    <td class="text-end">{{ $value->items->sum('price') }}</td>
+                                    <td class="text-end">₹{{ $value->items->sum('price') }}</td>
                                     <td class="text-end">₹{{ round($value->total_amount) }}</td>
                                     <td class="text-end">{{ \Carbon\Carbon::parse($value->created_at)->format('d M, Y, h:i A') }}</td>
                                     <td class="text-end">

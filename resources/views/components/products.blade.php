@@ -111,16 +111,16 @@
         @if($qty > 0)
             <div class="add-controls modal-{{ $product->id }}">
                 <div class="qty-box flex align-items-center">
-                    <a href="javascript:void(0)" class="qty-decrease sub-icon-big {{ $qty <= 1 ? 'disabled' : '' }}" data-id="{{ $product->id }}">
+                    <a href="javascript:0" class="sub-icon-big sub-icon-control-{{ $id }} {{ $qty <= 1 ? 'qty-remove' : 'qty-decrease' }}" data-id="{{ $product->id }}">
                         <span class="sprites"></span>
-                    </a>
+                    </a>                   
 
                     <div class="manage-modal-qty">
                         {{ $qty }}
                         {{-- {{ getProductQty($product->id) }} --}}
                     </div>
 
-                    <a href="javascript:void(0)" class="qty-increase add-icon-big" data-id="{{ $product->id }}">
+                    <a href="javascript:void(0)" class="add-icon-big qty-increase" data-id="{{ $product->id }}">
                         <span class="sprites"></span>
                     </a>
                 </div>

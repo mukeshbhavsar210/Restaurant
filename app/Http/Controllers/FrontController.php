@@ -204,38 +204,20 @@ class FrontController extends Controller {
         }
     }
 
-    // public function decreaseCart($id) {
-    //     $cart = session()->get('cart', []);
+   public function removeCart($id) {
+        $cart = session()->get('cart', []);
 
-    //     if(isset($cart[$id])) {
+        if(isset($cart[$id])){
+            unset($cart[$id]);
+            session()->put('cart', $cart);
+        }
 
-    //         $cart[$id]['quantity']--;
-
-    //         // remove if qty = 0
-    //         if($cart[$id]['quantity'] <= 0){
-    //             unset($cart[$id]);
-    //         }
-    //     }
-
-    //     session()->put('cart', $cart);
-
-    //     // total
-    //     $total = 0;
-
-    //     foreach($cart as $item){
-    //         $total += $item['price'] * $item['quantity'];
-    //     }
-
-    //     return response()->json([
-    //         'qty' => $cart[$id]['quantity'] ?? 0,
-    //         'cartCount' => count($cart),
-    //         'cartTotal' => $total,
-    //         'status' => true,
-    //         'cartCount' => getCartCount(),
-    //         'productQty' => getProductQty($id),
-    //     ]);
-    // }
-
+        return response()->json([
+            'status' => true,
+            'cartCount' => getCartCount(),
+            'cartTotal' => getCartTotal(),
+        ]);
+    }
     
 
     //Wishlist page
@@ -293,27 +275,13 @@ class FrontController extends Controller {
         $data['areaSelected'] = $areaSelected;
         
         return view('front.home.restaurant',$data);
-    }
-
-    //remove Item from cart
-    // public function removeCartItem(Request $request) {
-    //     if ($request->id) {
-    //         $cart = session()->get('cart');
-    //         if (isset($cart[$request->id])) {
-    //             unset($cart[$request->id]);
-    //             session()->put('cart', $cart);
-    //         }
-
-    //         session()->flash('success', 'Product removed successfully');
-    //     }
-    // }
+    }   
 
     //Clear Cart
     public function clearCart(){
         session()->forget('cart');
         return redirect()->back();
     }
-
 
     //Wishlist
     public function addToWish($id){
@@ -359,7 +327,6 @@ class FrontController extends Controller {
         }
         return redirect()->back()->with('success', 'Product added to wishlist successfully!');
     }
-
 
     public function removeWishlistItem(Request $request) {
         if ($request->id) {

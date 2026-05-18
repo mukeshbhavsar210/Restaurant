@@ -4,56 +4,36 @@
 
 @include('admin.layouts.message')
 
-<div class="card">
-    <div class="card-body">
-        <div class="row">                
-            <div class="col-md-10 col-8">
-                <div class="page-title"> 
-                    <h4>Order: {{ $order->id }}</h4>
-                </div>
-            </div>            
-            <div class="col-md-2 col-2">
-                <a href="{{ route('orders.index') }}" class="btn btn-primary pull-right">Back</a>
-            </div>            
-        </div>
-    </div>
-</div>
+@php
+    $subtotal = 0;
+    $gstAmount = 0;
+    $sgstAmount = 0;
+    $cgstAmount = 0;                        
 
+    foreach ($order->items as $item) {
+        $itemTotal = $item->price * $item->quantity;
+        $subtotal += $itemTotal;
+        $gstAmount += ($itemTotal * $order->gst) / 100;
+        $sgstAmount += ($itemTotal * $order->sgst) / 100;
+        $cgstAmount += ($itemTotal * $order->cgst) / 100;
+    }
 
-        @php
-            $subtotal = 0;
-            $gstAmount = 0;
-            $sgstAmount = 0;
-            $cgstAmount = 0;                        
-
-            foreach ($order->items as $item) {
-                $itemTotal = $item->price * $item->quantity;
-                $subtotal += $itemTotal;
-                $gstAmount += ($itemTotal * $order->gst) / 100;
-                $sgstAmount += ($itemTotal * $order->sgst) / 100;
-                $cgstAmount += ($itemTotal * $order->cgst) / 100;
-            }
-
-            $shipping = ($order->order_type === 'delivery') ? $order->shipping : 0;
-
-            $grandTotal = $subtotal + $gstAmount + $sgstAmount + $cgstAmount + $shipping;
-        @endphp
+    $shipping = ($order->order_type === 'delivery') ? $order->shipping : 0;
+    $grandTotal = $subtotal + $gstAmount + $sgstAmount + $cgstAmount + $shipping;
+    $type = strtolower($order->order_type);
+@endphp
 
     <div class="row">        
         <div class="col-md-9">     
             <div class="card">
                 <div class="card-body">       
                     <div class="row invoice-info">
-                        <div class="col-sm-8 invoice-col">                            
-                            @php
-                                $type = strtolower($order->order_type);
-                            @endphp
-
-                            <h1 class="h5 mb-2">Order Type: {{ ucfirst($type) }}</h1>
+                        <div class="col-sm-8 invoice-col">    
+                            <h5>Order: <b>{{ $order->id }}</b></h5>
+                            <p class="mb-0">Order Type: <b>{{ ucfirst($type) }}</b></p>
                             {{-- Dine-in specific --}}
                             @if($type === 'dinein')
-                                <p class="mb-0">{{ $order->seat?->table_name }}</p>
-                                <p class="mb-0">Seating Capacity: {{ $order->seat?->capacity }}</p>
+                                <p class="mb-0">{{ $order->seat?->table_name }} ({{ $order->seat?->capacity }})</p>
                                 <p class="mb-0">{{ $order->seat?->area?->area_name }}</p>
                             @endif
 
@@ -180,9 +160,11 @@
             </div>
         </div>
 
-        <div class="col-md-3">
+        <div class="col-md-3">            
             <div class="card">
                 <div class="card-body"> 
+                    <a href="{{ route('orders.index') }}" class="btn btn-primary ">Back</a><br /><br />
+
                     <form action="" method="post" name="changeOrderStatusForm" id="changeOrderStatusForm">
                         <div class="form-group">
                             <label for="shipped_date">Status</label>
