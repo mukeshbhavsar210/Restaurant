@@ -11,13 +11,12 @@ use Illuminate\Routing\Controllers\Middleware;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 
-class UserController extends Controller implements HasMiddleware 
-{
+class UserController extends Controller implements HasMiddleware  {
 
     public static function middleware(): array {
         return [
-                new Middleware('permission:view users', only: ['index']),
-                new Middleware('permission:edit users', only: ['edit']),
+                //new Middleware('permission:view users', only: ['index']),
+                //new Middleware('permission:edit users', only: ['edit']),
                 //new Middleware('permission:create roles', only: ['create']),
                 //new Middleware('permission:delete roles', only: ['destroy']),
             ];

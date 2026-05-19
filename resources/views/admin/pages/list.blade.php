@@ -2,27 +2,88 @@
 
 @section('content')
 
-<section class="content-header">
-    <div class="container-fluid">
-        <div class="row">
-            <div class="col-sm-6">
-                <h1>Pages</h1>
+@include('admin.layouts.message')
+
+<div class="card">
+    <div class="card-body">
+        <div class="row">                
+            <div class="col-md-7 col-12">
+                <div class="page-title"> 
+                    <h4>Pages</h4>  
+                </div>
             </div>
-            <div class="col-sm-6 text-right">
-                <a href="{{ route('pages.create') }}" class="btn btn-primary">New Page</a>
+            <div class="col-md-5 col-12">
+                <div class="flexContainer">
+                    <form action="" method="get" >
+                        <div class="d-flex">
+                            <div class="card-title mr-3">
+                                <a href="javascript:0" onclick="window.location.href='{{ route('pages.index') }}'" class="refresh-icon" >
+                                    <span class="sprites"></span>                                            
+                                </button>
+                            </div>
+        
+                            <div class="card-tools">
+                                <div class="input-group input-group searchMain">
+                                    <input value="{{ Request::get('keyword') }}" type="text" name="keyword" class="form-control float-right" placeholder="Search">
+        
+                                    <div class="input-group-append">
+                                        <button type="submit" class="btn">
+                                            <i class="iconoir-search"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                    <a href="{{ route('pages.create') }}" class="btn btn-primary float-end">New Page</a>
+                    <a href="javascript:0" class="btn btn-primary float-right" data-bs-toggle="modal" data-bs-target="#addPageModal">Add Page</a>
+                </div>                
             </div>
         </div>
-    </div>
-    <!-- /.container-fluid -->
-</section>
-<!-- Main content -->
-<section class="content">
-    <!-- Default box -->
-    <div class="container-fluid">
 
-        @include('admin.layouts.message')
+        <div class="modal fade drawer right-align" id="addPageModal" tabindex="-1" aria-labelledby="addPageModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Add Product</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
 
-        <div class="card">
+                    {{-- <form {{ route('products.store') }} method="post" enctype="multipart/form-data">
+                        @csrf
+                        <div class="modal-body">
+                        </div>
+                    </form> --}}
+
+                    <form action="" method="post" id="pageForm" name="pageForm">
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="mb-3">
+                                            <label for="name">Name</label>
+                                            <input type="text" name="name" id="name" class="form-control" placeholder="Name">
+                                            <input type="text" readonly name="slug" id="slug" class="form-control" placeholder="slug">
+                                            <p></p>
+                                        </div>
+                                    </div>                                    
+                                    <div class="col-md-12">
+                                        <div class="mb-3">
+                                            <label for="content">Content</label>
+                                            <textarea name="content" id="content" class="summernote" cols="30" rows="10"></textarea>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                            <button type="submit" class="btn btn-primary">Create</button>
+                            <a href="{{ route('pages.index') }}" class="btn btn-outline-dark ml-3">Cancel</a>                        
+                    </form>
+                </div>
+            </div>
+        </div>
+        
             <form action="" method="get" >
                 <div class="card-header">
                     <div class="card-title">

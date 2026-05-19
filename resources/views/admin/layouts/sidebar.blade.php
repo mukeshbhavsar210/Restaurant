@@ -22,19 +22,8 @@
             <i class="iconoir-journal-page menu-icon"></i>
             <span>Orders</span>
         </a>
-    </li>    
-    <li class="nav-item">
-        <a href="{{ route('areas.index') }}" class="nav-link {{ (\Request::route()->getName() == 'areas.index') ? 'active' : '' }}">
-            <i class="iconoir-view-grid menu-icon"></i>
-            <span>Tables</span>
-        </a>
-    </li>    
-    <li class="nav-item">
-        <a href="{{ route('permissions.index') }}" class="nav-link {{ (\Request::route()->getName() == 'permissions.index') || (\Request::route()->getName() == 'permissions.edit') ? 'active' : '' }}">
-            <i class="iconoir-view-grid menu-icon"></i>
-            <span>Permissions</span>
-        </a>
-    </li>      
+    </li>          
+         
     <li class="nav-item">
         <a class="nav-link" href="#extra" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="sidebarApplications">
             <i class="iconoir-page-star menu-icon"></i>
@@ -42,6 +31,11 @@
         </a>
         <div class="collapse " id="extra">
             <ul class="nav flex-column">
+                <li class="nav-item">
+                    <a href="{{ route('permissions.index') }}" class="nav-link {{ (\Request::route()->getName() == 'permissions.index') || (\Request::route()->getName() == 'permissions.edit') ? 'active' : '' }}">
+                        <p>Permissions</p>
+                    </a>
+                </li> 
                 <li class="nav-item">
                     <a href="{{ route('roles.index') }}" class="nav-link {{ (\Request::route()->getName() == 'roles.index') ? 'active' : '' }}">
                         <p>Roles</p>

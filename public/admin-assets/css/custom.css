@@ -417,7 +417,7 @@ input:checked + .slider { box-shadow:0 0 0 2px #007bff,0 0 2px #007bff; }
 .form-group label { margin-bottom: 7px; font-size: 13px; }
 
 .drawer .modal-body { padding: 15px 20px; }
-.drawer .modal-header, .modal-footer { padding: 13px 20px; border-radius: 0; background-color: var(--white); }
+
 .drawer .modal-header .modal-title { color: var(--black); font-size: 16px; }
 
 .drawer .modal-dialog { --bs-modal-width: 400px !important;}
@@ -529,6 +529,43 @@ input:checked + .slider { box-shadow:0 0 0 2px #007bff,0 0 2px #007bff; }
 .img-group .counts { position: absolute; top:16px; left:-37px; display: block; height: 23px; width: 23px; text-align: center; background-color: var(--gray); color: var(--white); padding: 2px 5px; font-size: 11px; border-radius: 100px; border: 1px #fff solid; z-index: 9;}
 .thumb-md { height: 70px; width: 70px; }
 
+.branch-details { border:1px #ccc solid; border-radius: 5px; }
+.branch-details .branch-head { background-color: var(--gray-light); color: var(--black); padding: 10px 15px; border-radius: 5px 5px 0 0;}
+.branch-details .branch-head h4 { color: var(--black); margin-bottom: 0; font-size: 14px; }
+.branch-details .branch-body { padding: 15px; }
+.branch-details .branch-body p { margin: 0;}
+
+.dot-status { width: 8px; height: 8px; border-radius: 50%; position: relative; margin-top: 5px; } 
+.green {background: var(--green-dark);  }
+.red { background: red; }
+
+.green.blink { animation: blinkGlow 1s infinite; }
+
+@keyframes blinkGlow {
+    0% {
+        opacity: 1;
+        transform: scale(1);
+        box-shadow: 0 0 10px #00ff00,
+                    0 0 20px #00ff00,
+                    0 0 30px #00ff00;
+    }
+
+    50% {
+        opacity: 0.4;
+        transform: scale(0.9);
+        box-shadow: 0 0 5px #00ff00,
+                    0 0 10px #00ff00;
+    }
+
+    100% {
+        opacity: 1;
+        transform: scale(1);
+        box-shadow: 0 0 10px #00ff00,
+                    0 0 20px #00ff00,
+                    0 0 30px #00ff00;
+    }
+}
+
 .order-product-qty{
     position: absolute;
     top: -4px;
@@ -559,6 +596,8 @@ input:checked + .slider { box-shadow:0 0 0 2px #007bff,0 0 2px #007bff; }
 .flex .img-group { width: 100px;}
 
 .flex-2 { display: flex; column-gap: 15px;}
+
+.white { color: var(--white);}
 
 .color_code {  margin-bottom: 5px;}
 .color_code .color { height:35px; width:35px; border-radius:100px; display:block; box-shadow: 0 4px 6px 0 #0000002f; }

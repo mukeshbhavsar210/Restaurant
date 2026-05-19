@@ -8,6 +8,8 @@ use Illuminate\Database\Eloquent\Model;
 class Seat extends Model {
     use HasFactory;   
 
+    protected $fillable = [ 'table_name', 'table_slug', 'area_id', 'status', 'capacity' ];
+
     public function seat(){
         return $this->hasMany(Seat::class, 'area_id');
     }
