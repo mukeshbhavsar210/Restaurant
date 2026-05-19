@@ -230,7 +230,7 @@ $(document).ready(function(){
         var element = $(this);
         $("button[type=submit]").prop('disabled', true);
         $.ajax({
-            url: '{{ route("areas.store") }}',
+            url: '{{ route("branch.store") }}',
             type: 'post',
             data: element.serializeArray(),
             dataType: 'json',
@@ -238,7 +238,7 @@ $(document).ready(function(){
                 $("button[type=submit]").prop('disabled', false);
 
                 if(response["status"] == true){
-                    window.location.href="{{ route('areas.index') }}"
+                    window.location.href="{{ route('configurations.index') }}"
                     $('#name').removeClass('is-invalid')
                     .siblings('p')
                     .removeClass('invalid-feedback').html("");
@@ -253,7 +253,6 @@ $(document).ready(function(){
                         .siblings('p')
                         .removeClass('invalid-feedback').html("");
                     }
-
                 }
 
             }, error: function(jqXHR, exception) {
@@ -317,7 +316,7 @@ $(document).ready(function(){
     });
 
     function deleteArea(id){
-        var url = '{{ route("areas.delete","ID") }}'
+        var url = '{{ route("delete.branch","ID") }}'
         var newUrl = url.replace("ID",id)
 
         if(confirm("Are you sure you want to delete?")){
@@ -331,7 +330,7 @@ $(document).ready(function(){
                 },
                 success: function(response){
                     if(response["status"]){
-                        window.location.href="{{ route('areas.index') }}"
+                        window.location.href="{{ route('configurations.index') }}"
                     }
                 }
             });

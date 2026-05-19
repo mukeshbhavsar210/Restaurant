@@ -16,6 +16,8 @@ use Illuminate\Support\Facades\Validator;
 use App\Models\TempImage;
 use App\Models\OrderItem;
 use App\Models\Theme;
+use App\Models\Category;
+use App\Models\SubCategory;
 use Illuminate\Support\Facades\File;
 use Intervention\Image\ImageManager;
 //use Intervention\Image\ImageManagerStatic as Image;
@@ -23,6 +25,7 @@ use Intervention\Image\Laravel\Facades\Image;
 use Intervention\Image\Drivers\Gd\Driver;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 
 
 class ConfigurationController extends Controller implements HasMiddleware
@@ -77,30 +80,47 @@ class ConfigurationController extends Controller implements HasMiddleware
         ]);
     }
 
-    public function create(){        
+    public function configurations_create(){        
         return view("admin.configurations.create");
     }
 
-    public function edit($id, Request $request){
+    public function configurations_edit($id, Request $request){
         $configuration = Configuration::find($id);
 
         return view('admin.configurations.edit', compact('configuration'));
     }
 
-    public function update(Request $request){
-        $configurations = Configuration::first()->update($request->all());
-        //$configurations->name = $request->name;
-        // $configurations->logo = $request->logo;
-        // $configurations->email = $request->email;
-        // $configurations->phone = $request->phone;
-        // $configurations->address = $request->address;
-        // $configurations->theme = $request->theme;
-        $configurations->save();
+    public function configurations_update(Request $request) {
+        $config = Configuration::find($request->id);
 
-        return redirect()->route('configurations.index')->with('success','Configuration updated successfully.');
+        if (!$config) {
+            return redirect()->back()
+                ->with('error', 'Configuration not found');
+        }
+
+        $config->name = $request->name;
+        $config->value = $request->value;
+
+        $config->save();
+
+        return redirect()->back()
+            ->with('success', 'Configuration updated successfully');
     }
 
-    public function store(Request $request){
+    // public function configurations_update(Request $request){
+    //     $configurations = Configuration::first()->update($request->all());
+    //     //$configurations->name = $request->name;
+    //     // $configurations->logo = $request->logo;
+    //     // $configurations->email = $request->email;
+    //     // $configurations->phone = $request->phone;
+    //     // $configurations->address = $request->address;
+    //     // $configurations->theme = $request->theme;
+    //     $configurations->save();
+
+    //     return redirect()->route('configurations.index')->with('success','Configuration updated successfully.');
+    // }
+
+    public function configurations_store(Request $request){
         $validator = Validator::make($request->all(), [ 
             'name' => 'required',
             //'image' => 'required|image|mimes:png,jpg,jpeg|max:2048'
@@ -145,7 +165,7 @@ class ConfigurationController extends Controller implements HasMiddleware
         return redirect()->route('configurations.index')->with('success','Theme added successfully.');
     }
 
-    public function store_branch(Request $request){
+    public function branch_store(Request $request){
         $validator = Validator::make($request->all(), [
             'area_name' => 'required',            
         ]);
@@ -169,7 +189,7 @@ class ConfigurationController extends Controller implements HasMiddleware
                 'errors' => $validator->errors()
             ]);
         }
-    }
+    }   
 
 
     public function store_payment(Request $request){
@@ -188,13 +208,126 @@ class ConfigurationController extends Controller implements HasMiddleware
             return redirect()->route('configurations.index')->withInput()->withErrors($validator);
         }
     }
+    
+    public function branch_edit($areaId, Request $request){
+        $area = Area::find($areaId);
+
+        if (empty($area)) {
+            return redirect()->route('configurations.index');
+        }
+
+        return view('admin.areas.edit', compact('area'));
+    }
 
 
-    public function delete($id){
+    public function branch_update($areaId, Request $request){
+        $area = Area::find($areaId);
+        if (empty($area)) {
+            $request->session()->flash('error', 'area not found');
+            return response()->json([
+                'status' => false,
+                'notFound' => true,
+                'message' => 'area not found'
+            ]);
+        }
+
+        $validator = Validator::make($request->all(), [
+            'name' => 'required',            
+        ]);
+
+        if ($validator->passes()) {
+            $area->name = $request->name;            
+            $area->save();
+
+            $request->session()->flash('success', 'Branch updated successfully');
+
+            return response()->json([
+                'status' => true,
+                'message' => 'Branch updated successfully'
+            ]);
+
+        } else {
+            return response()->json([
+                'status' => false,
+                'errors' => $validator->errors()
+            ]);
+        }
+    }
+
+    public function branch_delete($id){
         $area = Area::find($id);
         $area->delete();
 
         return redirect()->route('configurations.index')->with('success','Branch deleted successfully.');
     }
 
+
+
+    public function table_store(Request $request){
+        //QR CODE
+        $number = mt_rand(1000000000, 9999999999);        
+        $request['product_code'] = $number;
+
+         $validator = Validator::make($request->all(), [
+            'area_id'    => 'required',
+            'table_name' => 'required',
+            'capacity'   => 'required',
+        ]);
+
+        if ($validator->fails()) {
+            return redirect()->back()
+                ->withErrors($validator)
+                ->withInput();
+        }
+
+        $table = new Seat();
+        $table->area_id = $request->area_id;
+        $table->table_name = $request->table_name;
+        $table->table_slug = Str::slug($request->table_name);
+        $table->capacity = $request->capacity;
+        $table->save();
+
+        return redirect()->back()->with('success', 'Table added successfully');
+       
+    }
+
+    // public function productCodeExists($number){
+    //     return Seat::whereProductCode($number)->exists();
+    // }    
+
+    public function table_delete($id) {
+        $table = Seat::find($id);
+
+        if (!$table) {
+            return redirect()->back()
+                ->with('error', 'Seat not found');
+        }
+
+        $table->delete();
+
+        return redirect()->route('configurations.index')
+            ->with('success', 'Seat deleted successfully.');
+    }
+    
+
+    public function table_destroy($id, Request $request){
+        $subCategory = Menu::find($id);
+
+        if(empty($subCategory)){
+            $request->session()->flash('error','Record not found');
+            return response([
+                'status' => false,
+                'notFound' => true,
+            ]);
+        }
+
+        $subCategory->delete();
+
+        $request->session()->flash('success', 'Sub Category deleted successfully');
+
+        return response([
+            'status' => true,
+            'message' => 'Sub Category deleted successfully',
+        ]);
+    }
 }

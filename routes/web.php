@@ -97,17 +97,7 @@ Route::group(['prefix' => 'admin'], function(){
         });
 
         //Sub Categories Connect to main Categories
-        Route::get('/product-subcategories', [ProductSubCategoryController::class, 'index'])->name('product-subcategories.index');
-
-        //Areas Routes
-        Route::controller(AreaController::class)->group(function() {
-            Route::get('/areas', 'index')->name('areas.index');        
-            Route::post('/areas', 'store')->name('areas.store');
-            Route::post('/tables', 'store_table')->name('seatings.store');
-            Route::get('/areas/{area}/edit', 'edit')->name('areas.edit');
-            Route::put('/areas/{area}', 'update')->name('areas.update');
-            Route::delete('/areas/{area}', 'destroy')->name('areas.delete');
-        });
+        Route::get('/product-subcategories', [ProductSubCategoryController::class, 'index'])->name('product-subcategories.index');       
 
         //Table Routes
         Route::controller(SeatController::class)->group(function() {
@@ -175,14 +165,23 @@ Route::group(['prefix' => 'admin'], function(){
         //Permissions
         Route::controller(ConfigurationController::class)->group(function() { 
             Route::get('/configurations', 'index')->name('configurations.index');
-            Route::get('/configurations/create', 'create')->name('configurations.create');
-            Route::post('/configurations', 'store')->name('configurations.store');
+            Route::get('/configurations/create', 'configurations_create')->name('configurations.create');
+            Route::post('/configurations', 'configurations_store')->name('configurations.store');
             Route::post('/configurations/theme', 'store_theme')->name('configurations.theme');
-            Route::get('/configurations/{id}/edit', 'edit')->name('configurations.edit');
-            Route::post('/configurations/{id}', 'update')->name('configurations.update');
-            Route::delete('/configurations', 'destroy')->name('configurations.destroy');
-            Route::post('/payment', 'store_payment')->name('payment.store');
-            Route::get('configurations/branch/delete/{id}', 'delete')->name('delete.branch');
+            Route::get('/configurations/{id}/edit', 'configurations_edit')->name('configurations.edit');
+            Route::post('/configurations/{id}', 'configurations_update')->name('configurations.update');
+            Route::delete('/configurations', 'configurations_destroy')->name('configurations.destroy');
+            Route::post('/configurations/payment', 'store_payment')->name('payment.store');
+            
+            //Branch
+            Route::post('/branch', 'branch_store')->name('branch.store');
+            Route::get('/branch/{branch}/edit', 'branch_edit')->name('branch.edit');
+            Route::put('/branch/branch/{area}', 'branch_update')->name('branch.update');
+            Route::get('/branch/delete/{id}', 'branch_delete')->name('delete.branch');
+
+            //Table
+            Route::post('/table', 'table_store')->name('table.store');            
+            Route::get('/table/delete/{id}', 'table_delete')->name('delete.table');            
         });
         
         //Users

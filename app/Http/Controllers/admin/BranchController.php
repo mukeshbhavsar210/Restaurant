@@ -52,16 +52,6 @@ class BranchController extends Controller
 
 
 
-    public function edit($areaId, Request $request){
-        $area = Area::find($areaId);
-
-        if (empty($area)) {
-            return redirect()->route('areas.index');
-        }
-
-        return view('admin.areas.edit', compact('area'));
-    }
-
 
 
     public function update($areaId, Request $request){
