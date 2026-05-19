@@ -14,7 +14,7 @@
                 </div>
             </div>
             <div class="col-md-5 col-12 float-end"> 
-                <a href="javascript:0" class="btn btn-primary float-right" data-bs-toggle="modal" data-bs-target="#addRoleModal">Add Role</a>                
+                <a href="javascript:0" class="btn btn-primary float-right" data-bs-toggle="modal" data-bs-target="#addRoleModal">Add Role</a>
                 @can('create roles')                    
                 @endcan
             </div>
@@ -132,7 +132,7 @@
                         'x-csrf-token' : '{{ csrf_token() }}'
                     },
                     success: function(response) {
-                        window.location.href="{{ route('roles.index') }}"
+                        window.location.href="{{ route('configurations.index') }}"
                     }
                 });
             }

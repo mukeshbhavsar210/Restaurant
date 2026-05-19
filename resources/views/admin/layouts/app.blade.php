@@ -272,7 +272,7 @@ $(document).ready(function(){
                 },
                 success: function(response){
                     if(response["status"]){
-                        window.location.href="{{ route('pages.index') }}"
+                        window.location.href="{{ route('configurations.index') }}"
                     }
                 }
             });

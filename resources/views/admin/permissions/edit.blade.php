@@ -13,7 +13,7 @@
                 </div>
             </div>
             <div class="col-md-2 col-12 float-end">  
-                <a href="{{ route('permissions.index') }}" class="btn btn-primary">Back</a>
+                <a href="{{ route('configurations.index') }}" class="btn btn-primary">Back</a>
             </div>
         </div>    
 

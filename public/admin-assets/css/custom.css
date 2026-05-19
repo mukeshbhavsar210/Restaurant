@@ -418,7 +418,7 @@ input:checked + .slider { box-shadow:0 0 0 2px #007bff,0 0 2px #007bff; }
 
 .drawer .modal-body { padding: 15px 20px; }
 
-.drawer .modal-header .modal-title { color: var(--black); font-size: 16px; }
+.drawer .modal-header .modal-title { font-size: 16px; }
 
 .drawer .modal-dialog { --bs-modal-width: 400px !important;}
 

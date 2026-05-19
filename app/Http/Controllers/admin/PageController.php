@@ -7,8 +7,7 @@ use App\Models\Page;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
-class PageController extends Controller
-{
+class PageController extends Controller {
     public function index(Request $request){
         $pages = Page::latest();
 
@@ -46,23 +45,15 @@ class PageController extends Controller
         $page->content = $request->content;
         $page->save();
 
-        $message = 'Page added successfully.';
-
-        session()->flash('success',$message);
-
-        return response()->json([
-            'status' => true,
-            'message' => $message
-        ]);
+        return redirect()->back()->with('success', 'Page created successfully');        
     }
 
     public function edit($id){
-
         $page = Page::find($id);
 
         if ($page == null){
             session()->flash('error','Page not found');
-            return redirect()->route('pages.index');
+            return redirect()->route('configurations.index');
         }
 
         return view('admin.pages.edit',[
@@ -70,8 +61,8 @@ class PageController extends Controller
         ]);
     }
 
-    public function update(Request $request, $id){
 
+    public function update(Request $request, $id){
         $page = Page::find($id);
 
         if($page == null) {
@@ -108,8 +99,8 @@ class PageController extends Controller
         ]);
     }
 
-    public function destroy($id){
 
+    public function destroy($id){
         $page = Page::find($id);
 
         if($page == null) {

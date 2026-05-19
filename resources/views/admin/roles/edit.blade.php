@@ -8,7 +8,7 @@
             <h1>Edit Role</h1>
         </div>
         <div class="col-sm-6 text-right">
-            <a href="{{ route('roles.index') }}" class="btn btn-primary">Back</a>
+            <a href="{{ route('configurations.index') }}" class="btn btn-primary">Back</a>
         </div>
     </div>    
 </section>

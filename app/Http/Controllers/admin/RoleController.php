@@ -63,7 +63,7 @@ class RoleController extends Controller implements HasMiddleware
                 }
             }
 
-            return redirect()->route('roles.index')->with('success','Role added successfully.');
+            return redirect()->route('configurations.index')->with('success','Role added successfully.');
         } else {
             return redirect()->route('roles.create')->withInput()->withErrors($validator);
         }
@@ -101,7 +101,7 @@ class RoleController extends Controller implements HasMiddleware
                 $role->syncPermissions([]);
             }
 
-            return redirect()->route('roles.index')->with('success','role updated successfully.');
+            return redirect()->route('configurations.index')->with('success','role updated successfully.');
         } else {
             return redirect()->route('roles.edit',$id)->withInput()->withErrors($validator);
         }

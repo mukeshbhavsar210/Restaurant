@@ -23,40 +23,32 @@
             <span>Orders</span>
         </a>
     </li>          
-         
     <li class="nav-item">
+        <a href="{{ route('configurations.index') }}" class="nav-link {{ (\Request::route()->getName() == 'configurations.index') ? 'active' : '' }}">
+            <i class="iconoir-journal-page menu-icon"></i>
+            <span>Configuration</span>
+        </a>
+    </li>
+    <li class="nav-item">
+        <a href="{{ route('users.index') }}" class="nav-link {{ (\Request::route()->getName() == 'users.index') ? 'active' : '' }}">
+            <i class="iconoir-journal-page menu-icon"></i>
+            <span>Users</span>
+        </a>
+    </li> 
+
+    {{-- <li class="nav-item">
         <a class="nav-link" href="#extra" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="sidebarApplications">
             <i class="iconoir-page-star menu-icon"></i>
             <span>Settings</span>
         </a>
         <div class="collapse " id="extra">
-            <ul class="nav flex-column">
-                <li class="nav-item">
-                    <a href="{{ route('permissions.index') }}" class="nav-link {{ (\Request::route()->getName() == 'permissions.index') || (\Request::route()->getName() == 'permissions.edit') ? 'active' : '' }}">
-                        <p>Permissions</p>
-                    </a>
-                </li> 
-                <li class="nav-item">
-                    <a href="{{ route('roles.index') }}" class="nav-link {{ (\Request::route()->getName() == 'roles.index') ? 'active' : '' }}">
-                        <p>Roles</p>
-                    </a>
-                </li> 
-                <li class="nav-item">
-                    <a href="{{ route('configurations.index') }}" class="nav-link {{ (\Request::route()->getName() == 'configurations.index') ? 'active' : '' }}">
-                        <p>Configuration</p>
-                    </a>
-                </li>   
+            <ul class="nav flex-column">                                                  
                 <li class="nav-item">
                     <a href="{{ route('users.index') }}" class="nav-link {{ (\Request::route()->getName() == 'users.index') ? 'active' : '' }}">
                         <span>Users</span>
                     </a>
-                </li>
-                <li class="nav-item">
-                    <a href="{{ route('pages.index') }}" class="nav-link {{ (\Request::route()->getName() == 'pages.index') ? 'active' : '' }}">
-                        <span>Pages</span>
-                    </a>
-                </li>                               
+                </li>                
             </ul>
         </div>
-    </li>
+    </li> --}}
 </ul>

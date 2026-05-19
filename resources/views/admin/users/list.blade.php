@@ -21,8 +21,6 @@
 
 <section>
     <div class="container-fluid">
-        
-
         <div class="modal fade drawer right-align" id="createUser" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
