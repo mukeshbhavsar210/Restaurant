@@ -175,7 +175,7 @@ ul,li { padding: 0; margin: 0;}
 .delete-icon-edit span { background-position:-151px -30px; height:17px; width: 17px; }
 .delete-icon-edit:hover span { background-position:-173px -30px;  }
 
-.alert { position: absolute; top:-46px; left:40%; z-index:9999; width: 400px; padding:8px 13px;}
+.alert { position: absolute; top:-46px; left:40%; z-index:9999; width: 400px; padding:8px 13px; background-color: var(--green-dark) !important; color: var(--white); font-size: 16px;}
 .alert .close { padding:7px 10px;}
 
 .force_active { display: block !important;}

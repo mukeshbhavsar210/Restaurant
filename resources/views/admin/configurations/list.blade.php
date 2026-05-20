@@ -4,6 +4,26 @@
 
 @include('admin.layouts.message')
 
+@include('components.common-modal', [
+    'modal' => $branchForm,
+])
+
+@include('components.common-modal', [
+    'modal' => $tableForm,
+])
+
+@include('components.common-modal', [
+    'modal' => $pageForm,
+])
+
+@include('components.common-modal', [
+    'modal' => $permissionForm,
+])
+
+@include('components.common-modal', [
+    'modal' => $roleForm,
+])
+
 <div class="card">               
     <div class="card-body">        
         <div class="page-title"> 
@@ -236,38 +256,17 @@
 
                     <div class="tab-pane" id="tabs-2" role="tabpanel">
                         <div class="row mt-3">
-                            <div class="col-md-10 col-12">
+                            <div class="col-md-9 col-12">
                                 <h4>Branches</h4>
                             </div>
                             
-                            <div class="col-md-2 col-12">
-                                <a href="javascript:0" class="btn btn-primary float-end" data-bs-toggle="modal" data-bs-target="#addBranchModal">Add Branch</a>
-                            </div>            
-                        </div>
-
-                        <div class="modal fade" id="addBranchModal" tabindex="-1" aria-labelledby="addBranchModalLabel" aria-hidden="true" style="display: none;">
-                            <div class="modal-dialog modal-sm modal-dialog-centered" role="document">
-                                <div class="modal-content">
-                                    <div class="modal-header">
-                                        <h5 class="modal-title" id="exampleModalLabel">Add Branch</h5>
-                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                    </div>
-
-                                    <form action="{{ route('branch.store') }}" method="post">
-                                        @csrf
-                                        <div class="modal-body">
-                                            <div class="form-group">
-                                                <input type="text" name="area_name" id="area_name" class="form-control slug-source" placeholder="Name" data-target="#area_slug">
-                                                <input type="hidden" name="area_slug" id="area_slug" class="form-control" placeholder="Name">                                            
-                                            </div>
-                                        </div>
-                                        <div class="modal-footer">
-                                            <button type="submit" class="btn btn-primary">Create Branch</button>
-                                        </div>
-                                    </form>
+                            <div class="col-md-3 col-12">
+                                <div class="flex float-end">
+                                    <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#{{ $branchForm['modal_id'] }}">{{ $branchForm['button_name'] }}</button>
+                                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#{{ $tableForm['modal_id'] }}">{{ $tableForm['button_name'] }}</button>
                                 </div>
-                            </div>
-                        </div>
+                            </div>            
+                        </div>                        
 
                         <div class="accordion mt-1" id="accordionExample">
                             @if($branches->isNotEmpty())
@@ -280,107 +279,55 @@
                                                     aria-expanded="{{ $key == 0 ? 'true' : 'false' }}"
                                                     aria-controls="collapse{{ $value->id }}">
 
-                                                    <div class="container">
-                                                        <div class="row">
-                                                            <div class="col-10">
-                                                                <h5 class="mb-0 mt-1">{{ $value->area_name }} - {{ $value->total_seats }}</h5>
-                                                            </div>
-                                                            <div class="col-2">
-                                                                <div class="flex">
-                                                                    <a href="javascript:0" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#addTableModal_{{ $value->id }}">Add Table</a>
-                                                                    <a href="{{ route('delete.branch', $value->id) }}" class="delete-icon mt-1"><span class="sprites"></span></a>                                                                     
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
+                                                    <h5 class="mb-0 mt-1">{{ $value->area_name }} - {{ $value->total_seats }}</h5>                                                    
                                             </button>
                                         </div>
 
                                         <div id="collapse{{ $value->id }}" class="accordion-collapse collapse {{ $key == 0 ? 'show' : '' }}" aria-labelledby="heading{{ $value->id }}" data-bs-parent="#accordionExample">
                                             <div class="accordion-body">
-                                                <div class="flex-2 mt-1 mb-2">
-                                                    @foreach ($value->seats as $seat)
-                                                        <div>
-                                                            <button type="button" class="btn btn-outline-secondary position-relative" data-bs-toggle="modal" data-bs-target="#QRModal_{{ $value->id }}">
-                                                                <div class="flex-2">
-                                                                    <p class="mb-0 mr-2">{{ $seat->table_name }}</p>
-                                                                    @if($seat->status == 'running')
-                                                                        <div class="dot-status green"></div>
-                                                                    @elseif($seat->status == 'available')
-                                                                        <div class="dot-status red"></div>
-                                                                    @endif
-                                                                </div> 
+                                                <div class="row mt-1 mb-2">
+                                                    <div class="col-11">
+                                                        <div class="flex-2 ">                                                    
+                                                            @foreach ($value->seats as $seat)                                                        
+                                                                <button type="button" class="btn btn-outline-secondary position-relative" data-bs-toggle="modal" data-bs-target="#QRModal_{{ $value->id }}">
+                                                                    <div class="flex-2">
+                                                                        <p class="mb-0 mr-2">{{ $seat->table_name }}</p>
+                                                                        @if($seat->status == 'running')
+                                                                            <div class="dot-status green"></div>
+                                                                        @elseif($seat->status == 'available')
+                                                                            <div class="dot-status red"></div>
+                                                                        @endif
+                                                                    </div> 
+                                                                    
+                                                                    @if($seat->capacity)
+                                                                        <span class="position-absolute top-0 start-100 translate-middle bg-black border border-light rounded-circle">
+                                                                            <small class="thumb-xs white">{{ $seat->capacity }}</small>
+                                                                        </span>                                                                                                                                
+                                                                    @endif                                                            
+                                                                </button>
                                                                 
-                                                                @if($seat->capacity)
-                                                                    <span class="position-absolute top-0 start-100 translate-middle bg-black border border-light rounded-circle">
-                                                                        <small class="thumb-xs white">{{ $seat->capacity }}</small>
-                                                                    </span>                                                                                                                                
-                                                                @endif                                                            
-                                                            </button>
-                                                            
-                                                            <div class="modal fade" id="QRModal_{{ $value->id }}" tabindex="-1" aria-labelledby="QRModalLabel" aria-hidden="true" style="display: none;">
-                                                                <div class="modal-dialog modal-sm" role="document">
-                                                                    <div class="modal-content">
-                                                                        <div class="modal-header">
-                                                                            <h5 class="modal-title" id="exampleModalLabel">{{ $value->area_name }}</h5>
-                                                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                                                        </div>
-                                                                        <div class="modal-body">                                                  
-                                                                            <h4>{{ $seat->table_name }} ({{ $seat->capacity }})</h4>                                                                                
-                                                                            <p>{!! DNS2D::getBarcodeHTML('http://127.0.0.1:8000/'.$value->area_slug.'/'.$seat->table_slug, 'QRCODE',9.0,9.0) !!}</p>
-                                                                            <a href="{{ route('delete.table', $seat->id) }}" class="btn btn-outline-danger w-100">Delete Table</a>
+                                                                <div class="modal fade" id="QRModal_{{ $value->id }}" tabindex="-1" aria-labelledby="QRModalLabel" aria-hidden="true" style="display: none;">
+                                                                    <div class="modal-dialog modal-sm" role="document">
+                                                                        <div class="modal-content">
+                                                                            <div class="modal-header">
+                                                                                <h5 class="modal-title" id="exampleModalLabel">{{ $value->area_name }}</h5>
+                                                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                                            </div>
+                                                                            <div class="modal-body">                                                  
+                                                                                <h4>{{ $seat->table_name }} ({{ $seat->capacity }})</h4>                                                                                
+                                                                                <p>{!! DNS2D::getBarcodeHTML('http://127.0.0.1:8000/'.$value->area_slug.'/'.$seat->table_slug, 'QRCODE',9.0,9.0) !!}</p>
+                                                                                <a href="{{ route('delete.table', $seat->id) }}" class="btn btn-outline-danger w-100">Delete Table</a>
+                                                                            </div>
                                                                         </div>
                                                                     </div>
                                                                 </div>
-                                                            </div>
-                                                        </div>
-                                                    @endforeach                            
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    
-                                    <div class="modal fade drawer right-align" id="addTableModal_{{ $value->id }}" tabindex="-1" aria-labelledby="addTableModalLabel" aria-hidden="true" style="display: none;">
-                                        <div class="modal-dialog" role="document">
-                                            <div class="modal-content">
-                                                <div class="modal-header">
-                                                    <h5 class="modal-title" id="exampleModalLabel">Add Table for {{ $value->area_name }}</h5>
-                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                                </div>
-
-                                                <form action="{{ route('table.store') }}" method="post">
-                                                    @csrf
-                                                    <div class="modal-body">
-                                                        <div class="form-group">
-                                                            <label for="table_name">Table Code</label>
-                                                            <input type="text" name="table_name" id="name" class="form-control slug-source" placeholder="e.g. Table_01" data-target="#table_slug">
-                                                            <input type="hidden" name="table_slug" id="table_slug" class="form-control">
-                                                            <input type="hidden" name="area_id" value="{{ $value->id }}">                                                        
-                                                        </div>  
-                                                    
-                                                        <div class="form-group">
-                                                            <label for="seating_capacity">Seating Capacity</label>
-                                                            @php
-                                                                $seatingCapacities = [1, 2, 4, 6, 8, 10];
-                                                            @endphp
-
-                                                            <div class="row">
-                                                                @foreach($seatingCapacities as $seat)
-                                                                    <div class="col-6">
-                                                                        <label class="custom-radio mt-2"> 
-                                                                            <input type="radio" name="capacity" value="{{ $seat }}">
-                                                                                <span class="radio-mark"></span>
-                                                                                {{ $seat }} {{ $seat == 1 ? 'Seat' : 'Seats' }}
-                                                                        </label>
-                                                                    </div>
-                                                                @endforeach      
-                                                            </div>                              
-                                                        </div>
+                                                            @endforeach
+                                                        </div>                                                              
                                                     </div>
-                                                    <div class="modal-footer">                                
-                                                        <button type="submit" class="btn btn-primary">Create</button>
+                                                    <div class="col-1">                                                                                                                                                                                                        
+                                                        <a href="{{ route('delete.branch', $value->id) }}" class="btn btn-outline-danger">Remove</a>
                                                     </div>
-                                                </form>
+                                                </div>                                                
                                             </div>
                                         </div>
                                     </div>
@@ -396,45 +343,9 @@
                             </div>
                             
                             <div class="col-md-2 col-12">
-                                <a href="javascript:0" class="btn btn-primary float-end" data-bs-toggle="modal" data-bs-target="#addPageModal">Add Page</a>
+                                <button type="button" class="btn btn-primary float-end" data-bs-toggle="modal" data-bs-target="#{{ $pageForm['modal_id'] }}">{{ $pageForm['button_name'] }}</button>                                
                             </div>            
-                        </div>
-
-                        <div class="modal fade drawer right-align" id="addPageModal" tabindex="-1" aria-labelledby="addPageModalLabel" aria-hidden="true">
-                            <div class="modal-dialog modal-dialog-centered" role="document">
-                                <div class="modal-content">
-                                    <div class="modal-header">
-                                        <h5 class="modal-title" id="exampleModalLabel">Add Page</h5>
-                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                    </div>
-                                    
-                                    <form action="{{ route('pages.store') }}" method="post">                                    
-                                        @csrf                        
-                                        <div class="modal-body">
-                                            <div class="row">
-                                                <div class="col-md-12">
-                                                    <div class="mb-3">
-                                                        <label for="name">Name</label>
-                                                        <input type="text" name="name" id="name" class="form-control slug-source" placeholder="Name" data-target="#slug">
-                                                        <input type="hidden" readonly name="slug" id="slug" class="form-control" placeholder="slug">
-                                                        <p></p>
-                                                    </div>
-                                                </div>                                    
-                                                <div class="col-md-12">
-                                                    <div class="mb-3">
-                                                        <label for="content">Content</label>
-                                                        <textarea name="content" id="content" class="summernote" cols="40" rows="20"></textarea>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="modal-footer">
-                                            <button type="submit" class="btn btn-primary">Create</button>                        
-                                        </div>
-                                    </form>
-                                </div>
-                            </div>
-                        </div>
+                        </div>                       
 
                         <div class="accordion mt-2" >
                             @if ($pages->isNotEmpty())
@@ -450,7 +361,7 @@
                                                     <div class="container">
                                                         <div class="row">
                                                             <div class="col-11">
-                                                                <h5 class="mb-0 mt-1">{{ $value->name }}</h5>
+                                                                <h5 class="mb-0 mt-1">{{ $value->page_name }}</h5>
                                                             </div>
                                                             <div class="col-1">
                                                                 <div class="flex">
@@ -495,30 +406,7 @@
                             </div>
 
                             <div class="col-md-5 col-12 float-end">                
-                                <div class="flexContainer">
-                                    <form action="" method="get" >
-                                        <div class="d-flex">
-                                            <div class="card-title mr-3">
-                                                <a href="javascript:0" onclick="window.location.href='{{ route('configurations.index') }}'" class="refresh-icon" >
-                                                    <span class="sprites"></span>                                            
-                                                </button>
-                                            </div>
-                        
-                                            <div class="card-tools">
-                                                <div class="input-group input-group searchMain">
-                                                    <input value="{{ Request::get('keyword') }}" type="text" name="keyword" class="form-control float-right" placeholder="Search">
-                        
-                                                    <div class="input-group-append">
-                                                        <button type="submit" class="btn">
-                                                            <i class="iconoir-search"></i>
-                                                        </button>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </form>
-                                    <a href="javascript:0" class="btn btn-primary float-right" data-bs-toggle="modal" data-bs-target="#addPermissionModal">Add Permission</a>
-                                </div>                
+                                <button type="button" class="btn btn-primary float-end" data-bs-toggle="modal" data-bs-target="#{{ $permissionForm['modal_id'] }}">{{ $permissionForm['button_name'] }}</button>                                
                             </div>
                         </div>  
 
@@ -585,7 +473,7 @@
                                 </div>
                             </div>
                             <div class="col-md-5 col-12">
-                                <a href="javascript:0" class="btn btn-primary float-end" data-bs-toggle="modal" data-bs-target="#addRoleModal">Add Role</a>
+                                <button type="button" class="btn btn-primary float-end" data-bs-toggle="modal" data-bs-target="#{{ $roleForm['modal_id'] }}">{{ $roleForm['button_name'] }}</button>                                
                             </div>
                         </div>
 
@@ -665,66 +553,6 @@
                 </div>
             </div> 
         </div> 
-    </div>
-</div>
-    
-<div class="modal fade drawer right-align" id="addPermissionModal" tabindex="-1" aria-labelledby="addPermissionModalLabel" aria-hidden="true" style="display: none;">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Add Product</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-
-            <form {{ route('products.store') }} method="post" enctype="multipart/form-data">
-                @csrf
-                <div class="modal-body">
-                    Form                                                  
-                </div>
-                <div class="modal-footer">
-                    <button type="submit" class="btn btn-primary">Create</button>
-                </div>
-            </form>
-        </div>
-    </div>
-</div>
-
-<div class="modal fade drawer right-align" id="addRoleModal" tabindex="-1" aria-labelledby="addRoleModalLabel" aria-hidden="true" style="display: none;">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Add Role</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-
-            <form action="{{ route('roles.store') }}" method="post">
-                @csrf
-                <div class="modal-body">  
-                    <div class="form-group">
-                        <label for="name">Role Name</label>
-                        <input value="{{ old('name') }}" name="name" placeholder="Role name" type="text" class="form-control"/>
-                        @error('name')
-                            <p class="text-red-400 font-small">{{ $message }}</p>
-                        @enderror
-                    </div>
-                    
-                    <div class="form-group">
-                        <label>Select Permission</label>
-                        @if($permissions->isNotEmpty())
-                            @foreach ($permissions as $value)
-                                <label class="custom-checkbox" for="permission_{{ $value->id }}">{{ $value->name }}                                        
-                                    <input type="checkbox" name="permission[]" id="permission_{{ $value->id }}" class="btn-check" value="{{ $value->name }}">                                        
-                                    <span class="checkmark"></span>
-                                </label>
-                            @endforeach
-                        @endif                        
-                    </div>
-                </div>
-                <div class="modal-footer">                    
-                    <button type="submit" class="btn btn-primary">Create</button>
-                </div>
-            </form>            
-        </div>
     </div>
 </div>
 @endsection
