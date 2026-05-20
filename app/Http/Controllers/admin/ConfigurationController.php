@@ -92,7 +92,256 @@ class ConfigurationController extends Controller implements HasMiddleware
             $pages = $pages->where('name','like','%'.$request->keyword.'%');
         }        
 
-        //dd($pages);
+        //dd($pages);       
+
+        $data = [
+            'configurations'        => $configurations,
+            'branches'              => $branches,
+            'payments'              => $payments,
+            'theme'                 => $theme,
+            'areas'                 => $areas,
+            'seats'                 => $seats,
+            'tableIndividual'       => $tableIndividual,
+            'totalTable'            => $totalTable,
+            'totalArea'             => $totalArea,
+            'tableRunning'          => $tableRunning,
+            'permissions'           => $permissions,
+            'totalPermissions'      => $totalPermissions,
+            'roles'                 => $roles,            
+            'totalRoles'            => $totalRoles,
+            'permissionCount'       => $permissionCount,
+            'pages'                 => $pages
+        ];
+
+        $data['branchForm'] = [
+            'title' => 'Create Branch',
+            'button_name' => 'Add Branch',
+            'modal_id' => 'createBranchModal',            
+
+            'formConfig' => [
+                'action' => route('branch.store'),
+                'method' => 'POST',
+                'button' => 'Add Branch',
+                'modal' => '',
+                'modalSize' => 'modal-sm modal-dialog-centered',
+                'fields' => [
+                    [
+                        'type' => 'text',
+                        'name' => 'area_name',
+                        'label' => 'Branch Name',
+                        'placeholder' => 'Enter Branch Name',
+                        'class' => 'slug-source',
+                        'data'  => [
+                            'target' => '#area_slug'
+                        ], 
+                        'col' => 'col-md-12'
+                    ],
+                    [
+                        'type' => 'text',
+                        'name' => 'area_slug',
+                        'label' => 'Slug',
+                        'id'    => 'area_slug',
+                        'col' => 'd-none'
+                    ],
+                ]
+            ]
+        ];  
+
+        $seatingCapacities = [1, 2, 4, 6, 8, 10];
+        
+        $data['tableForm'] = [
+            'title' => 'Add Table',
+            'button_name' => 'Add Table',
+            'modal_id' => 'createTableModal',            
+
+            'formConfig' => [
+                'action' => route('table.store'),
+                'method' => 'POST',
+                'button' => 'Add Table',
+                'modal' => 'drawer right-align',
+                'modalSize' => '',
+                'fields' => [
+                    [
+                        'type' => 'text',
+                        'name' => 'table_name',
+                        'label' => 'Table Name',
+                        'placeholder' => 'e.g. Table_01',                        
+                        'class' => 'slug-source',
+                        'data'  => [
+                            'target' => '#table_slug'
+                        ], 
+                        'col' => 'col-md-12'
+                    ],
+                    [
+                        'type' => 'text',
+                        'name' => 'table_slug',
+                        'label' => 'Slug',
+                        'id'    => 'table_slug',
+                        'col' => 'd-none'
+                    ],
+                    [
+                        'type' => 'select',
+                        'name' => 'area_id',
+                        'label' => 'Select Branch',
+                        'options' => $branches,
+                        'option_value' => 'id',
+                        'option_label' => 'area_name',
+                        'col' => 'col-12'
+                    ],
+                    [
+                        'type' => 'radio',
+                        'name' => 'capacity',
+                        'label' => 'Select Capacity',
+                        'options' => $seatingCapacities,
+                        'col' => 'col-md-12'
+                    ]
+                ]
+            ]
+        ];
+
+        $data['pageForm'] = [
+            'title' => 'Create Page',
+            'button_name' => 'Create Page',
+            'modal_id' => 'createPageModal',            
+
+            'formConfig' => [
+                'action' => route('pages.store'),
+                'method' => 'POST',
+                'button' => 'Create Page',
+                'modal' => 'drawer right-align',
+                'modalSize' => '',
+                'fields' => [
+                    [
+                        'type' => 'text',
+                        'name' => 'page_name',
+                        'label' => 'Page Name',
+                        'placeholder' => '',                        
+                        'class' => 'slug-source',
+                        'data'  => [
+                            'target' => '#page_slug'
+                        ], 
+                        'col' => 'col-md-12'
+                    ],
+                    [
+                        'type' => 'text',
+                        'name' => 'page_slug',
+                        'label' => 'Slug',
+                        'id'    => 'page_slug',
+                        'col' => 'd-none'
+                    ],
+                    [
+                        'type' => 'textarea',
+                        'name' => 'content',
+                        'label' => 'Content',
+                        'id'    => 'content',
+                        'summer_class' => 'summernote',
+                        'col' => 'col-md-12 col-12'
+                    ],
+                ]
+            ]
+        ];  
+
+        $data['permissionForm'] = [
+            'title' => 'Create Permission',
+            'button_name' => 'Create Permission',
+            'modal_id' => 'createPermissionModal',            
+
+            'formConfig' => [
+                'action' => route('permissions.store'),
+                'method' => 'POST',
+                'button' => 'Create Permission',
+                'modal' => 'drawer right-align',
+                'modalSize' => '',
+                'fields' => [
+                    [
+                        'type' => 'text',
+                        'name' => 'name',
+                        'label' => 'Permission Name',
+                        'placeholder' => 'Permission Name',
+                        'col' => 'col-md-12'
+                    ],                    
+                ]
+            ]
+        ];
+
+         $data['roleForm'] = [
+            'title' => 'Create Role',
+            'button_name' => 'Create Role',
+            'modal_id' => 'createRoleModal',            
+
+            'formConfig' => [
+                'action' => route('roles.store'),
+                'method' => 'POST',
+                'button' => 'Create Role',
+                'modal' => 'drawer right-align',
+                'modalSize' => '',
+                'fields' => [
+                    [
+                        'type' => 'text',
+                        'name' => 'name',
+                        'label' => 'Role Name',
+                        'placeholder' => 'Role Name',
+                        'col' => 'col-md-12'
+                    ],
+                    [
+                        'type' => 'checkbox',
+                        'name' => 'permission',
+                        'label' => 'Select Permission',
+                        'options' => $permissions,
+                        'option_value' => 'id',
+                        'option_text' => 'name',                        
+                        'col' => 'col-md-12'
+                    ]
+                ]
+            ]
+        ];        
+
+        return view('admin.configurations.list', $data);        
+    }
+
+    public function index_old(Request $request){
+        $configurations = Configuration::get();
+        $payments = Payment::get();        
+        $branches = Area::withCount('seat as total_seats')->with('seats')->get();
+        $theme = Theme::get();
+        $areas = Area::orderBy('area_name','ASC')->get();
+        $seats = Seat::where('area_id',NULL)->with('seat')->get();
+        $tableRunning = OrderItem::with('seat')->get();
+
+        $totalTable = DB::table('seats')
+                    ->select(DB::raw('count(*) as total_tables'))
+                    ->get()[0]->total_tables;
+
+        $totalArea = DB::table('areas')
+                    ->select(DB::raw('count(*) as total_tables'))
+                    ->get()[0]->total_tables;
+
+        $tableIndividual = DB::table('seats')
+                    //->join('areas','seatings.area_id','=','areas.id')
+                    ->select(DB::raw('count(*) as number'), 'area_id')
+                    ->groupBy('area_id')
+                    ->get()[0]->number;
+
+        $permissions = Permission::orderBy('created_at','DESC')->paginate(10);
+        $totalPermissions = DB::table('permissions')
+                    ->select(DB::raw('count(*) as total'))
+                    ->get()[0]->total;
+
+        $roles = Role::orderBy('created_at','DESC')->paginate(10);        
+        $totalRoles = DB::table('roles')
+                    ->select(DB::raw('count(*) as total'))
+                    ->get()[0]->total;
+        $permissionCount = DB::table('permissions')
+                    ->select(DB::raw('count(*) as total'))
+                    ->get()[0]->total;
+
+        $pages = Page::get();
+
+        if($request->keyword != ''){
+            $pages = $pages->where('name','like','%'.$request->keyword.'%');
+        }        
+
+        //dd($pages);       
 
         return view("admin.configurations.list", [
             'configurations' => $configurations,
@@ -373,9 +622,7 @@ class ConfigurationController extends Controller implements HasMiddleware
 
         if($validator->passes()){
             Permission::create([ 'name' => $request->name ]);
-
-            
-
+        
             return redirect()->route('configurations.index')->with('success','Permission added successfully.');
         } else {
             return redirect()->route('permissions.create')->withInput()->withErrors($validator);
@@ -407,6 +654,8 @@ class ConfigurationController extends Controller implements HasMiddleware
         }
     }
 
+
+
     public function permissions_destroy(Request $request){
         $id = $request->id;
 
@@ -428,9 +677,7 @@ class ConfigurationController extends Controller implements HasMiddleware
     }
 
 
-
     //Roles
-
     public function role_store(Request $request){
         $validator = Validator::make($request->all(), [ 
             'name' => 'required|unique:roles|min:3'
@@ -449,6 +696,15 @@ class ConfigurationController extends Controller implements HasMiddleware
         } else {
             return redirect()->route('roles.create')->withInput()->withErrors($validator);
         }
+    }
+
+
+    public function role_edit($id){
+        $role = Role::findOrFail($id);
+
+        return view("admin.permissions.edit", [
+            'role' => $role
+        ]);
     }
 
     public function role_destroy(Request $request){
@@ -476,7 +732,7 @@ class ConfigurationController extends Controller implements HasMiddleware
     //Pages
     public function page_store(Request $request){
         $validator = Validator::make($request->all(), [
-            'name' => 'required',
+            'page_name' => 'required',
         ]);
 
         if ($validator->fails()) {
@@ -486,8 +742,8 @@ class ConfigurationController extends Controller implements HasMiddleware
         }
 
         $page = new Page();        
-        $page->name = $request->name;
-        $page->slug = Str::slug($request->name);
+        $page->page_name = $request->page_name;
+        $page->page_slug = Str::slug($request->page_name);
         $page->content = $request->content;
         $page->save();
 
