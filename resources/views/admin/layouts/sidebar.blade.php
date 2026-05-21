@@ -30,7 +30,7 @@
         </a>
     </li>
     <li class="nav-item">
-        <a href="{{ route('users.index') }}" class="nav-link {{ (\Request::route()->getName() == 'users.index') ? 'active' : '' }}">
+        <a href="{{ route('configurations.index') }}" class="nav-link {{ (\Request::route()->getName() == 'configurations.index') ? 'active' : '' }}">
             <i class="iconoir-journal-page menu-icon"></i>
             <span>Users</span>
         </a>
@@ -44,7 +44,7 @@
         <div class="collapse " id="extra">
             <ul class="nav flex-column">                                                  
                 <li class="nav-item">
-                    <a href="{{ route('users.index') }}" class="nav-link {{ (\Request::route()->getName() == 'users.index') ? 'active' : '' }}">
+                    <a href="{{ route('configurations.index') }}" class="nav-link {{ (\Request::route()->getName() == 'configurations.index') ? 'active' : '' }}">
                         <span>Users</span>
                     </a>
                 </li>                

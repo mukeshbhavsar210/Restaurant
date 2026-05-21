@@ -1,17 +1,11 @@
 <?php
 
-use App\Http\Controllers\admin\PermissionController;
 use App\Http\Controllers\admin\ProfileController;
-use App\Http\Controllers\admin\RoleController;
-use App\Http\Controllers\admin\UserController;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\admin\AreaController;
 use App\Http\Controllers\admin\HomeController;
 use App\Http\Controllers\admin\CategoryController;
 use App\Http\Controllers\admin\ConfigurationController;
-use App\Http\Controllers\admin\MenuController;
 use App\Http\Controllers\admin\OrderController;
-use App\Http\Controllers\admin\PageController;
 use App\Http\Controllers\admin\ProductController;
 use App\Http\Controllers\admin\ProductSubCategoryController;
 use App\Http\Controllers\admin\SeatController;
@@ -121,16 +115,7 @@ Route::group(['prefix' => 'admin'], function(){
             //Route::post("/updateWebsiteLogo",'update_logo')->name('website.logo');
         });
 
-        //Pages Routes
-        // Route::controller(PageController::class)->group(function() {
-        //     Route::get('/pages', 'index')->name('configurations.index');
-        //     Route::get('/pages/create', 'create')->name('pages.create');
-        //     Route::post('/pages', 'store')->name('pages.store');
-        //     Route::get('/pages/{page}/edit', 'edit')->name('pages.edit');
-        //     Route::put('/pages/{page}', 'update')->name('pages.update');
-        //     Route::delete('/pages/{page}', 'destroy')->name('pages.delete');
-        // });
-        
+       
         //Profile
         Route::controller(ProfileController::class)->group(function() {
             Route::get('/profile', 'edit')->name('profile.edit');
@@ -138,32 +123,7 @@ Route::group(['prefix' => 'admin'], function(){
             Route::delete('/profile', 'destroy')->name('profile.destroy');
         });
 
-        //Permissions
-        // Route::controller(PermissionController::class)->group(function() {
-        //     Route::get('/permissions', 'index')->name('configurations.index');
-        //     Route::get('/permissions/create', 'permissions_create')->name('permissions.create');
-        //     Route::post('/permissions', 'permissions_store')->name('permissions.store');
-        //     Route::get('/permissions/{id}/edit', 'permissions_edit')->name('permissions.edit');
-        //     Route::post('/permissions/{id}', 'permissions_update')->name('permissions.update');
-        //     Route::delete('/permissions', 'permissions_destroy')->name('permissions.destroy');
-        //     Route::post("/updateWebsiteLogo", 'update_logo')->name('website.logo');
-
-        //     //Roles
-        //     Route::post('/roles', 'role_store')->name('roles.store');
-        //     Route::get('/roles/{id}/edit', 'edit')->name('roles.edit');
-        //     Route::delete('/roles', 'role_destroy')->name('roles.destroy');
-        // });
-
-        //Roles   
-        // Route::controller(RoleController::class)->group(function() { 
-        //     Route::get('/roles','index')->name('roles.index');
-        //     Route::get('/roles/create', 'create')->name('roles.create');
-        //     Route::post('/roles', 'store')->name('roles.store');
-        //     Route::get('/roles/{id}/edit', 'edit')->name('roles.edit');
-        //     Route::post('/roles/{id}', 'update')->name('roles.update');
-        //     Route::delete('/roles', 'destroy')->name('roles.destroy');
-        // });
-
+        
         //Permissions
         Route::controller(ConfigurationController::class)->group(function() { 
             Route::get('/configurations', 'index')->name('configurations.index');
@@ -188,34 +148,34 @@ Route::group(['prefix' => 'admin'], function(){
             Route::get('/table/delete/{id}', 'table_delete')->name('delete.table');   
 
             //Pages            
-            Route::post('/page', 'page_store')->name('pages.store');
-            Route::get('/page/{page}/edit', 'page_edit')->name('pages.edit');
+            Route::post('/page', 'page_store')->name('pages.store');            
             Route::put('/page/{page}', 'page_update')->name('pages.update');
-            Route::delete('/page/{page}', 'page_destroy')->name('pages.delete');        
-            
-            //Permissions            
-            Route::post('/permissions', 'permissions_store')->name('permissions.store');
-            Route::get('/permissions/{id}/edit', 'permissions_edit')->name('permissions.edit');
-            Route::post('/permissions/{id}', 'permissions_update')->name('permissions.update');
-            Route::delete('/permissions', 'permissions_destroy')->name('permissions.destroy');            
-
+                        
+            //Permissions
+            Route::post('/permission', 'permissions_store')->name('permissions.store');            
+            Route::put('/permission/{permission}', 'permissions_update')->name('permissions.update');
+        
             //Roles
-            Route::post('/roles', 'role_store')->name('roles.store');
-            Route::get('/roles/{id}/edit', 'role_edit')->name('roles.edit');
-            Route::delete('/roles', 'role_destroy')->name('roles.destroy');
+            Route::post('/role', 'role_store')->name('roles.store');
+            Route::get('/role/{role}/edit', 'role_edit')->name('roles.edit');
+            Route::put('/role/{role}', 'role_update')->name('roles.update');            
+            
+            //Users
+            Route::get('/users/create', 'user_create')->name('users.create');
+            Route::post('/users',  'user_store')->name('users.store');
+            Route::get('/users/{id}/edit', 'user_edit')->name('users.edit');
+            Route::post('/users/{id}', 'user_update')->name('users.update');
+            
+            //All Delete
+            Route::get('/page/delete/{id}', 'page_delete')->name('pages.delete');
+            Route::get('/permission/delete/{id}', 'permissions_delete')->name('permissions.delete');            
+            Route::get('/role/delete/{id}', 'role_delete')->name('roles.delete');
+            Route::delete('/user/delete/{id}', 'user_delete')->name('users.delete');    
+
+            Route::get('/logout', 'logout')->name('users.logout');
         });
         
-        //Users
-        Route::controller(UserController::class)->group(function() { 
-            Route::get('/users', 'index')->name('users.index');
-            Route::get('/users/create', 'create')->name('users.create');
-            Route::post('/users',  'store')->name('users.store');
-            Route::get('/users/{id}/edit', 'edit')->name('users.edit');
-            Route::post('/users/{id}', 'update')->name('users.update');
-            Route::delete('/users', 'destroy')->name('users.destroy');        
-            Route::get('/logout', 'logout')->name('users.logout');
-        }); 
-
+        
         //Temp image controller
         Route::post('/upload-temp-image', [TempImagesController::class, 'create'])->name('temp-images.create');
     });
