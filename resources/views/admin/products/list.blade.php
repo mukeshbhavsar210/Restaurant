@@ -4,6 +4,10 @@
 
 @include('admin.layouts.message')
 
+@include('components.common-modal', [
+    'modal' => $productForm,
+])
+
 <div class="card">
     <div class="card-body">
         <div class="row">                
@@ -15,7 +19,7 @@
             </div>
             <div class="col-md-5 col-12 float-end">
                 <div class="flexContainer">
-                    <form action="" method="get" >
+                    {{-- <form action="" method="get" >
                         <div class="d-flex">
                             <div class="card-title mr-3">
                                 <a href="javascript:0" onclick="window.location.href='{{ route('products.index') }}'" class="refresh-icon" >
@@ -35,13 +39,13 @@
                                 </div>
                             </div>
                         </div>
-                    </form>
-                    <a href="javascript:0" class="btn btn-primary float-right" data-bs-toggle="modal" data-bs-target="#addProductModal">Add Product</a>                    
+                    </form> --}}
+                    <button type="button" class="btn btn-primary float-right" data-bs-toggle="modal" data-bs-target="#{{ $productForm['modal_id'] }}">{{ $productForm['button_name'] }}</button>                    
                 </div>                         
             </div>
         </div>                            
             
-        <div class="table-responsive mt-1">
+        <div class="table-responsive mt-2">
             <table class="table mb-0">
                 <thead class="table-light">
                     <tr>
@@ -96,21 +100,17 @@
                                     @endif
                                 </td>                    
                                 <td class="text-end">
-                                    <h5 class="mb-0">                                    
+                                    <h5 class="mb-0">
                                         @if($value->variants->count() > 0)
-                                            ₹{{ round($value->variants->first()->price) }}
+                                            @foreach($value->variants as $variant)
+                                                ₹{{ round($variant->price) }} <span class="text-muted tiny-font">({{ $variant->name }})</span><br />
+                                            @endforeach
                                         @else
                                             ₹{{ round($value->price) }}
                                         @endif                                    
-                                    </h5>                                                                    
-
-                                    @if($value->variants->count() > 0)                                            
-                                        @foreach($value->variants as $variant)
-                                            <p class="tiny-font mb-0 text-muted">{{ $variant->name }} : ₹{{ round($variant->price) }}</p>
-                                        @endforeach                                            
-                                    @endif
-                                </td>                                
-                                <td class="text-end">
+                                    </h5>
+                                </td>   
+                                <td>
                                     <div class="pull-right">
                                         @if ($value->status == 1)  
                                             <span class="sprites green-tick-icon"></span>
@@ -118,18 +118,58 @@
                                             <span class="sprites red-tick-icon"></span>
                                         @endif
                                     </div>
-                                </td> 
-                                <td class="text-end">
-                                    <a href="{{ route('products.edit', $value->id) }}">
-                                        <svg class="filament-link-icon w-4 h-4 mr-1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                                            <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z"></path>
-                                        </svg>
-                                    </a>                                        
-                                    <a href="{{ route('products.delete', $value->id) }}" class="text-danger deleteProduct">
-                                        <svg wire:loading.remove.delay="" wire:target="" class="filament-link-icon w-4 h-4 mr-1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                                            <path	ath fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd"></path>
-                                        </svg>
-                                    </a>                                
+                                </td>
+                                <td>
+                                    <div class="flex pull-right">
+                                        {{-- <a href="{{ route('products.edit', $value->id) }}">
+                                            <svg class="filament-link-icon w-4 h-4 mr-1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                                                <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z"></path>
+                                            </svg>
+                                        </a>   --}}
+
+                                        <a href="javascript:void(0)" class="editProductModal"
+                                            data-bs-toggle="modal" 
+                                            data-bs-target="#createProductModal"
+                                            data-action="{{ route('products.update', $value->id) }}"
+                                            data-name="{{ $value->name }}"
+                                            data-slug="{{ $value->slug }}"
+                                            data-price="{{ $value->price }}"
+                                            data-category="{{ $value->category_id }}"
+                                            data-menu="{{ $value->menu_id }}"
+                                            data-description="{{ $value->description }}"                                            
+                                            data-button="Update Product" >
+                                            
+                                            <svg class="filament-link-icon w-4 h-4 mr-1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                                                <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z"></path>
+                                            </svg>
+                                        </a>
+
+                                        <a href="{{ route('products.delete', $value->id) }}" class="text-danger deleteProduct" data-bs-toggle="modal" data-bs-target="#deleteModal{{ $value->id }}">
+                                            <svg wire:loading.remove.delay="" wire:target="" class="filament-link-icon w-4 h-4 mr-1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                                                <path	ath fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd"></path>
+                                            </svg>
+                                        </a>                                         
+                                    </div>                                                                         
+
+                                    <div class="modal fade" id="deleteModal{{ $value->id }}" tabindex="-1">
+                                        <div class="modal-dialog modal-sm modal-dialog-centered">
+                                            <div class="modal-content">
+                                                <div class="modal-body">
+                                                    Are you sure you want to delete?
+                                                </div>
+
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
+                                                        Cancel
+                                                    </button>
+
+                                                    <a href="{{ route('products.delete', $value->id) }}" class="btn btn-danger">Yes, Delete</a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                                                   
                                 </td>
                             </tr>
                         @endforeach
@@ -145,127 +185,7 @@
             </div>
         </div>
 </div>
-
-<div class="modal fade drawer right-align" id="addProductModal" tabindex="-1" aria-labelledby="addProductModalLabel" aria-hidden="true" style="display: none;">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Add Product</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-
-            <form {{ route('products.store') }} method="post" enctype="multipart/form-data">
-                    @csrf
-                    <div class="modal-body">
-                        <div class="form-group">
-                            <label for="name">Item Name</label>
-                            <input type="text" name="name" id="name" class="form-control slug-source" placeholder="Name" data-target="#slug" >
-                            <input type="hidden" readonly name="slug" id="slug" class="form-control">
-                            <p class="error"></p>                                    
-                        </div>
-
-                        <div class="row">
-                            <div class="col-md-6 col-12">
-                                <div class="form-group">
-                                    <label for="category">Category</label>
-                                    <select name="category" id="category" class="form-select">
-                                        <option value="">Select</option>
-                                        @if ($categories->isNotEmpty())
-                                            @foreach ($categories as $category)
-                                                <option value="{{ $category->id }}">{{ $category->name }}</option>
-                                            @endforeach
-                                        @endif
-                                    </select>
-                                    <p class="error"></p>
-                                </div>
-                            </div>
-                            <div class="col-md-6 col-12">
-                                <div class="form-group">
-                                    <label for="menu">Menu Item</label>
-                                    <select name="menu_id" id="menu_item" class="form-select">
-                                        <option value="">Select</option>
-                                    </select>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="form-group" id="original-price">
-                            <label for="price">Price</label>
-                            <input type="number" name="price" id="price" class="form-control" placeholder="Price">
-                            <p class="error"></p>
-                        </div>
-
-                        <div class="flex-justify mt-2 mb-2">
-                            <div class="form-check">
-                                <input type="checkbox" class="form-check-input" id="variant_checkbox">
-                                <label class="form-check-label" for="variant_checkbox">
-                                    Add Variants
-                                </label>
-                            </div>
-
-                            <a href="javascript:0" class="add-icon" id="add-variant" style="display:none;">
-                                <span class="sprites"></span>
-                            </a>
-                        </div>
-
-                        <div id="variant-wrapper" style="display:none;">
-                            <div id="variant-container">
-                                <div class="row mb-1 variant-row">
-                                    <div class="col-6">
-                                        <select name="variants[0][name]" class="form-select">
-                                            <option value="">Select Variant</option>
-                                            <option value="Oil">Oil</option>
-                                            <option value="Butter">Butter</option>
-                                        </select>
-                                    </div>
-
-                                    <div class="col-6">
-                                        <div class="flex">
-                                            <input type="text" name="variants[0][price]" class="form-control" placeholder="Price">
-                                            <a href="javascript:0" class="remove-variant mt-1 delete-icon">
-                                                <span class="sprites"></span>
-                                            </a>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <div class="form-group">
-                            <label for="description">Description</label>
-                            <textarea name="description" id="description" cols="2" rows="2" class="form-control" placeholder="Description"></textarea>
-                        </div>
-                                                    
-                        <div id="image" class="dropzone dz-clickable mt-3 mb-2">
-                            <div class="dz-message needsclick">Drop Product Image</div>
-                        </div>                            
-
-                        <div class="row">
-                            @if(isset($product) && $product->images->isNotEmpty())                        
-                                <div id="product-gallery" class="row">                                    
-                                    @foreach ($product->images as $index => $image)
-                                        <div class="col-2 uploaded-images" id="image-row-{{ $image->id }}">                                        
-                                            <input type="hidden" name="image_array[{{ $index }}][image_id]" value="{{ $image->id }}">
-                                            <img src="{{ asset('uploads/product/small/'.$image->image) }}" class="rounded" />
-
-                                            <a href="javascript:void(0)" class="deleteProductImg delete-icon-edit" data-id="{{ $image->id }}">
-                                                <span class="sprites"></span>
-                                            </a>
-                                        </div>
-                                    @endforeach                                                            
-                                </div>                               
-                            @endif
-                                            
-                            <div class="row" id="product-gallery"></div>         
-                        </div>                                                     
-                    </div>
-                    <div class="modal-footer">
-                        <button type="submit" class="btn btn-primary">Create</button>
-                    </div>
-                </form>
-        </div>
-    </div>
-</div>    
+  
 @endsection
 
 @section('customJs')
@@ -343,6 +263,29 @@
                 // add active to selected one
                 $(this).closest('label').addClass('active');
             });
+        });
+
+
+        $(document).on('click', '.editProductModal', function () {
+            let action = $(this).data('action');
+            let buttonText = $(this).data('button');
+            // let categoryId = $(this).data('category');
+            // let menuId = $(this).data('menu');
+           
+            // $('#category_id').val(categoryId).trigger('change');
+
+            // setTimeout(function () {
+            //     $('#menu_id').val(menuId);
+            // }, 500);            
+
+            $('#commonForm').attr('action', action);
+            $('input[name="name"]').val($(this).data('name'));
+            $('input[name="slug"]').val($(this).data('slug'));
+            $('input[name="category"]').val($(this).data('category'));
+            $('input[name="price"]').val($(this).data('price'));
+            $('textarea[name="description"]').val($(this).data('description'));
+            $('textarea[name="description"]').val($(this).data('description'));            
+            $('#submitBtn').text(buttonText);
         });
 </script>
 @endsection

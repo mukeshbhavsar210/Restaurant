@@ -185,7 +185,8 @@ class ConfigurationController extends Controller implements HasMiddleware
                         'label' => 'Select Branch',
                         'options' => $branches,
                         'option_value' => 'id',
-                        'option_label' => 'area_name',
+                        'option_text' => 'area_name',
+                        //'option_label' => 'area_name',
                         'col' => 'col-12'
                     ],
                     [
@@ -264,7 +265,7 @@ class ConfigurationController extends Controller implements HasMiddleware
             ]
         ];
 
-         $data['roleForm'] = [
+        $data['roleForm'] = [
             'title' => 'Create Role',
             'button_name' => 'Create Role',
             'modal_id' => 'createRoleModal',            

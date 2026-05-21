@@ -31,7 +31,7 @@ ul,li { padding: 0; margin: 0;}
 
 .add-icon { background-color: #eeeeee; border-radius: 100px; padding: 5px; }
 .add-icon:hover { background-color: #ccc; }
-.add-icon span { background-position: -49px -82px; height: 21px; width: 21px;}
+.add-icon span { background-position: -108px -82px; height: 21px; width: 21px;}
 
 .refresh-icon span { background-position:-53px -27px; height:28px; width: 28px; margin-right: 10px; margin-top: 5px; }
 .refresh-icon:hover span { background-position:-81px -27px;  }
@@ -179,6 +179,8 @@ ul,li { padding: 0; margin: 0;}
 .alert .close { padding:7px 10px;}
 
 .force_active { display: block !important;}
+
+.form-label { margin-bottom: 5px; font-size: 13px;}
 
 .metal_product { padding: 3px 8px; border:1px #ccc solid; border-radius: 5px; background-color: var(--primary); color: var(--white); font-size: 13px;}
 .neon_product { padding: 3px 8px; border-radius: 5px; background: linear-gradient(45deg, #5639e6, #FD0C91, #f4d22a);

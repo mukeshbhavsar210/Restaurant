@@ -71,29 +71,26 @@ Route::group(['prefix' => 'admin'], function(){
             Route::post('/categories', 'store')->name('categories.store');
             Route::post('/category_menu', 'store_menu')->name('categories.store_menu');
             Route::get('/categories/{id}', 'delete_category')->name('category.delete');
-            Route::delete('/categories/{category}', 'destroy')->name('categories.delete');            
-        });
-
-        //Sub Category Routes
-        Route::controller(MenuController::class)->group(function() {
-            Route::get('/menus', 'index')->name('menu.index');        
-            Route::post('/menus', 'store')->name('menu.store');
-            Route::get('/menus/{id}/edit', 'edit')->name('menu.edit');
-            Route::post('/menus/{id}', 'update')->name('menu.update');
-            Route::get('/menus/{id}', 'delete')->name('menu.delete');            
-            Route::delete('/selected-menus', 'deleteAll')->name('menuall.delete');
-        });
+            Route::delete('/categories/{category}', 'destroy')->name('categories.delete');   
+            
+            //Menu
+            Route::post('/menus', 'menu_store')->name('menu.store');
+            Route::get('/menus/{id}/edit', 'menu_edit')->name('menu.edit');
+            Route::post('/menus/{id}', 'menu_update')->name('menu.update');
+            Route::get('/menus/{id}', 'menu_delete')->name('menu.delete');            
+            Route::delete('/selected-menus', 'menu_deleteAll')->name('menuall.delete');
+        });        
 
         //Product Route     
         Route::controller(ProductController::class)->group(function() {
             Route::get('/products', 'index')->name('products.index');
-            Route::get('/products/create', 'create')->name('products.create');
-            Route::post('/products', 'store')->name('products.store');
-            Route::post('/product_view', 'view_store')->name('products.store');
-            Route::get('/products/{id}/edit', 'edit')->name('products.edit');
-            Route::post('/products/{id}',  'update')->name('products.update');
-            Route::get('/products/delete/{id}', 'delete')->name('products.delete');
+            Route::get('/products/create', 'product_create')->name('products.create');
+            Route::post('/products', 'product_store')->name('products.store');
+            Route::get('/products/{id}/edit', 'product_edit')->name('products.edit');
+            Route::post('/products/{id}',  'product_update')->name('products.update');            
+            Route::get('/products/delete/{id}', 'product_delete')->name('products.delete');
             Route::get('/get-products', 'getProducts')->name('products.getProducts');
+            //Route::post('/product_view', 'view_store')->name('products.store');
         });
 
         //Sub Categories Connect to main Categories

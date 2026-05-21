@@ -33,12 +33,169 @@ class ProductController extends Controller {
 
         $data['products'] = $products;
         $data['categories'] = $categories;  
-        $data['menuCount'] = $menuCount;                    
+        $data['menuCount'] = $menuCount;  
+        
+        $data['productForm'] = [
+            'title' => 'Create Product',
+            'button_name' => 'Add Product',
+            'modal_id' => 'createProductModal',            
+
+            'formConfig' => [
+                'action' => route('products.store'),
+                'method' => 'POST',
+                'button' => 'Add Product',
+                'modal' => 'drawer right-align',
+                'modalSize' => '',
+                'fields' => [
+                    [
+                        'type' => 'text',
+                        'name' => 'name',
+                        'label' => 'Product Name',
+                        'placeholder' => 'Enter Product Name',
+                        'class' => 'slug-source',
+                        'data'  => [
+                            'target' => '#slug'
+                        ], 
+                        'col' => 'col-md-12'
+                    ],
+                    [
+                        'type' => 'text',
+                        'name' => 'slug',
+                        'label' => 'Slug',
+                        'id'    => 'slug',
+                        'col' => 'd-none'
+                    ],
+                    [
+                        'type' => 'select',
+                        'name' => 'category',
+                        'label' => 'Category',
+                        'options' => $categories,
+                        'option_value' => 'id',
+                        'option_text' => 'name',
+                        'col' => 'col-md-6 col-12'
+                    ],
+                    [
+                        'type' => 'selectLoad',
+                        'name' => 'menu_id',
+                        'id' => 'menu_item',
+                        'label' => 'Menu Item',
+                        'options' => $categories,
+                        'option_value' => 'menu_item',
+                        'option_text' => 'name',                        
+                        'col' => 'col-md-6 col-12'
+                    ],
+                    [
+                        'type' => 'price',
+                        'name' => 'price',
+                        'label' => 'Price',
+                        'placeholder' => 'Price',                        
+                        'col' => 'col-md-12'
+                    ],
+                    [
+                        'type' => 'variants',
+                        'name' => 'categories',                                           
+                        'col' => 'col-md-12'
+                    ],
+                    [
+                        'type' => 'textarea',
+                        'name' => 'description',
+                        'label' => 'Description',  
+                        'placeholder' => 'Description',
+                        'col' => 'col-md-12 col-12'
+                    ],
+                    [
+                        'type' => 'dropzone',
+                        'name' => 'image',                        
+                        'col' => 'col-md-12 col-12'
+                    ],
+                ]
+            ]
+        ]; 
+        
+        $data['productUpdateForm'] = [
+            'title' => 'Edit Product',
+            'button_name' => 'Update Product',
+            'modal_id' => 'createProductModal',
+
+            'formConfig' => [
+                'action' => '',
+                'method' => 'PUT',
+                'button' => 'Update Product',
+                'modal' => 'drawer right-align',
+                'modalSize' => '',
+
+                'fields' => [
+                    [
+                        'type' => 'text',
+                        'name' => 'name',
+                        'label' => 'Product Name',
+                        'placeholder' => 'Enter Product Name',
+                        'value' => $product->name ?? '',
+                        'class' => 'slug-source',
+                        'data'  => [
+                            'target' => '#slug'
+                        ],
+                        'col' => 'col-md-12'
+                    ],
+                    [
+                        'type' => 'text',
+                        'name' => 'slug',
+                        'label' => 'Slug',
+                        'placeholder' => 'Enter Slug',
+                        'value' => $product->slug ?? '',
+                        'id' => 'slug',
+                        'col' => 'col-md-12'
+                    ],
+                    [
+                        'type' => 'select',
+                        'name' => 'category_id',
+                        'label' => 'Category',
+                        'options' => $categories,
+                        'option_value' => 'id',
+                        'option_label' => 'name',
+                        'value' => $product->category_id ?? '',
+                        'id' => 'category_id',
+                        'col' => 'col-md-6'
+                    ],
+                    [
+                        'type' => 'selectLoad',
+                        'name' => 'menu_id',
+                        'label' => 'Menu',
+                        'options' => $menus ?? [],
+                        'option_value' => 'id',
+                        'option_label' => 'name',
+                        'value' => $product->menu_id ?? '',
+                        'id' => 'menu_id',
+                        'col' => 'col-md-6'
+                    ],
+                    [
+                        'type' => 'text',
+                        'name' => 'price',
+                        'label' => 'Price',
+                        'placeholder' => 'Enter Price',
+                        'value' => $product->price ?? '',
+                        'col' => 'col-md-6'
+                    ],
+                    [
+                        'type' => 'textarea',
+                        'name' => 'description',
+                        'label' => 'Description',
+                        'value' => $product->description ?? '',
+                        'col' => 'col-md-12'
+                    ],
+                    [
+                        'type' => 'dropzone',
+                        'name' => 'image',                        
+                        'col' => 'col-md-12 col-12'
+                    ],
+                ]
+            ]
+        ];
 
         return view ('admin.products.list', $data);
     }
 
-    public function create(){
+    public function product_create(){
         $data = [];
         $categories = Category::orderBy('name','ASC')->get();        
         $data['categories'] = $categories;
@@ -47,7 +204,7 @@ class ProductController extends Controller {
     }
 
 
-    public function store(Request $request){
+    public function product_store(Request $request){
         $rules = [
             'name' => 'required',                            
         ];
@@ -154,7 +311,7 @@ class ProductController extends Controller {
     }
 
 
-    public function edit($id, Request $request){
+    public function product_edit($id, Request $request){
         $product = Product::with('categories')->findOrFail($id);
         $selectedCategoryIds = $product->categories->pluck('id')->toArray();
 
@@ -183,7 +340,7 @@ class ProductController extends Controller {
     }
 
 
-    public function update($id, Request $request){
+    public function product_update($id, Request $request){
         $product = Product::find($id);
        
         $rules = [
@@ -260,7 +417,7 @@ class ProductController extends Controller {
     }
 
 
-    public function delete($id, Request $request){
+    public function product_delete($id, Request $request){
         $product = Product::find($id);
 
         if (empty($product)) {

@@ -59,7 +59,7 @@ class QrController extends Controller
         $subCategory = Menu::find($id);
         if(empty($subCategory)){
             $request->session()->flash('error','Record not found');
-            return redirect()->route('menu.index');
+            return redirect()->route('categories.index');
         }
 
         $categories = Category::orderBy('name','ASC')->get();

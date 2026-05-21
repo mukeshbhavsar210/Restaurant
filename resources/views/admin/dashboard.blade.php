@@ -68,7 +68,7 @@
 
                     <img src="{{ asset('admin-assets/images/server.png') }}" class="me-2 align-self-center thumb-xl" alt="..." />
                     
-                    <a class="dropdown-item" href="{{ route('menu.index') }}">
+                    <a class="dropdown-item" href="{{ route('categories.index') }}">
                         <h5 class="fw-semibold mt-2 fs-18">Menu items</h5>
                     </a>
                     <div class="d-flex justify-content-between my-2">
