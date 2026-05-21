@@ -67,7 +67,7 @@ class UserController extends Controller implements HasMiddleware
 
         $user->syncRoles($request->role);
 
-        return redirect()->route('users.index')->with('success','User added successfully');
+        return redirect()->route('configurations.index')->with('success','User added successfully');
     }
    
 
@@ -110,7 +110,7 @@ class UserController extends Controller implements HasMiddleware
 
         $user->syncRoles($request->role);
 
-        return redirect()->route('users.index')->with('success','User updated successfully');
+        return redirect()->route('configurations.index')->with('success','User updated successfully');
            
     }
 

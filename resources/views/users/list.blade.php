@@ -77,7 +77,7 @@
                     'x-csrf-token' : '{{ csrf_token() }}'
                 },
                 success: function(response) {
-                    window.location.href="{{ route('users.index') }}"
+                    window.location.href="{{ route('configurations.index') }}"
                 }
             });
         }
