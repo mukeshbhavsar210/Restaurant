@@ -40,7 +40,7 @@
                             </div>
                         </div>
                     </form> --}}
-                    <button type="button" class="btn btn-primary float-right" data-bs-toggle="modal" data-bs-target="#{{ $productForm['modal_id'] }}">{{ $productForm['button_name'] }}</button>                    
+                    <button type="button" class="btn btn-primary float-right" data-bs-toggle="modal" data-bs-target="#{{ $productForm['modal_id'] }}">{{ $productForm['button_modal'] }}</button>                    
                 </div>                         
             </div>
         </div>                            
@@ -65,8 +65,8 @@
                                         @php
                                             $productImage = $value->product_images->first();
                                         @endphp
-                                        
-                                        <a href="{{ route('products.edit', $value->id) }}" class="show-tooltip">
+                                         
+                                         <div class="show-tooltip">
                                             <div class="veg-float">
                                                 @php
                                                     $type = $value->menu?->veg_nonveg;
@@ -86,10 +86,11 @@
                                             @else
                                                 <img src="{{ asset('admin-assets/img/default-150x150.png') }}" alt="" height="90" class="me-3 align-self-center rounded" />
                                             @endif
-                                        </a>
+                                        </div>
+                                        
                                         <div class="flex-grow-1 text-truncate">
-                                            <h5 class="product-title">{{ $value->name }}</h5>
-                                            <p>{{ $value->description }}</p>                                            
+                                            <h5 class="mb-0">{{ $value->name }}</h5>
+                                            <p class="text-muted">{{ $value->description }}</p>                                            
                                         </div>
                                     </div>
                                 </td>   
@@ -121,26 +122,33 @@
                                 </td>
                                 <td>
                                     <div class="flex pull-right">
-                                        <a href="javascript:void(0)" class="editProductModal edit-icon"
-                                            data-bs-toggle="modal" 
+                                        <a href="javascript:void(0)"
+                                            class="editProduct edit-icon"
+                                            data-bs-toggle="modal"
                                             data-bs-target="#createProductModal"
-                                            data-action="{{ route('products.update', $value->id) }}"
+                                            data-action="{{ route('products.update', $value->id) }}"                                            
+                                            data-method="PUT"
+                                            data-title="Edit Product"
+                                            data-button="Update Product"
+
                                             data-name="{{ $value->name }}"
                                             data-slug="{{ $value->slug }}"
                                             data-price="{{ $value->price }}"
-                                            data-category="{{ $value->category_id }}"
-                                            data-menu="{{ $value->menu_id }}"
-                                            data-description="{{ $value->description }}"                                            
-                                            data-button="Update Product" >
+                                            data-category_id="{{ $value->category_id }}"
+                                            data-menu_id="{{ $value->menu_id }}"
+                                            data-price="{{ $value->price }}"
+                                            data-description="{{ $value->description }}"
+                                            data-image_id="{{ $value->image_id }}"
+                                            >
 
-                                            <span class="sprites"></span>
-                                        </a>                                                                          
-
-                                        <a href="javascript:void(0)" class="delete-icon commonDeleteBtn"
-                                            data-bs-toggle="modal" data-bs-target="#commonDeleteModal"
-                                            data-url="{{ route('products.delete', $value->id) }}" data-title="Product">
                                             <span class="sprites"></span>
                                         </a>
+                                        
+                                        <a href="javascript:void(0)" class="delete-icon commonDeleteBtn"
+                                            data-bs-toggle="modal" data-bs-target="#commonDeleteModal"
+                                            data-url="{{ route('products.delete', $value->id) }}" data-title="{{ $value->name }}">
+                                            <span class="sprites"></span>
+                                        </a>                                        
                                     </div> 
                                 </td>
                             </tr>
@@ -235,29 +243,6 @@
                 // add active to selected one
                 $(this).closest('label').addClass('active');
             });
-        });
-
-
-        $(document).on('click', '.editProductModal', function () {
-            let action = $(this).data('action');
-            let buttonText = $(this).data('button');
-            // let categoryId = $(this).data('category');
-            // let menuId = $(this).data('menu');
-           
-            // $('#category_id').val(categoryId).trigger('change');
-
-            // setTimeout(function () {
-            //     $('#menu_id').val(menuId);
-            // }, 500);            
-
-            $('#commonForm').attr('action', action);
-            $('input[name="name"]').val($(this).data('name'));
-            $('input[name="slug"]').val($(this).data('slug'));
-            $('input[name="category"]').val($(this).data('category'));
-            $('input[name="price"]').val($(this).data('price'));
-            $('textarea[name="description"]').val($(this).data('description'));
-            $('textarea[name="description"]').val($(this).data('description'));            
-            $('#submitBtn').text(buttonText);
-        });
+        });       
 </script>
 @endsection

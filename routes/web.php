@@ -12,6 +12,12 @@ use App\Http\Controllers\admin\SeatController;
 use App\Http\Controllers\admin\SettingController;
 use App\Http\Controllers\admin\TempImagesController;
 use App\Http\Controllers\FrontController;
+
+use App\Http\Controllers\ArticleController;
+use App\Http\Controllers\PermissionController;
+use App\Http\Controllers\RoleController;
+use App\Http\Controllers\UserController;
+
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 
@@ -59,6 +65,44 @@ Route::group(['prefix' => 'admin'], function(){
 
     //Route::group(['middleware' => 'admin.auth'], function(){
     Route::middleware('auth')->group(function () {
+
+        Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+        Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+        Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+
+        //Permissions
+        Route::get('/permissions', [PermissionController::class, 'index'])->name('permissions.index');
+        Route::get('/permissions/create', [PermissionController::class, 'create'])->name('permissions.create');
+        Route::post('/permissions', [PermissionController::class, 'store'])->name('permissions.store');
+        Route::get('/permissions/{id}/edit', [PermissionController::class, 'edit'])->name('permissions.edit');
+        Route::post('/permissions/{id}', [PermissionController::class, 'update'])->name('permissions.update');
+        Route::delete('/permissions', [PermissionController::class, 'destroy'])->name('permissions.destroy');
+
+        //Roles
+        Route::get('/roles', [RoleController::class, 'index'])->name('roles.index');
+        Route::get('/roles/create', [RoleController::class, 'create'])->name('roles.create');
+        Route::post('/roles', [RoleController::class, 'store'])->name('roles.store');
+        Route::get('/roles/{id}/edit', [RoleController::class, 'edit'])->name('roles.edit');
+        Route::post('/roles/{id}', [RoleController::class, 'update'])->name('roles.update');
+        Route::delete('/roles', [RoleController::class, 'destroy'])->name('roles.destroy');
+
+        //Articles
+        Route::get('/articles', [ArticleController::class, 'index'])->name('articles.index');
+        Route::get('/articles/create', [ArticleController::class, 'create'])->name('articles.create');
+        Route::post('/articles', [ArticleController::class, 'store'])->name('articles.store');
+        Route::get('/articles/{id}/edit', [ArticleController::class, 'edit'])->name('articles.edit');
+        Route::post('/articles/{id}', [ArticleController::class, 'update'])->name('articles.update');
+        Route::delete('/articles', [ArticleController::class, 'destroy'])->name('articles.destroy');
+
+        //Users
+        Route::get('/users', [UserController::class, 'index'])->name('users.index');
+        Route::get('/users/create', [UserController::class, 'create'])->name('users.create');
+        Route::post('/users', [UserController::class, 'store'])->name('users.store');
+        Route::get('/users/{id}/edit', [UserController::class, 'edit'])->name('users.edit');
+        Route::post('/users/{id}', [UserController::class, 'update'])->name('users.update');
+        Route::delete('/users', [UserController::class, 'destroy'])->name('users.destroy');
+        Route::get('/logout', [UserController::class, 'logout'])->name('users.logout');
+
         //Category Routes
         Route::controller(CategoryController::class)->group(function() {
             Route::get('/categories', 'index')->name('categories.index');        
@@ -79,9 +123,8 @@ Route::group(['prefix' => 'admin'], function(){
         Route::controller(ProductController::class)->group(function() {
             Route::get('/products', 'index')->name('products.index');
             Route::get('/products/create', 'product_create')->name('products.create');
-            Route::post('/products', 'product_store')->name('products.store');
-            Route::get('/products/{id}/edit', 'product_edit')->name('products.edit');
-            Route::post('/products/{id}',  'product_update')->name('products.update');            
+            Route::post('/products', 'product_store')->name('products.store');            
+            Route::put('/products/{product}',  'product_update')->name('products.update');                 
             Route::get('/products/delete/{id}', 'product_delete')->name('products.delete');
             Route::get('/get-products', 'getProducts')->name('products.getProducts');
             //Route::post('/product_view', 'view_store')->name('products.store');
@@ -148,28 +191,26 @@ Route::group(['prefix' => 'admin'], function(){
             //Pages            
             Route::post('/page', 'page_store')->name('pages.store');            
             Route::put('/page/{page}', 'page_update')->name('pages.update');
+            Route::get('/page/delete/{id}', 'page_delete')->name('pages.delete');
                         
             //Permissions
-            Route::post('/permission', 'permissions_store')->name('permissions.store');            
-            Route::put('/permission/{permission}', 'permissions_update')->name('permissions.update');
+            // Route::post('/permission_old', 'permissions_store')->name('permissions.store');            
+            // Route::put('/permission_old/{permission}', 'permissions_update')->name('permissions.update');
+            // Route::get('/permission_old/delete/{id}', 'permission_delete')->name('permissions.delete');            
         
             //Roles
-            Route::post('/role', 'role_store')->name('roles.store');
-            Route::get('/role/{role}/edit', 'role_edit')->name('roles.edit');
-            Route::put('/role/{role}', 'role_update')->name('roles.update');            
+            // Route::post('/role_old', 'role_store')->name('roles.store');
+            // Route::get('/role_old/{role}/edit', 'role_edit')->name('roles.edit');
+            // Route::put('/role_old/{role}', 'role_update')->name('roles.update');  
+            // Route::get('/role_old/delete/{id}', 'role_delete')->name('roles.delete');          
             
             //Users
-            Route::get('/users/create', 'user_create')->name('users.create');
-            Route::post('/users',  'user_store')->name('users.store');
-            Route::get('/users/{id}/edit', 'user_edit')->name('users.edit');
-            Route::post('/users/{id}', 'user_update')->name('users.update');
+            // Route::get('/users_old/create', 'user_create')->name('users.create');
+            // Route::post('/users_old',  'user_store')->name('users.store');
+            // Route::get('/users_old/{id}/edit', 'user_edit')->name('users.edit');
+            // Route::post('/users_old/{id}', 'user_update')->name('users.update');
+            // Route::delete('/user_old/delete/{id}', 'user_delete')->name('users.delete');    
             
-            //All Delete
-            Route::get('/page/delete/{id}', 'page_delete')->name('pages.delete');
-            Route::get('/permission/delete/{id}', 'permission_delete')->name('permissions.delete');            
-            Route::get('/role/delete/{id}', 'role_delete')->name('roles.delete');
-            Route::delete('/user/delete/{id}', 'user_delete')->name('users.delete');    
-
             Route::get('/logout', 'logout')->name('users.logout');
         });
         

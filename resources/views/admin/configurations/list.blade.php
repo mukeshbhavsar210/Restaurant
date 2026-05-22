@@ -258,8 +258,8 @@
                     
                     <div class="col-md-3 col-12">
                         <div class="flex float-end">
-                            <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#{{ $branchForm['modal_id'] }}">{{ $branchForm['button_name'] }}</button>
-                            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#{{ $tableForm['modal_id'] }}">{{ $tableForm['button_name'] }}</button>
+                            <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#{{ $branchForm['modal_id'] }}">{{ $branchForm['button_modal'] }}</button>
+                            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#{{ $tableForm['modal_id'] }}">{{ $tableForm['button_modal'] }}</button>
                         </div>
                     </div>            
                 </div>                        
@@ -329,8 +329,12 @@
                                                     </div>
                                                 @endforeach
                                             </div>                                            
-                                            
-                                            <a href="{{ route('delete.branch', $value->id) }}" class="btn btn-outline-danger">Remove Branch</a>                                            
+                                                                                        
+                                            <a href="javascript:void(0)" class="btn btn-outline-danger commonDeleteBtn"
+                                                data-bs-toggle="modal" data-bs-target="#commonDeleteModal"
+                                                data-url="{{ route('delete.branch', $value->id) }}" data-title="{{ $value->area_name }}">
+                                                Remove Branch
+                                            </a>
                                         </div>                                                
                                     </div>
                                 </div>
@@ -350,7 +354,7 @@
                     </div>
                     
                     <div class="col-md-2 col-12">
-                        <button type="button" class="btn btn-primary float-end" data-bs-toggle="modal" data-bs-target="#{{ $pageForm['modal_id'] }}">{{ $pageForm['button_name'] }}</button>                                
+                        <button type="button" class="btn btn-primary float-end" data-bs-toggle="modal" data-bs-target="#{{ $pageForm['modal_id'] }}">{{ $pageForm['button_modal'] }}</button>                        
                     </div>            
                 </div>                       
 
@@ -372,21 +376,23 @@
                                                     </div>
                                                     <div class="col-1">
                                                         <div class="flex">
-                                                            <a href="javascript:void(0)" class="editPageModal edit-icon"
-                                                                data-bs-toggle="modal" 
+                                                            <a href="javascript:void(0)"
+                                                                class="editPage edit-icon"
+                                                                data-bs-toggle="modal"
                                                                 data-bs-target="#createPageModal"
                                                                 data-action="{{ route('pages.update', $value->id) }}"
+                                                                data-method="PUT"
+                                                                data-title="Edit Page"
+                                                                data-button="Update Page"
                                                                 data-page_name="{{ $value->page_name }}"
                                                                 data-page_slug="{{ $value->page_slug }}"
-                                                                data-content="{{ $value->content }}" 
-                                                                data-button="Update Page" >
-                                                                
+                                                                data-content="{{ $value->content }}" >
                                                                 <span class="sprites"></span>
                                                             </a>
 
                                                             <a href="javascript:void(0)" class="delete-icon commonDeleteBtn"
                                                                 data-bs-toggle="modal" data-bs-target="#commonDeleteModal"
-                                                                data-url="{{ route('pages.delete', $value->id) }}" data-title="Page">
+                                                                data-url="{{ route('pages.delete', $value->id) }}" data-title="{{ $value->page_name }}">
                                                                 <span class="sprites"></span>
                                                             </a>
                                                         </div>
@@ -419,7 +425,7 @@
                     </div>
 
                     <div class="col-md-5 col-12 float-end">                
-                        <button type="button" class="btn btn-primary float-end" data-bs-toggle="modal" data-bs-target="#{{ $permissionForm['modal_id'] }}">{{ $permissionForm['button_name'] }}</button>                                
+                        <button type="button" class="btn btn-primary float-end" data-bs-toggle="modal" data-bs-target="#{{ $permissionForm['modal_id'] }}">{{ $permissionForm['button_modal'] }}</button>                                
                     </div>
                 </div>  
 
@@ -475,7 +481,7 @@
                     </div>
                 </div>
                 <div class="col-md-5 col-12">
-                    <button type="button" class="btn btn-primary float-end" data-bs-toggle="modal" data-bs-target="#{{ $roleForm['modal_id'] }}">{{ $roleForm['button_name'] }}</button>                                
+                    <button type="button" class="btn btn-primary float-end" data-bs-toggle="modal" data-bs-target="#{{ $roleForm['modal_id'] }}">{{ $roleForm['button_modal'] }}</button>                                
                 </div>
             </div>
 
@@ -549,7 +555,7 @@
                     </div>
                 </div>
                 <div class="col-md-5 col-12">
-                    <button type="button" class="btn btn-primary float-end" data-bs-toggle="modal" data-bs-target="#{{ $roleForm['modal_id'] }}">{{ $roleForm['button_name'] }}</button>                                
+                    <button type="button" class="btn btn-primary float-end" data-bs-toggle="modal" data-bs-target="#{{ $roleForm['modal_id'] }}">{{ $roleForm['button_modal'] }}</button>                                
                 </div>
             </div>
 
@@ -621,8 +627,6 @@
         
 @section('customJs')
 <script type="text/javascript">
-    
-
     $("#addingTableForm").submit(function(event){
         event.preventDefault();
 
@@ -675,87 +679,12 @@
             }
         })
     });
-
-    //DELETE
-    function deleteMenuItem(id){
-        var url = '{{ route("menu.delete","ID") }}'
-        var newUrl = url.replace("ID",id)
-
-        if(confirm("Are you sure you want to delete?")){
-            $.ajax({
-                url: newUrl,
-                type: 'delete',
-                data: {},
-                dataType: 'json',
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                },
-                success: function(response){
-                    window.location.href="{{ route('categories.index') }}"
-                    /*if(response["status"]){
-                        window.location.href="{{ route('categories.index') }}"
-                    }*/
-                }
-            });
-        }
-    }       
-
-    function deleteArea(id){
-        var url = '{{ route("delete.branch","ID") }}'
-        var newUrl = url.replace("ID",id)
-
-        if(confirm("Are you sure you want to delete?")){
-            $.ajax({
-                url: newUrl,
-                type: 'delete',
-                data: {},
-                dataType: 'json',
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                },
-                success: function(response){
-                    if(response["status"]){
-                        window.location.href="{{ route('configurations.index') }}"
-                    }
-                }
-            });
-        }
-    }    
-
+            
     $(document).on("click", ".user_dialog", function () {
         alert("H");
         var UserName = $(this).data('id');
         $(".modal-body #user_name").val( UserName );
-    });
-
-    $(document).on('click', '.editPageModal', function () {
-        let action = $(this).data('action');
-        let buttonText = $(this).data('button');                       
-
-        $('#commonForm').attr('action', action);
-        $('input[name="page_name"]').val($(this).data('page_name'));
-        $('input[name="page_slug"]').val($(this).data('page_slug'));
-        $('input[name="content"]').val($(this).data('content'));
-        $('#submitBtn').text(buttonText);
-    });    
-
-    $(document).on('click', '.editPermissionModal', function () {
-        let action = $(this).data('action');
-        let buttonText = $(this).data('button');                       
-
-        $('#commonForm').attr('action', action);
-        $('input[name="permission_name"]').val($(this).data('permission_name'));
-        $('#submitBtn').text(buttonText);
-    });   
-
-    $(document).on('click', '.editRoleModal', function () {
-        let action = $(this).data('action');
-        let buttonText = $(this).data('button');                       
-
-        $('#commonForm').attr('action', action);
-        $('input[name="name"]').val($(this).data('name'));
-        $('#submitBtn').text(buttonText);
-    });   
+    });      
 
     $(document).ready(function () {
         $('.green').addClass('blink');
