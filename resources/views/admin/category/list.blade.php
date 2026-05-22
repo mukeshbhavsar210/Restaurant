@@ -88,7 +88,11 @@
                                         </div>                                               
                                     </div>
                                     <div class="col-3">                                                
-                                        <a href="{{ route('category.delete', $value->id) }}" class="btn btn-outline-danger float-end">Delete {{ $value->name }}</a>
+                                        <a href="javascript:void(0)" class="btn btn-outline-danger float-end commonDeleteBtn"
+                                            data-bs-toggle="modal" data-bs-target="#commonDeleteModal"
+                                            data-url="{{ route('category.delete', $value->id) }}" data-title="{{ $value->name }}">
+                                            Delete {{ $value->name }}
+                                        </a>
                                     </div>
                                 </div>
                             </div>
@@ -103,34 +107,6 @@
 
 @section('customJs')
 <script>    
-    $(function(e){
-        $("#select_all_ids").click(function(e){
-            $('.checkbox_ids').prop('checked',$(this).prop('checked'));
-        });
-
-        $('#deleteAllSelectedRecord').click(function(e){
-            e.preventDefault();
-            var all_ids = [];
-            $('input:checkbox[name=ids]:checked').each(function(){
-                all_ids.push($(this).val());
-            });
-
-            $.ajax({
-                url: "{{ route('menuall.delete') }}",
-                type: 'delete',
-                data:{
-                    ids:all_ids,                    
-                    _token:'{{ csrf_token() }}'
-                },
-                success:function(response){
-                    $.each(all_ids,function(key,val){
-                        $('#menu_ids_'+val).remove();
-                    });
-                }
-            });
-        });
-    });
-
     $('#item_name').change(function(){
         element = $(this);
         $("button[type=submit]").prop('disabled', true);

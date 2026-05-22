@@ -12,7 +12,7 @@
         </a>
     </li>           
     <li class="nav-item">
-        <a href="{{ route('products.index') }}" class="nav-link {{ (\Request::route()->getName() == 'products.index') || (\Request::route()->getName() == 'products.edit') ? 'active' : '' }}">
+        <a href="{{ route('products.index') }}" class="nav-link {{ (\Request::route()->getName() == 'products.index') ? 'active' : '' }}">
             <i class="iconoir-compact-disc menu-icon"></i>
             <span>Products</span>
         </a>
@@ -30,7 +30,25 @@
         </a>
     </li>
     <li class="nav-item">
-        <a href="{{ route('configurations.index') }}" class="nav-link {{ (\Request::route()->getName() == 'configurations.index') ? 'active' : '' }}">
+        <a href="{{ route('permissions.index') }}" class="nav-link {{ (\Request::route()->getName() == 'permissions.index') ? 'active' : '' }}">
+            <i class="iconoir-journal-page menu-icon"></i>
+            <span>Permissions</span>
+        </a>
+    </li> 
+    <li class="nav-item">
+        <a href="{{ route('roles.index') }}" class="nav-link {{ (\Request::route()->getName() == 'roles.index') ? 'active' : '' }}">
+            <i class="iconoir-journal-page menu-icon"></i>
+            <span>Roles</span>
+        </a>
+    </li> 
+    <li class="nav-item">
+        <a href="{{ route('articles.index') }}" class="nav-link {{ (\Request::route()->getName() == 'articles.index') ? 'active' : '' }}">
+            <i class="iconoir-journal-page menu-icon"></i>
+            <span>Articles</span>
+        </a>
+    </li> 
+    <li class="nav-item">
+        <a href="{{ route('users.index') }}" class="nav-link {{ (\Request::route()->getName() == 'users.index') ? 'active' : '' }}">
             <i class="iconoir-journal-page menu-icon"></i>
             <span>Users</span>
         </a>

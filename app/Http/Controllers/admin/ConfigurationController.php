@@ -130,7 +130,7 @@ class ConfigurationController extends Controller implements HasMiddleware {
 
         $data['branchForm'] = [
             'title' => 'Create Branch',
-            'button_name' => 'Add Branch',
+            'button_modal' => 'Add Branch',
             'modal_id' => 'createBranchModal',            
 
             'formConfig' => [
@@ -144,6 +144,7 @@ class ConfigurationController extends Controller implements HasMiddleware {
                         'type' => 'text',
                         'name' => 'area_name',
                         'label' => 'Branch Name',
+                        'required' => true,
                         'placeholder' => 'Enter Branch Name',
                         'class' => 'slug-source',
                         'data'  => [
@@ -155,6 +156,7 @@ class ConfigurationController extends Controller implements HasMiddleware {
                         'type' => 'text',
                         'name' => 'area_slug',
                         'label' => 'Slug',
+                        'required' => true,
                         'id'    => 'area_slug',
                         'col' => 'd-none'
                     ],
@@ -166,7 +168,7 @@ class ConfigurationController extends Controller implements HasMiddleware {
         
         $data['tableForm'] = [
             'title' => 'Add Table',
-            'button_name' => 'Add Table',
+            'button_modal' => 'Add Table',
             'modal_id' => 'createTableModal',            
 
             'formConfig' => [
@@ -179,7 +181,8 @@ class ConfigurationController extends Controller implements HasMiddleware {
                     [
                         'type' => 'text',
                         'name' => 'table_name',
-                        'label' => 'Table Name',
+                        'label' => 'Table',
+                        'required' => true,
                         'placeholder' => 'e.g. Table_01',                        
                         'class' => 'slug-source',
                         'data'  => [
@@ -191,13 +194,15 @@ class ConfigurationController extends Controller implements HasMiddleware {
                         'type' => 'text',
                         'name' => 'table_slug',
                         'label' => 'Slug',
+                        'required' => true,
                         'id'    => 'table_slug',
                         'col' => 'd-none'
                     ],
                     [
                         'type' => 'select',
                         'name' => 'area_id',
-                        'label' => 'Select Branch',
+                        'label' => 'Branch',
+                        'required' => true,
                         'options' => $branches,
                         'option_value' => 'id',
                         'option_text' => 'area_name',
@@ -207,7 +212,8 @@ class ConfigurationController extends Controller implements HasMiddleware {
                     [
                         'type' => 'radio',
                         'name' => 'capacity',
-                        'label' => 'Select Capacity',
+                        'label' => 'Seat',
+                        'required' => true,
                         'options' => $seatingCapacities,
                         'col' => 'col-md-12'
                     ]
@@ -217,7 +223,7 @@ class ConfigurationController extends Controller implements HasMiddleware {
 
         $data['pageForm'] = [
             'title' => 'Create Page',
-            'button_name' => 'Create Page',
+            'button_modal' => 'Create Page',
             'modal_id' => 'createPageModal',            
 
             'formConfig' => [
@@ -230,7 +236,8 @@ class ConfigurationController extends Controller implements HasMiddleware {
                     [
                         'type' => 'text',
                         'name' => 'page_name',
-                        'label' => 'Page Name',
+                        'label' => 'Page',
+                        'required' => true,
                         'placeholder' => '',                        
                         'class' => 'slug-source',
                         'data'  => [
@@ -242,6 +249,7 @@ class ConfigurationController extends Controller implements HasMiddleware {
                         'type' => 'text',
                         'name' => 'page_slug',
                         'label' => 'Slug',
+                        'required' => true,
                         'id'    => 'page_slug',
                         'col' => 'd-none'
                     ],
@@ -249,60 +257,18 @@ class ConfigurationController extends Controller implements HasMiddleware {
                         'type' => 'textarea',
                         'name' => 'content',
                         'label' => 'Content',
+                        'required' => true,
                         'id'    => 'content',
                         'summer_class' => 'summernote',
                         'col' => 'col-md-12 col-12'
                     ],
                 ]
             ]
-        ];  
-
-        $data['pageUpdateForm'] = [
-            'title' => 'Edit Page',
-            'button_name' => 'Update Page',
-            'modal_id' => 'createPageModal',            
-
-            'formConfig' => [
-                'action' => '',
-                'method' => 'PUT',
-                'button' => 'Update Page',
-                'modal' => 'drawer right-align',
-                'modalSize' => '',
-
-                'fields' => [
-                    [
-                        'type' => 'text',
-                        'name' => 'page_name',
-                        'label' => 'Page Name',
-                        'placeholder' => '',                        
-                        'class' => 'slug-source',
-                        'data'  => [
-                            'target' => '#page_slug'
-                        ], 
-                        'col' => 'col-md-12'
-                    ],
-                    [
-                        'type' => 'text',
-                        'name' => 'page_slug',
-                        'label' => 'Slug',
-                        'id'    => 'page_slug',
-                        'col' => 'd-none'
-                    ],
-                    [
-                        'type' => 'textarea',
-                        'name' => 'content',
-                        'label' => 'Content',
-                        'id'    => 'content',
-                        //'summer_class' => 'summernote',
-                        'col' => 'col-md-12 col-12'
-                    ],
-                ]
-            ]
-        ];  
+        ];          
 
         $data['permissionForm'] = [
             'title' => 'Create Permission',
-            'button_name' => 'Create Permission',
+            'button_modal' => 'Create Permission',
             'modal_id' => 'createPermissionModal',            
 
             'formConfig' => [
@@ -325,7 +291,7 @@ class ConfigurationController extends Controller implements HasMiddleware {
 
         $data['roleForm'] = [
             'title' => 'Create Role',
-            'button_name' => 'Create Role',
+            'button_modal' => 'Create Role',
             'modal_id' => 'createRoleModal',            
 
             'formConfig' => [
@@ -353,40 +319,7 @@ class ConfigurationController extends Controller implements HasMiddleware {
                     ]
                 ]
             ]
-        ];       
-        
-        $data['updateRoleForm'] = [
-            'title' => 'Edit Role',
-            'button_name' => 'Update Role',
-            'modal_id' => 'createRoleModal',            
-
-            'formConfig' => [
-                'action' => '',
-                'method' => 'PUT',
-                'button' => 'Update Role',
-                'modal' => 'drawer right-align',
-                'modalSize' => '',
-
-                'fields' => [
-                    [
-                        'type' => 'text',
-                        'name' => 'name',
-                        'label' => 'Role Name',
-                        'placeholder' => 'Role Name',
-                        'col' => 'col-md-12'
-                    ],
-                    [
-                        'type' => 'checkbox',
-                        'name' => 'permission',
-                        'label' => 'Select Permission',
-                        'options' => $permissions,
-                        'option_value' => 'id',
-                        'option_text' => 'name',                        
-                        'col' => 'col-md-12'
-                    ]
-                ]
-            ]
-        ];    
+        ];                    
 
         return view('admin.configurations.list', $data);        
     }
@@ -540,30 +473,14 @@ class ConfigurationController extends Controller implements HasMiddleware {
         return redirect()->route('configurations.index')->with('success','Theme added successfully.');
     }
 
+
     public function branch_store(Request $request){
-        $validator = Validator::make($request->all(), [
-            'area_name' => 'required',            
-        ]);
+        $area = new Area();
+        $area->area_name = $request->area_name;
+        $area->area_slug = $request->area_slug;
+        $area->save();
 
-        if ($validator->passes()) {
-            $area = new Area();
-            $area->area_name = $request->area_name;
-            $area->area_slug = $request->area_slug;
-            $area->save();
-
-            $request->session()->flash('success', 'Branch added successfully');
-
-            return response()->json([
-                'status' => true,
-                'message' => 'Branch added successfully'
-            ]);
-
-        } else {
-            return response()->json([
-                'status' => false,
-                'errors' => $validator->errors()
-            ]);
-        }
+        return redirect()->route('configurations.index')->with('success','Branch added successfully.'); 
     }   
 
 
@@ -863,8 +780,8 @@ class ConfigurationController extends Controller implements HasMiddleware {
         };
 
         $validator = Validator::make($request->all(), [
-            'name' => 'required',
-            'slug' => 'required',
+            'page_name' => 'required',
+            'page_slug' => 'required',
         ]);
 
         if ($validator->fails()){
@@ -874,8 +791,8 @@ class ConfigurationController extends Controller implements HasMiddleware {
             ]);
         }
 
-        $page->name = $request->name;
-        $page->slug = $request->slug;
+        $page->page_name = $request->page_name;
+        $page->page_slug = $request->page_slug;
         $page->content = $request->content;
         $page->save();
 
@@ -883,10 +800,7 @@ class ConfigurationController extends Controller implements HasMiddleware {
 
         session()->flash('success',$message);
 
-        return response()->json([
-            'status' => true,
-            'message' => $message
-        ]);
+        return redirect()->route('configurations.index')->with('success','Page updated successfully.');
     }   
 
     //Page Delete
