@@ -64,9 +64,17 @@ class ConfigurationController extends Controller implements HasMiddleware {
                     ->select(DB::raw('count(*) as total_tables'))
                     ->get()[0]->total_tables;
 
-        $totalArea = DB::table('areas')
+        $branchCounts = DB::table('areas')
                     ->select(DB::raw('count(*) as total_tables'))
                     ->get()[0]->total_tables;
+
+        $pageCounts = DB::table('pages')
+                    ->select(DB::raw('count(*) as total_pages'))
+                    ->get()[0]->total_pages;
+
+        $userCounts = DB::table('users')
+                    ->select(DB::raw('count(*) as total_users'))
+                    ->get()[0]->total_users;
 
         $tableIndividual = DB::table('seats')
                     //->join('areas','seatings.area_id','=','areas.id')
@@ -107,7 +115,6 @@ class ConfigurationController extends Controller implements HasMiddleware {
             'seats'                 => $seats,
             'tableIndividual'       => $tableIndividual,
             'totalTable'            => $totalTable,
-            'totalArea'             => $totalArea,
             'tableRunning'          => $tableRunning,
             'permissions'           => $permissions,
             'totalPermissions'      => $totalPermissions,
@@ -115,7 +122,10 @@ class ConfigurationController extends Controller implements HasMiddleware {
             'totalRoles'            => $totalRoles,
             'permissionCount'       => $permissionCount,
             'pages'                 => $pages,
-            'users'                 => $users
+            'users'                 => $users,
+            'branchCounts'          => $branchCounts,
+            'pageCounts'            => $pageCounts,
+            'userCounts'            => $userCounts,
         ];
 
         $data['branchForm'] = [
@@ -127,8 +137,8 @@ class ConfigurationController extends Controller implements HasMiddleware {
                 'action' => route('branch.store'),
                 'method' => 'POST',
                 'button' => 'Add Branch',
-                'modal' => '',
-                'modalSize' => 'modal-sm modal-dialog-centered',
+                'modal' => 'drawer right-align',
+                'modalSize' => '',
                 'fields' => [
                     [
                         'type' => 'text',
@@ -736,9 +746,14 @@ class ConfigurationController extends Controller implements HasMiddleware {
         }
     }
 
+    //Permission Delete
+    public function permission_delete($id, Request $request){
+        $permission = Permission::find($id);
+        $permission->delete();
 
-
-
+        $request->session()->flash('success','Permission deleted successfully');
+        return redirect()->route('configurations.index')->with('success','Permission deleted successfully.');
+    }
 
     //Roles
     public function role_store(Request $request){
@@ -787,8 +802,15 @@ class ConfigurationController extends Controller implements HasMiddleware {
         }
     }
 
+    //Role Delete
+    public function role_delete($id, Request $request){
+        $roles = Role::find($id);
+        $roles->delete();
 
-    
+        $request->session()->flash('success','Role deleted successfully');
+
+        return redirect()->route('configurations.index')->with('success','Role deleted successfully.');
+    } 
 
 
     
@@ -827,6 +849,8 @@ class ConfigurationController extends Controller implements HasMiddleware {
         ]);
     }
 
+    
+
 
     public function page_update(Request $request, $id){
         $page = Page::find($id);
@@ -864,6 +888,16 @@ class ConfigurationController extends Controller implements HasMiddleware {
             'message' => $message
         ]);
     }   
+
+    //Page Delete
+    public function page_delete($id, Request $request){
+        $page = Page::find($id);
+        $page->delete();
+
+        $request->session()->flash('success','Page deleted successfully');
+        return redirect()->route('configurations.index')->with('success','Page deleted successfully.');
+    }
+    
 
     //Users
     public function user_create(){
@@ -939,43 +973,14 @@ class ConfigurationController extends Controller implements HasMiddleware {
 
         return redirect()->route('configurations.index')->with('success','User updated successfully');
            
-    }
+    }    
 
-    //All Delete
-
-    //Page Delete
-    public function page_delete($id, Request $request){
-        $page = Page::find($id);
-        $page->delete();
-
-        $request->session()->flash('success','Page deleted successfully');
-        return redirect()->route('configurations.index')->with('success','Page deleted successfully.');
-    }
-
-    //Permission Delete
-    public function permissions_delete($id, Request $request){
-        $page = Page::find($id);
-        $page->delete();
-
-        $request->session()->flash('success','Page deleted successfully');
-        return redirect()->route('configurations.index')->with('success','Page deleted successfully.');
-    }
-
-    //Role Delete
-    public function role_delete($id, Request $request){
-        $roles = Role::find($id);
-        $roles->delete();
-
-        $request->session()->flash('success','Role deleted successfully');
-
-        return redirect()->route('configurations.index')->with('success','Role deleted successfully.');
-    }   
+    
 
     public function user_delete(Request $request){
         $users = User::find($request->id);
         $users->delete();
 
         return redirect()->with('success','User deleted successfully.');
-    }
-   
+    }   
 }

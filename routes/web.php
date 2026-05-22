@@ -114,7 +114,6 @@ Route::group(['prefix' => 'admin'], function(){
             Route::post('/settings/branch', 'branch')->name('settings.branch');                
             //Route::post("/updateWebsiteLogo",'update_logo')->name('website.logo');
         });
-
        
         //Profile
         Route::controller(ProfileController::class)->group(function() {
@@ -122,7 +121,6 @@ Route::group(['prefix' => 'admin'], function(){
             Route::patch('/profile', 'update')->name('profile.update');
             Route::delete('/profile', 'destroy')->name('profile.destroy');
         });
-
         
         //Permissions
         Route::controller(ConfigurationController::class)->group(function() { 
@@ -168,7 +166,7 @@ Route::group(['prefix' => 'admin'], function(){
             
             //All Delete
             Route::get('/page/delete/{id}', 'page_delete')->name('pages.delete');
-            Route::get('/permission/delete/{id}', 'permissions_delete')->name('permissions.delete');            
+            Route::get('/permission/delete/{id}', 'permission_delete')->name('permissions.delete');            
             Route::get('/role/delete/{id}', 'role_delete')->name('roles.delete');
             Route::delete('/user/delete/{id}', 'user_delete')->name('users.delete');    
 

@@ -12,7 +12,7 @@
                 <div class="modal-body">
                     <div class="row">
                         @foreach($modal['formConfig']['fields'] as $field)
-                            <div class="{{ $field['col'] ?? 'col-md-12' }} mb-2">
+                            <div class="{{ $field['col'] ?? 'col-md-12' }} mb-3">
                                 @if(($field['type'] ?? '') != 'hidden' && !empty($field['label']))
                                     <label class="form-label" for="{{ $field['name'] }}">
                                         {{ $field['label'] }}
@@ -185,3 +185,38 @@
         </div>
     </div>
 </div>
+
+
+<div class="modal fade" id="commonDeleteModal" tabindex="-1">
+    <div class="modal-dialog modal-sm modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-body text-center">
+                <h6 id="deleteMessage" class="mt-1"><b>Are you sure you want to delete?</b></h6>
+            </div>
+
+            <div class="modal-footer justify-content-center">
+                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
+                    Cancel
+                </button>
+
+                <a href="" id="deleteBtn" class="btn btn-danger">Yes, Delete</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section('customJs')
+    <script>
+        $(document).on('click', '.commonDeleteBtn', function () {
+
+        let url = $(this).data('url');
+        let title = $(this).data('title');
+
+        $('#deleteBtn').attr('href', url);
+
+        $('#deleteMessage').text(
+            'Are you sure you want to delete ' + title + '?'
+        );
+    });
+</script>
+@endsection
