@@ -6,25 +6,45 @@
 
 <div class="card">               
     <div class="card-body">
+        @php
+            $tabs = [
+                [
+                    'id' => 'tabs-1',
+                    'title' => 'Configurations',
+                    'active' => true,
+                ],
+                [
+                    'id' => 'tabs-2',
+                    'title' => 'Branch',
+                ],
+                [
+                    'id' => 'tabs-3',
+                    'title' => 'Pages',
+                ],
+                [
+                    'id' => 'tabs-4',
+                    'title' => 'Permissions',
+                ],
+                [
+                    'id' => 'tabs-5',
+                    'title' => 'Roles',
+                ],
+                [
+                    'id' => 'tabs-6',
+                    'title' => 'Users',
+                ],
+            ];
+        @endphp
+
         <ul class="nav nav-tabs" role="tablist">
-            <li class="nav-item" role="presentation">
-                <a class="nav-link active pt-0" data-bs-toggle="tab" href="#tabs-1" role="tab" aria-selected="true">Configurations</a>
-            </li>
-            <li class="nav-item" role="presentation">
-                <a class="nav-link pt-0" data-bs-toggle="tab" href="#tabs-2" role="tab" aria-selected="true">Branch</a>
-            </li>
-            <li class="nav-item" role="presentation">
-                <a class="nav-link pt-0" data-bs-toggle="tab" href="#tabs-3" role="tab" aria-selected="false" tabindex="-1">Pages</a>
-            </li>
-            <li class="nav-item" role="presentation">
-                <a class="nav-link pt-0" data-bs-toggle="tab" href="#tabs-4" role="tab" aria-selected="false" tabindex="-1">Permissions</a>
-            </li>
-            <li class="nav-item" role="presentation">
-                <a class="nav-link pt-0" data-bs-toggle="tab" href="#tabs-5" role="tab" aria-selected="false" tabindex="-1">Roles</a>
-            </li>
-            <li class="nav-item" role="presentation">
-                <a class="nav-link pt-0" data-bs-toggle="tab" href="#tabs-6" role="tab" aria-selected="false" tabindex="-1">Users</a>
-            </li>
+            @foreach($tabs as $tab)
+                <li class="nav-item" role="presentation">
+                    <a class="nav-link pt-0 {{ !empty($tab['active']) ? 'active' : '' }}"
+                        data-bs-toggle="tab" href="#{{ $tab['id'] }}" role="tab" aria-selected="{{ !empty($tab['active']) ? 'true' : 'false' }}" >
+                        {{ $tab['title'] }}
+                    </a>
+                </li>
+            @endforeach
         </ul>
                                     
         <div class="tab-content mt-3">
@@ -230,7 +250,10 @@
             <div class="tab-pane" id="tabs-2" role="tabpanel">
                 <div class="row mt-3">
                     <div class="col-md-9 col-12">
-                        <h4>Branches</h4>
+                        <div class="page-title">
+                            <h4>Branches</h4> 
+                            <span class="counts">{{ $branchCounts }}</span>
+                        </div>
                     </div>
                     
                     <div class="col-md-3 col-12">
@@ -258,48 +281,56 @@
 
                                 <div id="collapse{{ $value->id }}" class="accordion-collapse collapse {{ $key == 0 ? 'show' : '' }}" aria-labelledby="heading{{ $value->id }}" data-bs-parent="#accordionExample">
                                     <div class="accordion-body">
-                                        <div class="row mt-1 mb-2">
-                                            <div class="col-11">
-                                                <div class="flex-2 ">                                                    
-                                                    @foreach ($value->seats as $seat)                                                        
-                                                        <button type="button" class="btn btn-outline-secondary position-relative" data-bs-toggle="modal" data-bs-target="#QRModal_{{ $value->id }}">
-                                                            <div class="flex-2">
-                                                                <p class="mb-0 mr-2">{{ $seat->table_name }}</p>
-                                                                @if($seat->status == 'running')
-                                                                    <div class="dot-status green"></div>
-                                                                @elseif($seat->status == 'available')
-                                                                    <div class="dot-status red"></div>
-                                                                @endif
-                                                            </div> 
-                                                            
-                                                            @if($seat->capacity)
-                                                                <span class="position-absolute top-0 start-100 translate-middle bg-black border border-light rounded-circle">
-                                                                    <small class="thumb-xs white">{{ $seat->capacity }}</small>
-                                                                </span>                                                                                                                                
-                                                            @endif                                                            
-                                                        </button>
+                                        <div class="flex-justify py-2">                                            
+                                            <div class="flex-2">                                                    
+                                                @foreach ($value->seats as $seat)                                                        
+                                                    <button type="button" class="btn btn-outline-secondary position-relative" data-bs-toggle="modal" data-bs-target="#QRModal_{{ $seat->id }}">
+                                                        <div class="flex-2">
+                                                            <p class="mb-0 mr-2">{{ $seat->table_name }}</p>
+                                                            @if($seat->status == 'running')
+                                                                <div class="dot-status green"></div>
+                                                            @elseif($seat->status == 'available')
+                                                                <div class="dot-status red"></div>
+                                                            @endif
+                                                        </div> 
                                                         
-                                                        <div class="modal fade" id="QRModal_{{ $value->id }}" tabindex="-1" aria-labelledby="QRModalLabel" aria-hidden="true" style="display: none;">
-                                                            <div class="modal-dialog modal-sm" role="document">
-                                                                <div class="modal-content">
-                                                                    <div class="modal-header">
-                                                                        <h5 class="modal-title" id="exampleModalLabel">{{ $value->area_name }}</h5>
-                                                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                                                    </div>
-                                                                    <div class="modal-body">                                                  
-                                                                        <h4>{{ $seat->table_name }} ({{ $seat->capacity }})</h4>                                                                                
-                                                                        <p>{!! DNS2D::getBarcodeHTML('http://127.0.0.1:8000/'.$value->area_slug.'/'.$seat->table_slug, 'QRCODE',9.0,9.0) !!}</p>
-                                                                        <a href="{{ route('delete.table', $seat->id) }}" class="btn btn-outline-danger w-100">Delete Table</a>
-                                                                    </div>
+                                                        @if($seat->capacity)
+                                                            <span class="position-absolute top-0 start-100 translate-middle bg-white border border-grey rounded-circle">
+                                                                <small class="thumb-xs black">{{ $seat->capacity }}</small>
+                                                            </span>                                                                                                                                
+                                                        @endif                                                            
+                                                    </button>                                                        
+                                                    
+                                                    <div class="modal fade drawer right-align" id="QRModal_{{ $seat->id }}" tabindex="-1" aria-labelledby="QRModalLabel" aria-hidden="true" style="display: none;">
+                                                        <div class="modal-dialog" role="document">
+                                                            <div class="modal-content">
+                                                                <div class="modal-header">                                                                        
+                                                                    <h5 class="modal-title" id="exampleModalLabel">Table Details</h5>
+                                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                                </div>
+                                                                <div class="modal-body">
+                                                                    <div class="flex-justify">
+                                                                        <h4 class="mb-1">{{ $value->area_name }}</h4>
+                                                                        @if($seat->status == 'running')
+                                                                            <p class="mb-0">Running Table</p>
+                                                                        @elseif($seat->status == 'available')
+                                                                            <p class="mb-0">Available</p>
+                                                                        @endif
+                                                                    </div>                                                                        
+                                                                    <h5 class="mb-2">{{ $seat->table_name }} (Seats: {{ $seat->capacity }})</h5>
+                                                                    <hr />
+                                                                    <p>{!! DNS2D::getBarcodeHTML('http://127.0.0.1:8000/'.$value->area_slug.'/'.$seat->table_slug, 'QRCODE',11.5,11.5) !!}</p>                                                                    
+                                                                </div>
+                                                                <div class="modal-footer">
+                                                                    <a href="{{ route('delete.table', $seat->id) }}" class="btn btn-outline-danger w-100">Delete {{ $seat->table_name }}</a>
                                                                 </div>
                                                             </div>
                                                         </div>
-                                                    @endforeach
-                                                </div>                                                              
-                                            </div>
-                                            <div class="col-1">                                                                                                                                                                                                        
-                                                <a href="{{ route('delete.branch', $value->id) }}" class="btn btn-outline-danger">Remove</a>
-                                            </div>
+                                                    </div>
+                                                @endforeach
+                                            </div>                                            
+                                            
+                                            <a href="{{ route('delete.branch', $value->id) }}" class="btn btn-outline-danger">Remove Branch</a>                                            
                                         </div>                                                
                                     </div>
                                 </div>
@@ -312,7 +343,10 @@
             <div class="tab-pane" id="tabs-3" role="tabpanel">
                 <div class="row mt-3">
                     <div class="col-md-10 col-12">
-                        <h4>Pages</h4>
+                        <div class="page-title">
+                            <h4>Pages</h4> 
+                            <span class="counts">{{ $pageCounts }}</span>
+                        </div>
                     </div>
                     
                     <div class="col-md-2 col-12">
@@ -338,7 +372,7 @@
                                                     </div>
                                                     <div class="col-1">
                                                         <div class="flex">
-                                                            <a href="javascript:void(0)" class="editPageModal"
+                                                            <a href="javascript:void(0)" class="editPageModal edit-icon"
                                                                 data-bs-toggle="modal" 
                                                                 data-bs-target="#createPageModal"
                                                                 data-action="{{ route('pages.update', $value->id) }}"
@@ -347,16 +381,14 @@
                                                                 data-content="{{ $value->content }}" 
                                                                 data-button="Update Page" >
                                                                 
-                                                                <svg class="filament-link-icon w-4 h-4 mr-1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                                                                    <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z"></path>
-                                                                </svg>
+                                                                <span class="sprites"></span>
                                                             </a>
-                                                            
-                                                            <a href="#" onclick="deletePage({{ $value->id }})" class="text-danger w-4 h-4 mr-1">
-                                                                <svg wire:loading.remove.delay="" wire:target="" class="filament-link-icon w-4 h-4 mr-1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                                                                    <path	ath fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd"></path>
-                                                                    </svg>
-                                                                </a>                                                                         
+
+                                                            <a href="javascript:void(0)" class="delete-icon commonDeleteBtn"
+                                                                data-bs-toggle="modal" data-bs-target="#commonDeleteModal"
+                                                                data-url="{{ route('pages.delete', $value->id) }}" data-title="Page">
+                                                                <span class="sprites"></span>
+                                                            </a>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -409,22 +441,22 @@
                                     <td>{{ $value->guard_name }}</td>
                                     <td>{{ \Carbon\Carbon::parse($value->created_at)->format('d M, Y') }}</td>
                                     <td class="text-end">
-                                        <a href="javascript:void(0)" class="editPermissionModal"
-                                            data-bs-toggle="modal" 
-                                            data-bs-target="#createPermissionModal"
-                                            data-action="{{ route('permissions.update', $value->id) }}"
-                                            data-permission_name="{{ $value->permission_name }}"
-                                            data-button="Update Permission" >
-                                            
-                                            <svg class="filament-link-icon w-4 h-4 mr-1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                                                <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z"></path>
-                                            </svg>
-                                        </a>
-                                        <a href="javascript:void(0)" onclick="deletePermission({{ $value->id }})" class="text-danger w-4 h-4 mr-1">
-                                            <svg wire:loading.remove.delay="" wire:target="" class="filament-link-icon w-4 h-4 mr-1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                                                <path	ath fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd"></path>
-                                            </svg>
-                                        </a>    
+                                        <div class="flex">
+                                            <a href="javascript:void(0)" class="edit-icon editPermissionModal"
+                                                data-bs-toggle="modal" 
+                                                data-bs-target="#createPermissionModal"
+                                                data-action="{{ route('permissions.update', $value->id) }}"
+                                                data-permission_name="{{ $value->permission_name }}"
+                                                data-button="Update Permission" >
+                                                <span class="sprites"></span>                                            
+                                            </a>
+
+                                            <a href="javascript:void(0)" class="delete-icon commonDeleteBtn"
+                                                data-bs-toggle="modal" data-bs-target="#commonDeleteModal"
+                                                data-url="{{ route('permissions.delete', $value->id) }}" data-title="Permission">
+                                                <span class="sprites"></span>
+                                            </a>
+                                        </div>
                                     </td>
                                 </tr>
                             @endforeach
@@ -434,84 +466,133 @@
             </div>
         </div>
 
-            <div class="tab-pane" id="tabs-5" role="tabpanel">
-                <div class="row mt-3">                
-                    <div class="col-md-7 col-12">
-                        <div class="page-title"> 
-                            <h4>Roles</h4>
-                            <span class="counts">{{ $totalRoles }}</span>
-                        </div>
-                    </div>
-                    <div class="col-md-5 col-12">
-                        <button type="button" class="btn btn-primary float-end" data-bs-toggle="modal" data-bs-target="#{{ $roleForm['modal_id'] }}">{{ $roleForm['button_name'] }}</button>                                
+        <div class="tab-pane" id="tabs-5" role="tabpanel">
+            <div class="row mt-3">                
+                <div class="col-md-7 col-12">
+                    <div class="page-title"> 
+                        <h4>Roles</h4>
+                        <span class="counts">{{ $totalRoles }}</span>
                     </div>
                 </div>
+                <div class="col-md-5 col-12">
+                    <button type="button" class="btn btn-primary float-end" data-bs-toggle="modal" data-bs-target="#{{ $roleForm['modal_id'] }}">{{ $roleForm['button_name'] }}</button>                                
+                </div>
+            </div>
 
-                <div class="table-responsive mt-2">
-                    <table class="table mb-0">
-                        <thead class="table-light">
-                            <tr>
-                                <th class="border-top-0">Role Name</th>
-                                <th class="border-top-0">Permissions</th>
-                                <th class="border-top-0 text-end" width="150">Counts</th>
-                                <th class="border-top-0 text-end" width="150">Date</th>
-                                <th class="border-top-0 text-end" width="100">Action</th>
-                            </tr>
-                        </thead>                     
-                        <tbody>                    
-                            @if($roles->isNotEmpty())
-                                @foreach ($roles as $value)
-                                    <tr>
-                                        <td>
-                                            <h5 class="mb-0">{{ $value->name }}</h5>                                            
-                                        </td>
-                                        <td>
-                                            <p class="text-muted">                                                                                           
-                                                @if($value->name == 'Super Admin')
-                                                    <b>You're Super Admin, So not required any permission</b>
-                                                @else
-                                                    {{ $value->permissions->pluck('name')->implode(", ") }}
-                                                @endif
-                                            </p>
-                                        </td>
-                                        <td class="text-end">
+            <div class="table-responsive mt-2">
+                <table class="table mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th class="border-top-0">Role Name</th>
+                            <th class="border-top-0">Permissions</th>
+                            <th class="border-top-0 text-end" width="150">Counts</th>
+                            <th class="border-top-0 text-end" width="150">Date</th>
+                            <th class="border-top-0 text-end" width="100">Action</th>
+                        </tr>
+                    </thead>                     
+                    <tbody>                    
+                        @if($roles->isNotEmpty())
+                            @foreach ($roles as $value)
+                                <tr>
+                                    <td>
+                                        <h5 class="mb-0">{{ $value->name }}</h5>                                            
+                                    </td>
+                                    <td>
+                                        <p class="text-muted">                                                                                           
                                             @if($value->name == 'Super Admin')
-                                                <span class="count-sub">All permissions</span>
+                                                <b>You're Super Admin, So not required any permission</b>
                                             @else
-                                                <span class="count-sub">{{ $value->permissions->count('name') }}</span>
+                                                {{ $value->permissions->pluck('name')->implode(", ") }}
                                             @endif
-                                        </td>
-                                        <td class="text-end">{{ \Carbon\Carbon::parse($value->created_at)->format('d M, Y') }}</td>
-                                        <td>
-                                            <a href="javascript:void(0)" class="editRoleModal"
+                                        </p>
+                                    </td>
+                                    <td class="text-end">
+                                        @if($value->name == 'Super Admin')
+                                            <span class="count-sub">All permissions</span>
+                                        @else
+                                            <span class="count-sub">{{ $value->permissions->count('name') }}</span>
+                                        @endif
+                                    </td>
+                                    <td class="text-end">{{ \Carbon\Carbon::parse($value->created_at)->format('d M, Y') }}</td>
+                                    <td>
+                                        <div class="flex">
+                                            <a href="javascript:void(0)" class="edit-icon editRoleModal"
                                                 data-bs-toggle="modal" 
                                                 data-bs-target="#createRoleModal"
                                                 data-action="{{ route('roles.update', $value->id) }}"
-                                                data-name="{{ $value->name }}"                                                
-                                                data-button="Update Page" >
-                                                
-                                                <svg class="filament-link-icon w-4 h-4 mr-1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                                                    <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z"></path>
-                                                </svg>
+                                                data-name="{{ $value->name }}"
+                                                data-button="Update Role" >
+                                                <span class="sprites"></span>                                            
                                             </a>
 
-                                            <a href="javascript:void(0)" onclick="deleteRole({{ $value->id }})" class="text-danger w-4 h-4 mr-1">
-                                                <svg wire:loading.remove.delay="" wire:target="" class="filament-link-icon w-4 h-4 mr-1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                                                    <path	ath fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd"></path>
-                                                </svg>
-                                            </a>                                            
-                                        </td> 
-                                    </tr>
-                                @endforeach
-                            @endif
-                        </tbody>
-                    </table>
+                                            <a href="javascript:void(0)" class="delete-icon commonDeleteBtn"
+                                                data-bs-toggle="modal" data-bs-target="#commonDeleteModal"
+                                                data-url="{{ route('roles.delete', $value->id) }}" data-title="Permission">
+                                                <span class="sprites"></span>
+                                            </a>
+                                        </div>                                          
+                                    </td> 
+                                </tr>
+                            @endforeach
+                        @endif
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="tab-pane" id="tabs-6" role="tabpanel">
+            <div class="row mt-3">                
+                <div class="col-md-7 col-12">
+                    <div class="page-title"> 
+                        <h4>Users</h4>
+                        <span class="counts">{{ $userCounts }}</span>
+                    </div>
+                </div>
+                <div class="col-md-5 col-12">
+                    <button type="button" class="btn btn-primary float-end" data-bs-toggle="modal" data-bs-target="#{{ $roleForm['modal_id'] }}">{{ $roleForm['button_name'] }}</button>                                
                 </div>
             </div>
 
-            <div class="tab-pane" id="tabs-6" role="tabpanel">
-                Users
+            <div class="table-responsive mt-2">
+                <table class="table mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th class="border-top-0">User Name</th>
+                            <th class="border-top-0">Email</th>                                                    
+                            <th class="border-top-0 text-end" width="100">Action</th>
+                        </tr>
+                    </thead>                     
+                    <tbody>                    
+                        @if($users->isNotEmpty())
+                            @foreach ($users as $value)
+                                <tr>
+                                    <td><h5 class="mb-0">{{ $value->name }}</h5></td>
+                                    <td>{{ $value->email }}</td>                                                                        
+                                    <td>
+                                        <div class="flex">
+                                            <a href="javascript:void(0)" class="edit-icon editUserModal"
+                                                data-bs-toggle="modal" 
+                                                data-bs-target="#createUserModal"
+                                                data-action="{{ route('users.update', $value->id) }}"
+                                                data-name="{{ $value->name }}"
+                                                data-button="Update Role" >
+                                                <span class="sprites"></span>                                            
+                                            </a>
+
+                                            <a href="javascript:void(0)" class="delete-icon commonDeleteBtn"
+                                                data-bs-toggle="modal" data-bs-target="#commonDeleteModal"
+                                                data-url="{{ route('users.delete', $value->id) }}" data-title="Permission">
+                                                <span class="sprites"></span>
+                                            </a>
+                                        </div>                                          
+                                    </td> 
+                                </tr>
+                            @endforeach
+                        @endif
+                    </tbody>
+                </table>
             </div>
+        </div>
         </div>           
     </div>
 </div>

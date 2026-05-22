@@ -55,7 +55,7 @@ ul,li { padding: 0; margin: 0;}
 
 .page-title { display: flex; column-gap: 10px;}
 .page-title h4 { margin-bottom: 0; }
-.page-title .counts { background-color: #0d6efd; color: #fff; padding:3px 5px; border-radius: 100px; font-size: 12px; text-align: center; display: block; height:24px; width: 24px; position: relative; top:3px; }
+.page-title .counts { background-color: #0d6efd; color: #fff; padding:3px 5px; border-radius: 100px; font-size: 11px; text-align: center; display: block; height:23px; width: 23px; position: relative; top:3px; font-weight: bold; }
 
 .counts_small { border-radius: 100px; padding: 1px; background-color: var(--gray); color: var(--white); margin-left: 5px; font-size: 12px; display: block; height: 21px; width: 21px; text-align: center;}
 .product-title { margin-bottom: 2px; font-weight: bold;}
@@ -418,10 +418,9 @@ input:checked + .slider { box-shadow:0 0 0 2px #007bff,0 0 2px #007bff; }
 .form-group { margin-bottom: 10px;}
 .form-group label { margin-bottom: 7px; font-size: 13px; }
 
-.drawer .modal-body { padding: 15px 20px; }
-
-.drawer .modal-header .modal-title { font-size: 16px; }
-
+.drawer .modal-header { padding: 15px 20px; }
+.drawer .modal-body { padding: 20px; }
+.drawer .modal-header .modal-title { font-size: 16px; font-weight: bold; }
 .drawer .modal-dialog { --bs-modal-width: 400px !important;}
 
 .form-control, .form-select { padding: 9px 12px 10px 12px; border-color: var(--gray-dark); border-radius: 4px;}
@@ -432,47 +431,13 @@ input:checked + .slider { box-shadow:0 0 0 2px #007bff,0 0 2px #007bff; }
 .checkboxDropdown .dropdown-menu.show label:not(.form-check-label):not(.custom-file-label) { font-weight: normal;}
 
 .overflow-variant { height: 200px; overflow-y: auto; overflow-x: hidden;}
-
 .radio-card input { display: none; }
+.radio-card label { padding: 10px 20px; border: 1px solid #ccc; border-radius: 6px; cursor: pointer; transition: 0.2s ease; }
+.radio-card input:checked + label { border-color: #0d6efd; background: #e7f1ff; color: #0d6efd;}
 
-.radio-card label {
-    padding: 10px 20px;
-    border: 1px solid #ccc;
-    border-radius: 6px;
-    cursor: pointer;
-    transition: 0.2s ease;
-}
-
-.radio-card input:checked + label {
-    border-color: #0d6efd;
-    background: #e7f1ff;
-    color: #0d6efd;
-}
-
-.custom-radio {
-    display: flex;
-    align-items: center;
-    cursor: pointer;
-    font-size: 16px;
-    gap: 8px;
-}
-
-/* Hide default radio */
-.custom-radio input {
-    display: none;
-}
-
-/* Custom circle */
-.radio-mark {
-    width: 20px;
-    height: 20px;
-    border: 2px solid #ccc;
-    border-radius: 50%;
-    position: relative;
-    transition: 0.3s;
-}
-
-/* Inner dot */
+.custom-radio { display: flex; align-items: center; cursor: pointer; gap: 8px; }
+.custom-radio input { display: none; }
+.radio-mark { width: 20px; height: 20px; border: 2px solid #ccc; border-radius: 50%; position: relative; transition: 0.3s;}
 .radio-mark::after {
     content: "";
     position: absolute;
