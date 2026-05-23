@@ -5,16 +5,53 @@
 @include('admin.layouts.message')
 
 <div class="card">               
-    <div class="card-body">    
-        <div class="container-fluid">
-            <div class="row">
-                <div class="col-sm-6">
-                    <h4>Edit Permission</h4>
-                </div>
-                <div class="col-sm-6 text-right">
-                    <a href="{{ route('configurations.index') }}" class="btn btn-primary float-end">Back</a>
-                </div>
-            </div>    
+    <div class="card-body">
+        @php
+            $tabs = [
+                [
+                    'id' => 'tabs-1',
+                    'title' => 'Configurations',
+                    
+                ],
+                [
+                    'id' => 'tabs-2',
+                    'title' => 'Branch',
+                ],
+                [
+                    'id' => 'tabs-3',
+                    'title' => 'Pages',
+                ],
+                [
+                    'id' => 'tabs-4',
+                    'title' => 'Permissions',                    
+                ],
+                [
+                    'id' => 'tabs-5',
+                    'title' => 'Roles',
+                    'active' => true,
+                ],
+                [
+                    'id' => 'tabs-6',
+                    'title' => 'Users',
+                ],
+            ];
+        @endphp
+
+        <ul class="nav nav-tabs" role="tablist">
+            @foreach($tabs as $tab)
+                <li class="nav-item" role="presentation">
+                    <a class="nav-link pt-0 {{ !empty($tab['active']) ? 'active' : '' }}" href="{{ route('configurations.index') }}" >
+                        {{ $tab['title'] }}
+                    </a>
+                </li>
+            @endforeach
+        </ul>
+
+        <div class="mt-3">        
+            <div class="flex-2">
+                <h4>Edit {{ ucfirst(old('name', $role->name)) }} role</h4>            
+                <a href="{{ route('configurations.index') }}" >Back</a>
+            </div>
         
             <form action="{{ route('roles.update',$role->id) }}" method="post">
                 @csrf

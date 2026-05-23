@@ -22,8 +22,7 @@
             <table class="table mb-0">
                 <thead class="table-light">
                     <tr>
-                        <th class="border-top-0">Name</th>
-                        <th class="border-top-0">Permissions</th>
+                        <th class="border-top-0">Name</th>                        
                         <th class="border-top-0" width="150">Date</th>
                         <th class="border-top-0 text-end" width="100">Action</th>
                     </tr>
@@ -32,24 +31,28 @@
             @if($roles->isNotEmpty())
                 @foreach ($roles as $value)                    
                     <tr>
-                        <td><b>{{ $value->name }}</b></td>
-                        <td>{{ $value->permissions->pluck('name')->implode(', ') }}</td>
+                        <td>
+                            <h5 class="mb-1">{{ ucfirst($value->name) }}</h5>
+                            @if($value->name == 'superadmin')
+                                <p class="text-muted">All permissions</p>
+                            @else
+                                <p class="text-muted">{{ $value->permissions->pluck('name')->map(fn($name) => ucwords($name))->implode(', ') }}</p>
+                            @endif
+                        </td>
                         <td>{{ \Carbon\Carbon::parse($value->created_at)->format('d M, Y') }}</td>
                         <td>
                             <div class="flex">
-                                <a href="{{ route("roles.edit", $value->id) }}" class="edit-icon">
-                                    <span class="sprites"></span>
-                                </a>
-                                <a href="javascript:void(0)" onclick="deleteRole({{ $value->id }})" class="delete-icon">
-                                    <span class="sprites"></span>
-                                </a>
-                            </div>
-                            {{-- @can('edit roles')
-                                <a href="{{ route("roles.edit", $value->id) }}" class="btn-primary btn">Edit</a>
-                            @endcan
-                            @can('delete roles')
-                                <a href="javascript:void(0)" onclick="deleteRole({{ $value->id }})" class="btn btn-danger">Delete</a>
-                            @endcan --}}
+                                @can('edit roles')
+                                    <a href="{{ route("roles.edit", $value->id) }}" class="edit-icon">
+                                        <span class="sprites"></span>
+                                    </a>
+                                @endcan
+                                @can('delete roles')
+                                    <a href="javascript:void(0)" onclick="deleteRole({{ $value->id }})" class="delete-icon">
+                                        <span class="sprites"></span>
+                                    </a>
+                                @endcan                                
+                            </div>                            
                         </td>                        
                     </tr>
                 @endforeach
@@ -76,7 +79,7 @@
                         'x-csrf-token' : '{{ csrf_token() }}'
                     },
                     success: function(response) {
-                        window.location.href="{{ route('roles.index') }}"
+                        window.location.href="{{ route('configurations.index') }}"
                     }
                 });
             }

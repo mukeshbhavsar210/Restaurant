@@ -22,37 +22,16 @@
             <i class="iconoir-journal-page menu-icon"></i>
             <span>Orders</span>
         </a>
-    </li>          
-    <li class="nav-item">
-        <a href="{{ route('configurations.index') }}" class="nav-link {{ (\Request::route()->getName() == 'configurations.index') ? 'active' : '' }}">
-            <i class="iconoir-journal-page menu-icon"></i>
-            <span>Configuration</span>
-        </a>
     </li>
-    <li class="nav-item">
-        <a href="{{ route('permissions.index') }}" class="nav-link {{ (\Request::route()->getName() == 'permissions.index') ? 'active' : '' }}">
-            <i class="iconoir-journal-page menu-icon"></i>
-            <span>Permissions</span>
-        </a>
-    </li> 
-    <li class="nav-item">
-        <a href="{{ route('roles.index') }}" class="nav-link {{ (\Request::route()->getName() == 'roles.index') ? 'active' : '' }}">
-            <i class="iconoir-journal-page menu-icon"></i>
-            <span>Roles</span>
-        </a>
-    </li> 
-    <li class="nav-item">
-        <a href="{{ route('articles.index') }}" class="nav-link {{ (\Request::route()->getName() == 'articles.index') ? 'active' : '' }}">
-            <i class="iconoir-journal-page menu-icon"></i>
-            <span>Articles</span>
-        </a>
-    </li> 
-    <li class="nav-item">
-        <a href="{{ route('users.index') }}" class="nav-link {{ (\Request::route()->getName() == 'users.index') ? 'active' : '' }}">
-            <i class="iconoir-journal-page menu-icon"></i>
-            <span>Users</span>
-        </a>
-    </li> 
+    
+    @can('view permissions')
+        <li class="nav-item">
+            <a href="{{ route('configurations.index') }}" class="nav-link {{ (\Request::route()->getName() == 'configurations.index') || (\Request::route()->getName() == 'roles.edit') || (\Request::route()->getName() == 'permissions.edit') || (\Request::route()->getName() == 'users.edit') || (\Request::route()->getName() == 'articles.edit') ? 'active' : '' }}">
+                <i class="iconoir-journal-page menu-icon"></i>
+                <span>Configuration</span>
+            </a>
+        </li>
+    @endcan
 
     {{-- <li class="nav-item">
         <a class="nav-link" href="#extra" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="sidebarApplications">
@@ -60,13 +39,14 @@
             <span>Settings</span>
         </a>
         <div class="collapse " id="extra">
-            <ul class="nav flex-column">                                                  
+            <ul class="nav flex-column">                        
                 <li class="nav-item">
-                    <a href="{{ route('configurations.index') }}" class="nav-link {{ (\Request::route()->getName() == 'configurations.index') ? 'active' : '' }}">
-                        <span>Users</span>
+                    <a href="{{ route('articles.index') }}" class="nav-link {{ (\Request::route()->getName() == 'articles.index') ? 'active' : '' }}">
+                        <i class="iconoir-journal-page menu-icon"></i>
+                        <span>Articles</span>
                     </a>
-                </li>                
+                </li>                 
             </ul>
         </div>
-    </li> --}}
+    </li>     --}}
 </ul>

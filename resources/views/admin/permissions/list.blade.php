@@ -32,8 +32,7 @@
                     @foreach ($permissions as $value)
                         <tr>
                             <td>
-                                <h5 class="mb-0">{{ $value->name }}</h5>
-                                <p class="text-muted tiny-font">{{ $value->guard_name }}</p>
+                                {{ ucwords($value->name) }}
                             </td>                            
                             <td>{{ \Carbon\Carbon::parse($value->created_at)->format('d M, Y') }}</td>
                             <td class="text-end">
@@ -96,7 +95,7 @@
                     'x-csrf-token' : '{{ csrf_token() }}'
                 },
                 success: function(response) {
-                    window.location.href="{{ route('permissions.index') }}"
+                    window.location.href="{{ route('configurations.index') }}"
                 }
             });
         }

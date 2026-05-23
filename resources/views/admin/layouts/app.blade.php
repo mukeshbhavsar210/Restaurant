@@ -45,20 +45,105 @@
                     </a>                    
                 </li>
                 <li class="dropdown topbar-item">
+                    <a class="nav-link dropdown-toggle arrow-none nav-icon" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="true">
+                        <i class="icofont-bell-alt"></i>
+                        <span class="alert-badge"></span>
+                    </a>
+                    <div class="dropdown-menu stop dropdown-menu-end dropdown-lg py-0" data-popper-placement="bottom-end" style="position: absolute; inset: 0px 0px auto auto; margin: 0px; transform: translate(-8px, 76px);">
+                
+                        <h5 class="dropdown-item-text m-0 py-2 d-flex justify-content-between align-items-center">
+                            Notifications <a href="#" class="badge text-body-tertiary badge-pill">
+                                <i class="iconoir-plus-circle fs-4"></i>
+                            </a>
+                        </h5>
+                        <ul class="nav nav-tabs nav-tabs-custom nav-success nav-justified mb-1" role="tablist">
+                            <li class="nav-item" role="presentation">
+                                <a class="nav-link mx-0 active" data-bs-toggle="tab" href="#All" role="tab" aria-selected="true">
+                                    All <span class="badge bg-primary-subtle text-primary badge-pill ms-1">24</span>
+                                </a>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <a class="nav-link mx-0" data-bs-toggle="tab" href="#Projects" role="tab" aria-selected="false" tabindex="-1">
+                                    Projects
+                                </a>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <a class="nav-link mx-0" data-bs-toggle="tab" href="#Teams" role="tab" aria-selected="false" tabindex="-1">
+                                    Team
+                                </a>
+                            </li>
+                        </ul>
+                        <div class="ms-0 simplebar-scrollable-y" style="max-height:230px;" data-simplebar="init"><div class="simplebar-wrapper" style="margin: 0px;"><div class="simplebar-height-auto-observer-wrapper"><div class="simplebar-height-auto-observer"></div></div><div class="simplebar-mask"><div class="simplebar-offset" style="right: 0px; bottom: 0px;"><div class="simplebar-content-wrapper" tabindex="0" role="region" aria-label="scrollable content" style="height: auto; overflow: hidden scroll;"><div class="simplebar-content" style="padding: 0px;">
+                            <div class="tab-content" id="myTabContent">
+                                <div class="tab-pane fade show active" id="All" role="tabpanel" aria-labelledby="all-tab" tabindex="0">                                    
+                                    <a href="#" class="dropdown-item">
+                                        <small class="float-end text-muted ps-2">2 min ago</small>
+                                        <div class="d-flex align-items-center">
+                                            <div class="flex-shrink-0 bg-primary-subtle text-primary thumb-md rounded-circle">
+                                                <i class="iconoir-wolf fs-4"></i>
+                                            </div>
+                                            <div class="flex-grow-1 ms-2 text-truncate">
+                                                <h6 class="my-0 fw-normal text-dark fs-13">Your order is placed</h6>
+                                                <small class="text-muted mb-0">Dummy text of the printing and industry.</small>
+                                            </div>
+                                        </div>
+                                    </a>
+                                </div>
+                                <div class="tab-pane fade" id="Projects" role="tabpanel" aria-labelledby="projects-tab" tabindex="0">                                    
+                                    <a href="#" class="dropdown-item">
+                                        <small class="float-end text-muted ps-2">40 min ago</small>
+                                        <div class="d-flex align-items-center">
+                                            <div class="flex-shrink-0 bg-primary-subtle text-primary thumb-md rounded-circle">                                                    
+                                                <i class="iconoir-birthday-cake fs-4"></i>
+                                            </div>
+                                            <div class="flex-grow-1 ms-2 text-truncate">
+                                                <h6 class="my-0 fw-normal text-dark fs-13">UX 3 Task complete.</h6>
+                                                <small class="text-muted mb-0">Dummy text of the printing.</small>
+                                            </div>
+                                        </div>
+                                    </a>
+                                </div>
+                                <div class="tab-pane fade" id="Teams" role="tabpanel" aria-labelledby="teams-tab" tabindex="0">
+                                    <a href="#" class="dropdown-item">
+                                        <small class="float-end text-muted ps-2">1 hr ago</small>
+                                        <div class="d-flex align-items-center">
+                                            <div class="flex-shrink-0 bg-primary-subtle text-primary thumb-md rounded-circle">
+                                                <i class="iconoir-drone fs-4"></i>
+                                            </div>
+                                            <div class="flex-grow-1 ms-2 text-truncate">
+                                                <h6 class="my-0 fw-normal text-dark fs-13">Your order is placed</h6>
+                                                <small class="text-muted mb-0">It is a long established fact that a reader.</small>
+                                            </div>
+                                        </div>
+                                    </a>
+                                </div>
+                            </div>
+                    
+                        </div></div></div></div><div class="simplebar-placeholder" style="width: 318px; height: 420px;"></div></div><div class="simplebar-track simplebar-horizontal" style="visibility: hidden;"><div class="simplebar-scrollbar" style="width: 0px; display: none;"></div></div><div class="simplebar-track simplebar-vertical" style="visibility: visible;"><div class="simplebar-scrollbar" style="height: 125px; display: block; transform: translate3d(0px, 0px, 0px);"></div></div></div>
+                        <!-- All-->
+                        <a href="pages-notifications.html" class="dropdown-item text-center text-dark fs-13 py-2">
+                            View All <i class="fi-arrow-right"></i>
+                        </a>
+                    </div>
+                </li>
+                <li class="dropdown topbar-item">
                     <a class="nav-link dropdown-toggle arrow-none nav-icon" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false">
                         <img src="{{ asset('admin-assets/images/avatar-1.jpg') }}" alt="" class="thumb-lg rounded-circle">
                     </a>
                     <div class="dropdown-menu dropdown-menu-end py-0" style="">
-                        <div class="d-flex align-items-center dropdown-item py-2 bg-secondary-subtle">                                    
-                            <div class="flex-grow-1 text-truncate align-self-center">
-                                <h6 class="my-0 fw-medium text-dark fs-13"></h6>
-                                <small class="text-muted"></small>
+                        <div class="d-flex align-items-center dropdown-item py-2 bg-secondary-subtle">
+                            <div class="flex-shrink-0">
+                                <img src="{{ asset('admin-assets/images/avatar-1.jpg') }}" alt="" class="thumb-lg rounded-circle">
+                            </div>
+                            <div class="flex-grow-1 ms-2 text-truncate align-self-center">
+                                <h6 class="my-0 fw-medium text-dark fs-13">{{ Auth::guard()->user()->name }}</h6>
+                                <small class="text-muted mb-0">{{ Auth::user()->roles()->pluck('name')->implode(', ') }}</small>
                             </div>
                         </div>
 
-                        {{ Auth::guard()->user()->email }}
-						<p>{{ Auth::user()->roles()->pluck('name')->implode(', ') }}</p>
-                        
+                        <div class="dropdown-divider mt-0"></div>
+                        <small class="text-muted px-2 pb-1 d-block">Account</small>
+
                         <a class="dropdown-item" href="">
                             <i class="las la-user fs-18 me-1 align-text-bottom"></i>
                             Change Password
@@ -68,6 +153,11 @@
 							<i class="las la-user fs-18 me-1 align-text-bottom"></i>
 							Profile
 						</a>
+
+                        <small class="text-muted px-2 py-1 d-block">Settings</small>
+
+                        <a class="dropdown-item" href="pages-profile.html"><i class="las la-cog fs-18 me-1 align-text-bottom"></i>Account Settings</a>
+                        <div class="dropdown-divider mb-0"></div>
 
                         <form method="POST" action="{{ route('logout') }}" >
 							@csrf

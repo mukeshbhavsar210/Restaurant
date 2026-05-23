@@ -66,42 +66,7 @@ Route::group(['prefix' => 'admin'], function(){
     //Route::group(['middleware' => 'admin.auth'], function(){
     Route::middleware('auth')->group(function () {
 
-        Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
-        Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
-        Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-
-        //Permissions
-        Route::get('/permissions', [PermissionController::class, 'index'])->name('permissions.index');
-        Route::get('/permissions/create', [PermissionController::class, 'create'])->name('permissions.create');
-        Route::post('/permissions', [PermissionController::class, 'store'])->name('permissions.store');
-        Route::get('/permissions/{id}/edit', [PermissionController::class, 'edit'])->name('permissions.edit');
-        Route::post('/permissions/{id}', [PermissionController::class, 'update'])->name('permissions.update');
-        Route::delete('/permissions', [PermissionController::class, 'destroy'])->name('permissions.destroy');
-
-        //Roles
-        Route::get('/roles', [RoleController::class, 'index'])->name('roles.index');
-        Route::get('/roles/create', [RoleController::class, 'create'])->name('roles.create');
-        Route::post('/roles', [RoleController::class, 'store'])->name('roles.store');
-        Route::get('/roles/{id}/edit', [RoleController::class, 'edit'])->name('roles.edit');
-        Route::post('/roles/{id}', [RoleController::class, 'update'])->name('roles.update');
-        Route::delete('/roles', [RoleController::class, 'destroy'])->name('roles.destroy');
-
-        //Articles
-        Route::get('/articles', [ArticleController::class, 'index'])->name('articles.index');
-        Route::get('/articles/create', [ArticleController::class, 'create'])->name('articles.create');
-        Route::post('/articles', [ArticleController::class, 'store'])->name('articles.store');
-        Route::get('/articles/{id}/edit', [ArticleController::class, 'edit'])->name('articles.edit');
-        Route::post('/articles/{id}', [ArticleController::class, 'update'])->name('articles.update');
-        Route::delete('/articles', [ArticleController::class, 'destroy'])->name('articles.destroy');
-
-        //Users
-        Route::get('/users', [UserController::class, 'index'])->name('users.index');
-        Route::get('/users/create', [UserController::class, 'create'])->name('users.create');
-        Route::post('/users', [UserController::class, 'store'])->name('users.store');
-        Route::get('/users/{id}/edit', [UserController::class, 'edit'])->name('users.edit');
-        Route::post('/users/{id}', [UserController::class, 'update'])->name('users.update');
-        Route::delete('/users', [UserController::class, 'destroy'])->name('users.destroy');
-        Route::get('/logout', [UserController::class, 'logout'])->name('users.logout');
+        
 
         //Category Routes
         Route::controller(CategoryController::class)->group(function() {
@@ -164,6 +129,38 @@ Route::group(['prefix' => 'admin'], function(){
             Route::patch('/profile', 'update')->name('profile.update');
             Route::delete('/profile', 'destroy')->name('profile.destroy');
         });
+
+        // Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+        // Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+        // Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+
+        //Permissions
+        Route::post('/configurations/permissions', [PermissionController::class, 'store'])->name('permissions.store');
+        Route::get('/configurations/permissions/{id}/edit', [PermissionController::class, 'edit'])->name('permissions.edit');
+        Route::post('/configurations/permissions/{id}', [PermissionController::class, 'update'])->name('permissions.update');
+        Route::get('/configurations/permissions/delete/{id}', [PermissionController::class, 'destroy'])->name('permissions.destroy');
+
+        //Roles        
+        Route::post('/configurations/roles', [RoleController::class, 'store'])->name('roles.store');
+        Route::get('/configurations/roles/{id}/edit', [RoleController::class, 'edit'])->name('roles.edit');
+        Route::post('/configurations/roles/{id}', [RoleController::class, 'update'])->name('roles.update');        
+        Route::get('/configurations/roles/delete/{id}', [RoleController::class, 'destroy'])->name('roles.destroy');
+
+        //Articles
+        Route::get('/configurations/articles', [ArticleController::class, 'index'])->name('articles.index');
+        Route::get('/configurations/articles/create', [ArticleController::class, 'create'])->name('articles.create');
+        Route::post('/configurations/articles', [ArticleController::class, 'store'])->name('articles.store');
+        Route::get('/configurations/articles/{id}/edit', [ArticleController::class, 'edit'])->name('articles.edit');
+        Route::post('/configurations/articles/{id}', [ArticleController::class, 'update'])->name('articles.update');
+        Route::delete('/configurations/articles', [ArticleController::class, 'destroy'])->name('articles.destroy');
+
+        //Users        
+        Route::get('/configurations/users/create', [UserController::class, 'create'])->name('users.create');
+        Route::post('/configurations/users', [UserController::class, 'store'])->name('users.store');
+        Route::get('/configurations/users/{id}/edit', [UserController::class, 'edit'])->name('users.edit');
+        Route::post('/configurations/users/{id}', [UserController::class, 'update'])->name('users.update');
+        Route::delete('/configurations/users', [UserController::class, 'destroy'])->name('users.destroy');
+        Route::get('/logout', [UserController::class, 'logout'])->name('users.logout');
         
         //Permissions
         Route::controller(ConfigurationController::class)->group(function() { 
@@ -191,29 +188,10 @@ Route::group(['prefix' => 'admin'], function(){
             //Pages            
             Route::post('/page', 'page_store')->name('pages.store');            
             Route::put('/page/{page}', 'page_update')->name('pages.update');
-            Route::get('/page/delete/{id}', 'page_delete')->name('pages.delete');
-                        
-            //Permissions
-            // Route::post('/permission_old', 'permissions_store')->name('permissions.store');            
-            // Route::put('/permission_old/{permission}', 'permissions_update')->name('permissions.update');
-            // Route::get('/permission_old/delete/{id}', 'permission_delete')->name('permissions.delete');            
-        
-            //Roles
-            // Route::post('/role_old', 'role_store')->name('roles.store');
-            // Route::get('/role_old/{role}/edit', 'role_edit')->name('roles.edit');
-            // Route::put('/role_old/{role}', 'role_update')->name('roles.update');  
-            // Route::get('/role_old/delete/{id}', 'role_delete')->name('roles.delete');          
-            
-            //Users
-            // Route::get('/users_old/create', 'user_create')->name('users.create');
-            // Route::post('/users_old',  'user_store')->name('users.store');
-            // Route::get('/users_old/{id}/edit', 'user_edit')->name('users.edit');
-            // Route::post('/users_old/{id}', 'user_update')->name('users.update');
-            // Route::delete('/user_old/delete/{id}', 'user_delete')->name('users.delete');    
+            Route::get('/page/delete/{id}', 'page_delete')->name('pages.delete');                                  
             
             Route::get('/logout', 'logout')->name('users.logout');
-        });
-        
+        });        
         
         //Temp image controller
         Route::post('/upload-temp-image', [TempImagesController::class, 'create'])->name('temp-images.create');

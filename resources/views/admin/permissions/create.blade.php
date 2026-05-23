@@ -13,7 +13,7 @@
                 </div>
                 <div class="col-sm-6 text-right">
                     @can('create permissions')
-                        <a href="{{ route('permissions.index') }}" class="btn btn-primary float-end">Back</a>
+                        <a href="{{ route('configurations.index') }}" class="btn btn-primary float-end">Back</a>
                     @endcan                
                 </div>
             </div>

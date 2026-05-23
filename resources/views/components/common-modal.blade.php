@@ -74,14 +74,33 @@
                                         <div class="row">
                                             @foreach($field['options'] as $option)
                                                 <div class="col-6">
-                                                    <label class="custom-checkbox mt-1" for="permission_{{ $option->{$field['option_value']} }}">
-                                                        {{ $option->{$field['option_text']} }}
+                                                    <label class="custom-checkbox mt-1" for="permission_{{ $option->{$field['option_value']} }}">                                                        
                                                         <input type="checkbox" id="permission_{{ $option->{$field['option_value']} }}" name="{{ $field['name'] }}[]" value="{{ $option->{$field['option_value']} }}">
-                                                        <span class="checkmark"></span>                                                    
+                                                        <span class="checkmark"></span>
+                                                        {{ ucwords($option->{$field['option_text']}) }}                                                        
                                                     </label>
                                                 </div>
                                             @endforeach
                                         </div>
+
+                                    @elseif($field['type'] == 'rolecheckbox')
+                                        <div class="row">
+                                            @foreach($field['options'] as $option)
+                                                @php
+                                                    $optionValue = $option->{$field['option_value']};
+                                                    $checked = isset($field['checked_values']) &&
+                                                            collect($field['checked_values'])->contains($optionValue);
+                                                @endphp
+
+                                                <div class="col-6">
+                                                    <label class="custom-checkbox mt-1" for="permission_{{ $optionValue }}">
+                                                    <input type="checkbox" id="permission_{{ $optionValue }}" name="{{ $field['name'] }}[]" value="{{ $option->{$field['option_text']} }}" {{ $checked ? 'checked' : '' }}>
+                                                        <span class="checkmark"></span>
+                                                        {{ $option->{$field['option_text']} }}
+                                                    </label>
+                                                </div>
+                                            @endforeach
+                                        </div>                                    
 
                                     @elseif($field['type'] == 'select')
                                         <select name="{{ $field['name'] }}" id="{{ $field['name'] }}" class="form-select">
@@ -197,20 +216,18 @@
     </div>
 </div>
 
-
 <div class="modal fade" id="commonDeleteModal" tabindex="-1">
     <div class="modal-dialog modal-sm modal-dialog-centered">
         <div class="modal-content">
-            <div class="modal-body text-center">
-                <p id="deleteMessage" class="mt-1"></p>
+            <div class="modal-header">
+                <h5 class="modal-title"></h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
-
-            <div class="modal-footer justify-content-center">
-                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
-                    Cancel
-                </button>
-
-                <a href="" id="deleteBtn" class="btn btn-danger">Yes, Delete</a>
+            <div class="modal-body">
+                <p id="deleteMessage" class="mt-0 mb-0"></p>
+            </div>
+            <div class="modal-footer">
+                <a href="" id="deleteBtn" class="btn btn-danger w-100">Yes, Delete</a>
             </div>
         </div>
     </div>
@@ -230,8 +247,7 @@
         });
 
         $('.editProduct').click(function () {
-            $('.controlForm').attr('action', $(this).data('action'));
-            $('.controlForm2').attr('action', $(this).data('action'));            
+            $('.controlForm').attr('action', $(this).data('action'));           
             $('.formMethod').val($(this).data('method'));
             $('.modal-title').text($(this).data('title'));
             $('.btn-primary').text($(this).data('button'));            
@@ -243,38 +259,21 @@
             $('input[name="price"]').val($(this).data('price'));
             $('textarea[name="description"]').val($(this).data('description'));
             $('input[name="image_id"]').val($(this).data('image_id'));
+        });       
+
+        $(document).on('click', '.commonDeleteBtn', function () {
+            let url = $(this).data('url');
+            let title = $(this).data('title');
+
+            $('#deleteBtn').attr('href', url);
+            
+            $('.modal-title').html(
+                'Delete ' + title + ''
+            );
+            $('#deleteMessage').html(
+                'Are you sure you want to delete <br /><b>' + title + '?</b>'
+            );
         });
-
-    $(document).on('click', '.editPermissionModal', function () {
-        let action = $(this).data('action');
-        let buttonText = $(this).data('button');                       
-
-        $('#commonForm').attr('action', action);
-        $('input[name="permission_name"]').val($(this).data('permission_name'));
-        $('#submitBtn').text(buttonText);
-    });   
-
-    $(document).on('click', '.editRoleModal', function () {
-        let action = $(this).data('action');
-        let buttonText = $(this).data('button');                       
-
-        $('#commonForm').attr('action', action);
-        $('input[name="name"]').val($(this).data('name'));
-        $('#submitBtn').text(buttonText);
-    }); 
-
-
-
-    $(document).on('click', '.commonDeleteBtn', function () {
-        let url = $(this).data('url');
-        let title = $(this).data('title');
-
-        $('#deleteBtn').attr('href', url);
-
-        $('#deleteMessage').html(
-            'Are you sure you want to delete <b>' + title + '?</b>'
-        );
-    });
 
     $("#category").change(function(){
         var category_id = $(this).val();

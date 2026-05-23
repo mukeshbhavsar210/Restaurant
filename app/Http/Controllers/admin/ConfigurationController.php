@@ -55,6 +55,8 @@ class ConfigurationController extends Controller implements HasMiddleware {
         ];
     }
 
+   
+
     public function index(Request $request){
         $areas = Area::orderBy('area_name','ASC')->get();
         $seats = Seat::where('area_id',NULL)->with('seat')->get();
@@ -624,113 +626,6 @@ class ConfigurationController extends Controller implements HasMiddleware {
     }
 
 
-    public function permissions_store(Request $request){
-        $validator = Validator::make($request->all(), [ 
-            'name' => 'required|unique:permissions|min:3'
-        ]);        
-
-        if($validator->passes()){
-            Permission::create([ 'name' => $request->name ]);
-        
-            return redirect()->route('configurations.index')->with('success','Permission added successfully.');
-        } else {
-            return redirect()->route('permissions.create')->withInput()->withErrors($validator);
-        }
-    }
-
-    public function permissions_edit($id){
-        $permission = Permission::findOrFail($id);
-
-        return view("admin.permissions.edit", [
-            'permission' => $permission
-        ]);
-    }
-
-    public function permissions_update($id, Request $request){
-        $permission = Permission::findOrFail($id);
-
-        $validator = Validator::make($request->all(), [ 
-            'name' => 'required|min:3|unique:permissions,name,'.$id.',id'
-        ]);        
-
-        if($validator->passes()){
-            $permission->name = $request->name;
-            $permission->save();
-
-            return redirect()->route('configurations.index')->with('success','Permission updated successfully.');
-        } else {
-            return redirect()->route('permissions.edit',$id)->withInput()->withErrors($validator);
-        }
-    }
-
-    //Permission Delete
-    public function permission_delete($id, Request $request){
-        $permission = Permission::find($id);
-        $permission->delete();
-
-        $request->session()->flash('success','Permission deleted successfully');
-        return redirect()->route('configurations.index')->with('success','Permission deleted successfully.');
-    }
-
-    //Roles
-    public function role_store(Request $request){
-        $validator = Validator::make($request->all(), [ 
-            'name' => 'required|unique:roles|min:3'
-        ]);        
-
-        if($validator->passes()){
-            $role = Role::create([ 'name' => $request->name ]);
-
-            if(!empty($request->permission)){
-                foreach ($request->permission as $name) {
-                    $role->givePermissionTo($name);
-                }
-            }
-
-            return redirect()->route('configurations.index')->with('success','Role added successfully.');
-        } else {
-            return redirect()->route('roles.create')->withInput()->withErrors($validator);
-        }
-    }
-
-
-    public function role_edit($id){
-        $role = Role::findOrFail($id);
-
-        return view("admin.permissions.edit", [
-            'role' => $role
-        ]);
-    }
-
-    public function role_update($id, Request $request){
-        $role = Role::findOrFail($id);
-
-        $validator = Validator::make($request->all(), [ 
-            'name' => 'required|min:3|unique:role,name,'.$id.',id'
-        ]);        
-
-        if($validator->passes()){
-            $role->name = $request->name;
-            $role->save();
-
-            return redirect()->route('configurations.index')->with('success','Role updated successfully.');
-        } else {
-            return redirect()->route('permissions.edit',$id)->withInput()->withErrors($validator);
-        }
-    }
-
-    //Role Delete
-    public function role_delete($id, Request $request){
-        $roles = Role::find($id);
-        $roles->delete();
-
-        $request->session()->flash('success','Role deleted successfully');
-
-        return redirect()->route('configurations.index')->with('success','Role deleted successfully.');
-    } 
-
-
-    
     //Pages
     public function page_store(Request $request){
         $validator = Validator::make($request->all(), [

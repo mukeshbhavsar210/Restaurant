@@ -19,17 +19,7 @@ class PermissionController extends Controller implements HasMiddleware
             ];
         }
 
-    public function index(){
-        $permissions = Permission::orderBy('created_at','DESC')->paginate(10);
-
-        return view("admin.permissions.list", [
-            'permissions' => $permissions
-        ]);
-    }
-
-    public function create(){
-        return view("admin.permissions.create");
-    }    
+ 
 
     public function store(Request $request){
         $validator = Validator::make($request->all(), [ 
@@ -39,7 +29,7 @@ class PermissionController extends Controller implements HasMiddleware
         if($validator->passes()){
             Permission::create([ 'name' => $request->name ]);
 
-            return redirect()->route('permissions.index')->with('success','Permission added successfully.');
+            return redirect()->route('configurations.index')->with('success','Permission added successfully.');
         } else {
             return redirect()->route('permissions.create')->withInput()->withErrors($validator);
         }
@@ -48,7 +38,7 @@ class PermissionController extends Controller implements HasMiddleware
     public function edit($id){
         $permission = Permission::findOrFail($id);
 
-        return view("admin.permissions.edit", [
+        return view("admin.configurations.permission_edit", [
             'permission' => $permission
         ]);
     }
@@ -64,29 +54,20 @@ class PermissionController extends Controller implements HasMiddleware
             $permission->name = $request->name;
             $permission->save();
 
-            return redirect()->route('permissions.index')->with('success','Permission updated successfully.');
+            return redirect()->route('configurations.index')->with('success','Permission updated successfully.');
         } else {
             return redirect()->route('permissions.edit',$id)->withInput()->withErrors($validator);
         }
     }
 
-    public function destroy(Request $request){
-        $id = $request->id;
 
-        $permission = Permission::findOrFail($id);
-
-        if($permission == null){
-            session()->flash('error','Permission not found');
-            return response()->json([
-                'status' => false
-            ]);
-        }
-
+    public function destroy($id, Request $request){
+        $permission = Permission::find($id);
         $permission->delete();
 
-        session()->flash('success','Permission deleted successfully');
-        return response()->json([
-            'status' => true
-        ]);
+        $request->session()->flash('success','Permission deleted successfully');
+        return redirect()->route('configurations.index')->with('success','Permission deleted successfully.');
     }
+
+   
 }

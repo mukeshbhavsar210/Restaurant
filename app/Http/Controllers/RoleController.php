@@ -20,20 +20,20 @@ class RoleController extends Controller implements HasMiddleware
             ];
     }
 
-    public function index(){
-        $roles = Role::orderBy('created_at','DESC')->paginate(10);
+    // public function index(){
+    //     $roles = Role::orderBy('created_at','DESC')->paginate(10);
         
-        return view("admin.roles.list", [
-            'roles' => $roles
-        ]);
-    }
+    //     return view("admin.roles.list", [
+    //         'roles' => $roles
+    //     ]);
+    // }
 
-    public function create(){
-        $permissions = Permission::orderBy('name','ASC')->get();
-        return view("admin.roles.create", [
-            'permissions' => $permissions
-        ]);
-    }
+    // public function create(){
+    //     $permissions = Permission::orderBy('name','ASC')->get();
+    //     return view("admin.roles.create", [
+    //         'permissions' => $permissions
+    //     ]);
+    // }
 
     public function store(Request $request){
         $validator = Validator::make($request->all(), [ 
@@ -49,7 +49,7 @@ class RoleController extends Controller implements HasMiddleware
                 }
             }
 
-            return redirect()->route('roles.index')->with('success','Role added successfully.');
+            return redirect()->route('configurations.index')->with('success','Role added successfully.');
         } else {
             return redirect()->route('roles.create')->withInput()->withErrors($validator);
         }
@@ -61,7 +61,7 @@ class RoleController extends Controller implements HasMiddleware
         $hasPermissions = $role->permissions->pluck('name');
         $permissions = Permission::orderBy('name','ASC')->get();
 
-        return view("admin.roles.edit", [
+        return view("admin.configurations.roles_edit", [
             'role' => $role,
             'permissions' => $permissions,
             'hasPermissions' => $hasPermissions
@@ -87,31 +87,39 @@ class RoleController extends Controller implements HasMiddleware
                 $role->syncPermissions([]);
             }
 
-            return redirect()->route('roles.index')->with('success','role updated successfully.');
+            return redirect()->route('configurations.index')->with('success','role updated successfully.');
         } else {
             return redirect()->route('roles.edit',$id)->withInput()->withErrors($validator);
         }
     }
 
 
+    public function destroy($id, Request $request){
+        $roles = Role::find($id);
+        $roles->delete();
 
-    public function destroy(Request $request){
-        $id = $request->id;
+        $request->session()->flash('success','Role deleted successfully');
 
-        $role = Role::findOrFail($id);
+        return redirect()->route('configurations.index')->with('success','Role deleted successfully.');
+    } 
 
-        if($role == null){
-            session()->flash('error','Role not found');
-            return response()->json([
-                'status' => false
-            ]);
-        }
+    // public function destroy(Request $request){
+    //     $id = $request->id;
 
-        $role->delete();
+    //     $role = Role::findOrFail($id);
 
-        session()->flash('success','Role deleted successfully');
-        return response()->json([
-            'status' => true
-        ]);
-    }
+    //     if($role == null){
+    //         session()->flash('error','Role not found');
+    //         return response()->json([
+    //             'status' => false
+    //         ]);
+    //     }
+
+    //     $role->delete();
+
+    //     session()->flash('success','Role deleted successfully');
+    //     return response()->json([
+    //         'status' => true
+    //     ]);
+    // }
 }

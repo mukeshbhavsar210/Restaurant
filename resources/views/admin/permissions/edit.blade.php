@@ -12,7 +12,7 @@
                     <h4>Edit Permission</h4>
                 </div>
                 <div class="col-sm-6 text-right">
-                    <a href="{{ route('permissions.index') }}" class="btn btn-primary float-end">Back</a>
+                    <a href="{{ route('configurations.index') }}" class="btn btn-primary float-end">Back</a>
                 </div>
             </div>        
                        

@@ -53,7 +53,7 @@
                 <div class="accordion" id="accordionExample">
                     <div class="accordion-item">
                         <h5 class="accordion-header m-0" id="headingOne">
-                            <button class="accordion-button fw-semibold" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                            <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
                                 Company Details
                             </button>
                         </h5>
@@ -147,7 +147,7 @@
                     </div>
                     <div class="accordion-item">
                         <h5 class="accordion-header m-0" id="headingTwo">
-                            <button class="accordion-button fw-semibold collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
                                 Theme
                             </button>
                         </h5>
@@ -196,7 +196,7 @@
                     </div>
                     <div class="accordion-item">
                         <h5 class="accordion-header m-0" id="headingThree">
-                            <button class="accordion-button collapsed fw-semibold" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
                                 Payment Gateway
                             </button>
                         </h5>
@@ -234,7 +234,7 @@
                     </div>
                     <div class="accordion-item">
                         <h5 class="accordion-header m-0" id="headingFour">
-                            <button class="accordion-button collapsed fw-semibold" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFour" aria-expanded="false" aria-controls="collapseFour">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFour" aria-expanded="false" aria-controls="collapseFour">
                                 Website
                             </button>
                         </h5>
@@ -269,13 +269,13 @@
                         @foreach ($branches as $key => $value)
                             <div class="accordion-item">                                    
                                 <div class="accordion-header" id="heading{{ $value->id }}">
-                                    <button class="accordion-button p-xl-2 {{ $key != 0 ? 'collapsed' : '' }}"
+                                    <button class="accordion-button {{ $key != 0 ? 'collapsed' : '' }}"
                                             type="button" data-bs-toggle="collapse"
                                             data-bs-target="#collapse{{ $value->id }}"
                                             aria-expanded="{{ $key == 0 ? 'true' : 'false' }}"
                                             aria-controls="collapse{{ $value->id }}">
 
-                                            <h5 class="mb-0 mt-1">{{ $value->area_name }} - {{ $value->total_seats }}</h5>                                                    
+                                            {{ $value->area_name }} - {{ $value->total_seats }}
                                     </button>
                                 </div>
 
@@ -363,48 +363,41 @@
                         @foreach ($pages as $key => $value)
                             <div class="accordion-item">
                                 <div class="accordion-header" id="heading{{ $value->id }}">
-                                    <button class="accordion-button p-xl-2 {{ $key != 0 ? 'collapsed' : '' }}"
+                                    <button class="accordion-button {{ $key != 0 ? 'collapsed' : '' }}"
                                             type="button" data-bs-toggle="collapse"
                                             data-bs-target="#collapse{{ $value->id }}"
                                             aria-expanded="{{ $key == 0 ? 'true' : 'false' }}"
                                             aria-controls="collapse{{ $value->id }}">
-                                            
-                                            <div class="container">
-                                                <div class="row">
-                                                    <div class="col-11">
-                                                        <h5 class="mb-0 mt-1">{{ $value->page_name }}</h5>
-                                                    </div>
-                                                    <div class="col-1">
-                                                        <div class="flex">
-                                                            <a href="javascript:void(0)"
-                                                                class="editPage edit-icon"
-                                                                data-bs-toggle="modal"
-                                                                data-bs-target="#createPageModal"
-                                                                data-action="{{ route('pages.update', $value->id) }}"
-                                                                data-method="PUT"
-                                                                data-title="Edit Page"
-                                                                data-button="Update Page"
-                                                                data-page_name="{{ $value->page_name }}"
-                                                                data-page_slug="{{ $value->page_slug }}"
-                                                                data-content="{{ $value->content }}" >
-                                                                <span class="sprites"></span>
-                                                            </a>
 
-                                                            <a href="javascript:void(0)" class="delete-icon commonDeleteBtn"
-                                                                data-bs-toggle="modal" data-bs-target="#commonDeleteModal"
-                                                                data-url="{{ route('pages.delete', $value->id) }}" data-title="{{ $value->page_name }}">
-                                                                <span class="sprites"></span>
-                                                            </a>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
+                                            {{ $value->page_name }}
                                     </button>                                            
                                 </div>
                                 
                                 <div id="collapse{{ $value->id }}" class="accordion-collapse collapse {{ $key == 0 ? 'show' : '' }}" aria-labelledby="heading{{ $value->id }}" data-bs-parent="#accordionExample">                                
                                     <div class="accordion-body">                                                
                                         {!! $value->content !!}
+
+                                        <div class="flex">
+                                            <a href="javascript:void(0)"
+                                                class="editPage btn btn-outline-primary btn-sm"
+                                                data-bs-toggle="modal"
+                                                data-bs-target="#createPageModal"
+                                                data-action="{{ route('pages.update', $value->id) }}"
+                                                data-method="PUT"
+                                                data-title="Edit Page"
+                                                data-button="Update Page"
+                                                data-page_name="{{ $value->page_name }}"
+                                                data-page_slug="{{ $value->page_slug }}"
+                                                data-content="{{ $value->content }}" >
+                                                Edit
+                                            </a>
+
+                                            <a href="javascript:void(0)" class="btn btn-outline-danger btn-sm commonDeleteBtn"
+                                                data-bs-toggle="modal" data-bs-target="#commonDeleteModal"
+                                                data-url="{{ route('pages.delete', $value->id) }}" data-title="{{ $value->page_name }}">
+                                                Delete
+                                            </a>
+                                        </div>
                                     </div>
                                 </div>
                             </div> 
@@ -428,47 +421,29 @@
                         <button type="button" class="btn btn-primary float-end" data-bs-toggle="modal" data-bs-target="#{{ $permissionForm['modal_id'] }}">{{ $permissionForm['button_modal'] }}</button>                                
                     </div>
                 </div>  
-
-                <div class="table-responsive mt-2">
-                    <table class="table mb-0">
-                        <thead class="table-light">
-                            <tr>
-                                <th class="border-top-0">Name</th>
-                                <th class="border-top-0" width="150">Author</th>
-                                <th class="border-top-0" width="150">Date</th>
-                                <th class="border-top-0 text-end" width="100">Action</th>
-                            </tr>
-                        </thead>                     
-                        <tbody>
-                        @if($permissions->isNotEmpty())
-                            @foreach ($permissions as $value)
-                                <tr>
-                                    <td>{{ $value->permission_name }}</td>
-                                    <td>{{ $value->guard_name }}</td>
-                                    <td>{{ \Carbon\Carbon::parse($value->created_at)->format('d M, Y') }}</td>
-                                    <td class="text-end">
-                                        <div class="flex">
-                                            <a href="javascript:void(0)" class="edit-icon editPermissionModal"
-                                                data-bs-toggle="modal" 
-                                                data-bs-target="#createPermissionModal"
-                                                data-action="{{ route('permissions.update', $value->id) }}"
-                                                data-permission_name="{{ $value->permission_name }}"
-                                                data-button="Update Permission" >
-                                                <span class="sprites"></span>                                            
-                                            </a>
-
-                                            <a href="javascript:void(0)" class="delete-icon commonDeleteBtn"
-                                                data-bs-toggle="modal" data-bs-target="#commonDeleteModal"
-                                                data-url="{{ route('permissions.delete', $value->id) }}" data-title="Permission">
-                                                <span class="sprites"></span>
-                                            </a>
-                                        </div>
-                                    </td>
-                                </tr>
-                            @endforeach
-                        @endif                            
-                    </tbody>
-                </table>                 
+                
+                <div class="card-small">  
+                    @if($permissions->isNotEmpty())
+                        @foreach ($permissions as $value)                    
+                        <div class="card-small-body">
+                            <div>{{ ucwords($value->name) }}</div>
+                            <div class="flex">
+                                @can('edit permissions')
+                                    <a href="{{ route("permissions.edit", $value->id) }}" class="edit-icon">
+                                        <span class="sprites"></span>
+                                    </a>
+                                @endcan
+                                @can('delete permissions')
+                                    <a href="javascript:void(0)" class="delete-icon commonDeleteBtn"
+                                        data-bs-toggle="modal" data-bs-target="#commonDeleteModal"
+                                        data-url="{{ route('permissions.destroy', $value->id) }}" data-title="{{ ucwords($value->name) }}">
+                                        <span class="sprites"></span>
+                                    </a>
+                                @endcan
+                            </div>
+                        </div>
+                    @endforeach
+                @endif                 
             </div>
         </div>
 
@@ -485,64 +460,56 @@
                 </div>
             </div>
 
-            <div class="table-responsive mt-2">
-                <table class="table mb-0">
-                    <thead class="table-light">
-                        <tr>
-                            <th class="border-top-0">Role Name</th>
-                            <th class="border-top-0">Permissions</th>
-                            <th class="border-top-0 text-end" width="150">Counts</th>
-                            <th class="border-top-0 text-end" width="150">Date</th>
-                            <th class="border-top-0 text-end" width="100">Action</th>
-                        </tr>
-                    </thead>                     
-                    <tbody>                    
-                        @if($roles->isNotEmpty())
-                            @foreach ($roles as $value)
-                                <tr>
-                                    <td>
-                                        <h5 class="mb-0">{{ $value->name }}</h5>                                            
-                                    </td>
-                                    <td>
-                                        <p class="text-muted">                                                                                           
-                                            @if($value->name == 'Super Admin')
-                                                <b>You're Super Admin, So not required any permission</b>
-                                            @else
-                                                {{ $value->permissions->pluck('name')->implode(", ") }}
-                                            @endif
-                                        </p>
-                                    </td>
-                                    <td class="text-end">
-                                        @if($value->name == 'Super Admin')
-                                            <span class="count-sub">All permissions</span>
-                                        @else
-                                            <span class="count-sub">{{ $value->permissions->count('name') }}</span>
-                                        @endif
-                                    </td>
-                                    <td class="text-end">{{ \Carbon\Carbon::parse($value->created_at)->format('d M, Y') }}</td>
-                                    <td>
-                                        <div class="flex">
-                                            <a href="javascript:void(0)" class="edit-icon editRoleModal"
-                                                data-bs-toggle="modal" 
-                                                data-bs-target="#createRoleModal"
-                                                data-action="{{ route('roles.update', $value->id) }}"
-                                                data-name="{{ $value->name }}"
-                                                data-button="Update Role" >
-                                                <span class="sprites"></span>                                            
-                                            </a>
+            <div class="accordion mt-2" id="accordionExample">            
+                @if($roles->isNotEmpty())
+                    @foreach ($roles as $key => $value)
+                        <div class="accordion-item">                                    
+                            <h5 class="accordion-header" id="heading{{ $value->id }}">
+                                <button class="accordion-button {{ request('open') != $value->id ? 'collapsed' : '' }}"
+                                    type="button" data-bs-toggle="collapse" data-bs-target="#collapse{{ $value->id }}"
+                                    aria-expanded="{{ request('open') == $value->id ? 'true' : 'false' }}"
+                                    aria-controls="collapse{{ $value->id }}"
+                                    data-id="{{ $value->id }}">
 
-                                            <a href="javascript:void(0)" class="delete-icon commonDeleteBtn"
-                                                data-bs-toggle="modal" data-bs-target="#commonDeleteModal"
-                                                data-url="{{ route('roles.delete', $value->id) }}" data-title="Permission">
-                                                <span class="sprites"></span>
-                                            </a>
-                                        </div>                                          
-                                    </td> 
-                                </tr>
-                            @endforeach
-                        @endif
-                    </tbody>
-                </table>
+                                    {{ ucfirst($value->name) }}
+                                    @if($value->name !== 'superadmin')
+                                        - <span class="counts">{{ $value->permissions->count('name') }}</span>
+                                    @endif                                        
+                                </button>
+                            </h5>                            
+
+                            <div id="collapse{{ $value->id }}" class="accordion-collapse collapse {{ request('open') == $value->id ? 'show' : '' }}"
+                                    aria-labelledby="heading{{ $value->id }}" data-bs-parent="#accordionExample">
+                                <div class="accordion-body">                                       
+                                    <p>
+                                        @if($value->name !== 'superadmin')
+                                            {{ ucwords($value->permissions->pluck('name')->implode(", ")) }}
+                                        @endif
+                                    </p>        
+                                                                        
+                                    <p class="text-muted">{{ \Carbon\Carbon::parse($value->created_at)->format('d M, Y') }}</p>
+
+                                    <div class="flex">   
+                                        @if($value->name !== 'superadmin')                                            
+                                            @can('edit roles')
+                                                <a href="{{ route("roles.edit", $value->id) }}" class="btn btn-outline-primary btn-sm">
+                                                    Edit
+                                                </a>
+                                            @endcan
+                                            @can('delete roles')
+                                                <a href="javascript:void(0)" class="btn btn-outline-danger btn-sm commonDeleteBtn"
+                                                    data-bs-toggle="modal" data-bs-target="#commonDeleteModal"
+                                                    data-url="{{ route('roles.destroy', $value->id) }}" data-title="{{ ucfirst($value->name) }}">
+                                                    Delete
+                                                </a>
+                                            @endcan                                      
+                                        @endif
+                                    </div>
+                                </div>
+                            </div>
+                        </div>                   
+                    @endforeach
+                @endif
             </div>
         </div>
 
@@ -555,44 +522,67 @@
                     </div>
                 </div>
                 <div class="col-md-5 col-12">
-                    <button type="button" class="btn btn-primary float-end" data-bs-toggle="modal" data-bs-target="#{{ $roleForm['modal_id'] }}">{{ $roleForm['button_modal'] }}</button>                                
+                    <button type="button" class="btn btn-primary float-end" data-bs-toggle="modal" data-bs-target="#{{ $roleForm['modal_id'] }}">{{ $roleForm['button_modal'] }}</button>
                 </div>
             </div>
 
             <div class="table-responsive mt-2">
-                <table class="table mb-0">
+                <table class="table mb-0 checkbox-all dataTable-table">
                     <thead class="table-light">
                         <tr>
-                            <th class="border-top-0">User Name</th>
-                            <th class="border-top-0">Email</th>                                                    
-                            <th class="border-top-0 text-end" width="100">Action</th>
+                            <th class="ps-0" data-sortable="" style="width: 18.5247%;">
+                                <a href="#" class="dataTable-sorter">Customer</a>
+                            </th>
+                            <th data-sortable="" style="width: 27.4937%;">
+                                <a href="#" class="dataTable-sorter">Email</a>
+                            </th>
+                            <th data-sortable="" style="width: 17.0997%;">
+                                <a href="#" class="dataTable-sorter">Phone No</a>
+                            </th>
+                            <th data-sortable="" style="width: 13.3277%;">
+                                <a href="#" class="dataTable-sorter">Status</a>
+                            </th>
+                            <th class="text-end" data-sortable="" style="width: 10.3101%;">
+                                <a href="#" class="dataTable-sorter">Action</a>
+                            </th>
                         </tr>
-                    </thead>                     
+                    </thead>                  
                     <tbody>                    
                         @if($users->isNotEmpty())
                             @foreach ($users as $value)
-                                <tr>
-                                    <td><h5 class="mb-0">{{ $value->name }}</h5></td>
-                                    <td>{{ $value->email }}</td>                                                                        
-                                    <td>
-                                        <div class="flex">
-                                            <a href="javascript:void(0)" class="edit-icon editUserModal"
-                                                data-bs-toggle="modal" 
-                                                data-bs-target="#createUserModal"
-                                                data-action="{{ route('users.update', $value->id) }}"
-                                                data-name="{{ $value->name }}"
-                                                data-button="Update Role" >
-                                                <span class="sprites"></span>                                            
-                                            </a>
-
-                                            <a href="javascript:void(0)" class="delete-icon commonDeleteBtn"
+                            <tr>                               
+                                <td class="ps-0">
+                                    <img src="assets/images/users/avatar-2.jpg" alt="" class="thumb-md d-inline rounded-circle me-1">
+                                    <p class="d-inline-block align-middle mb-0">
+                                        <span class="font-13 fw-medium">{{ $value->name }}</span> 
+                                    </p>
+                                </td>
+                                <td>
+                                    <a href="" class="d-inline-block align-middle mb-0 text-body">{{ $value->email }}</a> 
+                                </td>
+                                <td>{{ $value->mobile }}</td>
+                                <td>
+                                    @if($value->status == 1)
+                                       <span class="badge bg-success-subtle text-success">Active</span>
+                                    @else
+                                        <span class="badge bg-secondary-subtle text-secondary">Inactive</span>
+                                    @endif                                    
+                                </td>                                
+                                <td class="text-end">                                        
+                                    @if($value->name !== 'superadmin')                                    
+                                        @can('edit users')
+                                            <a href="{{ route("users.edit", $value->id) }}"><i class="las la-pen text-secondary fs-18"></i></a>                                            
+                                        @endcan  
+                                        @can('delete users')
+                                            <a href="javascript:void(0)" class="commonDeleteBtn"
                                                 data-bs-toggle="modal" data-bs-target="#commonDeleteModal"
-                                                data-url="{{ route('users.delete', $value->id) }}" data-title="Permission">
-                                                <span class="sprites"></span>
+                                                data-url="{{ route('users.destroy', $value->id) }}" data-title="{{ $value->name }}">
+                                                <i class="las la-trash-alt text-secondary fs-18"></i>
                                             </a>
-                                        </div>                                          
-                                    </td> 
-                                </tr>
+                                        @endcan
+                                    @endif
+                                </td>
+                            </tr>                               
                             @endforeach
                         @endif
                     </tbody>
@@ -688,6 +678,14 @@
 
     $(document).ready(function () {
         $('.green').addClass('blink');
+    });
+
+    $('.accordion-button').on('click', function () {
+        let id = $(this).data('id');
+        let url = new URL(window.location.href);
+
+        url.searchParams.set('open', id);
+        window.history.replaceState({}, '', url);
     });
 </script>
 @endsection
