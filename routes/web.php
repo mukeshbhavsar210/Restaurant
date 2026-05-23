@@ -118,7 +118,7 @@ Route::group(['prefix' => 'admin'], function(){
         //Settings Routes
         Route::controller(SettingController::class)->group(function() {
             Route::get('/settings', 'index')->name('settings.index');
-            Route::post('/settings/website_information', 'websiteInformation')->name('settings.websiteInformation');                
+            //Route::post('/settings/website_information', 'websiteInformation')->name('settings.websiteInformation');                
             Route::post('/settings/branch', 'branch')->name('settings.branch');                
             //Route::post("/updateWebsiteLogo",'update_logo')->name('website.logo');
         });
@@ -167,9 +167,11 @@ Route::group(['prefix' => 'admin'], function(){
             Route::get('/configurations', 'index')->name('configurations.index');
             Route::get('/configurations/create', 'configurations_create')->name('configurations.create');
             Route::post('/configurations', 'configurations_store')->name('configurations.store');
+            Route::post('/configurations/restaurant', 'configurations_update')->name('configurations.update');
+
             Route::post('/configurations/theme', 'store_theme')->name('configurations.theme');
-            Route::get('/configurations/{id}/edit', 'configurations_edit')->name('configurations.edit');
-            Route::post('/configurations/{id}', 'configurations_update')->name('configurations.update');
+            Route::get('/configurations/{id}/edit', 'configurations_edit')->name('configurations.edit');            
+            //Route::post('/configurations/{id}', 'configurations_update')->name('configurations.update');
             Route::delete('/configurations', 'configurations_destroy')->name('configurations.destroy');
             Route::post('/configurations/payment', 'store_payment')->name('payment.store');
 
@@ -191,6 +193,8 @@ Route::group(['prefix' => 'admin'], function(){
             Route::get('/page/delete/{id}', 'page_delete')->name('pages.delete');                                  
             
             Route::get('/logout', 'logout')->name('users.logout');
+
+            
         });        
         
         //Temp image controller
