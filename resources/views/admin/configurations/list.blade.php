@@ -59,20 +59,19 @@
                         </h5>
                         <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#accordionExample" style="">
                             <div class="accordion-body">
-                                @if ($configurations->count())
+                                @if ($config->count())
                                     <div class="row pt-2">
                                         <div class="col-md-8">
                                             <div class="row">
                                                 <div class="col-md-3">
-                                                    <img style="width:100%;" src="{{ asset('uploads/logo/'.$configurations->pluck('logo')->implode('')) }}" />
+                                                    <img style="width:100%;" src="{{ asset('uploads/logo/'.$config->pluck('logo')->implode('')) }}" />
                                                 </div>
                                                 <div class="col-md-9">
-                                                    <h2 class="mb-1">{{ $configurations->pluck('name')->implode('') }}</h2>
-                                                    <p>{{ $configurations->pluck('address')->implode('') }}<br />
-                                                    Email: {{ $configurations->pluck('email')->implode('') }}<br />
-                                                    Mobile: {{ $configurations->pluck('phone')->implode('') }}</p>
-                                                    <a href="javascript:0" class="btn btn-primary float-right" data-bs-toggle="modal" data-bs-target="#editCompanyModal">Edit</a>
-                                                    {{-- <a href="{{ route('configurations.edit', $configurations->pluck('id')->implode('') ) }}" class="btn btn-primary">Edit</a> --}}
+                                                    <h2 class="mb-1">{{ $config->pluck('name')->implode('') }}</h2>
+                                                    <p>{{ $config->pluck('address')->implode('') }}<br />
+                                                    Email: {{ $config->pluck('email')->implode('') }}<br />
+                                                    Mobile: {{ $config->pluck('phone')->implode('') }}</p>
+                                                    <a href="javascript:0" class="btn btn-primary float-right" data-bs-toggle="modal" data-bs-target="#editCompanyModal">Edit</a>                                                    
                                                 </div>
                                             </div>
                                         </div>                                                
@@ -82,10 +81,80 @@
                                         <div class="modal-dialog" role="document">
                                             <div class="modal-content">
                                                 <div class="modal-header">
-                                                    <h5 class="modal-title" id="exampleModalLabel">Update</h5>
+                                                    <h5 class="modal-title" id="exampleModalLabel">Update Details</h5>
                                                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                                 </div>
-                                            </div>                                
+                                                <form action="{{ route('configurations.update') }}" method="post" enctype="multipart/form-data">
+                                                    @csrf
+                                                    <div class="modal-body">                                                    
+                                                        <div class="form-group">
+                                                            <label for="name">Restaurant Name*</label>
+                                                            <input type="text" id="name" name="name" placeholder="Restaurant Name" class="form-control" value="{{ old('name', $config->name ?? '') }}">
+                                                            <p></p>
+                                                        </div>                                                                                                                                                                       
+                                                        <div class="form-group">
+                                                            <label for="email">Email*</label>
+                                                            <input type="email" id="email" name="email" placeholder="Enter Email" class="form-control" value="{{ old('email', $config->email ?? '') }}">
+                                                            <p></p>
+                                                        </div>
+                                                        <div class="row">
+                                                            <div class="col-5">
+                                                                <div class="form-group">
+                                                                    <label for="phone">Phone*</label>
+                                                                    <input type="text" id="phone" name="phone" placeholder="phone" class="form-control" value="{{ old('phone', $config->phone ?? '') }}">
+                                                                    <p></p>
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-7">
+                                                                <div class="form-group">
+                                                                    <label for="image">Logo</label>
+                                                                    <input type="file" class="form-control" name="logo" />
+                                                                </div> 
+                                                            </div>                                                            
+                                                        </div>
+
+                                                        <div class="form-group">
+                                                            <label for="address">Address*</label>
+                                                            <textarea type="text" id="address" rows="3" cols="30" name="address" placeholder="address" class="form-control">{{ old('address', $config->address ?? '') }}</textarea>
+                                                            <p></p>
+                                                        </div> 
+                                                        
+                                                        <div class="row">
+                                                            <div class="col-6">
+                                                                <div class="form-group">
+                                                                    <label for="primary_color">Primary</label>
+                                                                    <input name="primary_color" type="color" class="form-control" value="{{ old('primary_color', $config->primary_color ?? '') }}" />
+                                                                    <div class="theme-primary" style="background-color: {{ $theme->pluck('primary_color')->implode('') }}"></div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-6">
+                                                                <div class="form-group">
+                                                                    <label for="secondary_color">Secondary</label>
+                                                                    <input name="secondary_color" type="color" class="form-control" value="{{ old('secondary_color', $config->secondary_color ?? '') }}" />
+                                                                    <div class="theme-primary" style="background-color: {{ $theme->pluck('secondary_color')->implode('') }}"></div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="row">
+                                                            <div class="col-5">
+                                                                <div class="form-group">
+                                                                    <label for="payment_key_id">Payment key id</label>
+                                                                    <input type="text" id="payment_key_id" name="payment_key_id" placeholder="Payment key id" class="form-control" value="{{ old('payment_key_id', $config->payment_key_id ?? '') }}">                                                                    
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-7">
+                                                                <div class="form-group">
+                                                                    <label for="payment_key_secret">Payment key secret</label>
+                                                                    <input type="text" id="payment_key_secret" name="payment_key_secret" placeholder="Payment key secret" class="form-control" value="{{ old('payment_key_secret', $config->payment_key_secret ?? '') }}">
+                                                                </div> 
+                                                            </div>                                                            
+                                                        </div>
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <button type="submit" class="btn btn-primary">Update details</button>
+                                                    </div>
+                                                </form>
+                                            </div>
                                         </div>
                                     </div>
                                 @else
@@ -135,7 +204,7 @@
                                                                 <p class="text-red-400 font-small">{{ $message }}</p>
                                                             @enderror
                                                         </div>
-                                                    </div>
+                                                    </div>                                                    
                                                 </div>
                                                 <button class="btn btn-primary">Submit</button>
                                             </form>
@@ -145,55 +214,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="accordion-item">
-                        <h5 class="accordion-header m-0" id="headingTwo">
-                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
-                                Theme
-                            </button>
-                        </h5>
-                        <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent="#accordionExample" style="">
-                            <div class="accordion-body">                                        
-                                <form action="{{ route('configurations.theme') }}" method="post" enctype="multipart/form-data">
-                                    @csrf
-                                    <div class="row">                                
-                                        <div class="col-md-1">
-                                            <div class="form-group">
-                                                <label>Primary</label>
-                                                <input name="primary_color" type="color" class="form-control" value="{{ old('primary_color') }}" />
-                                                <div class="theme-primary" style="background-color: {{ $theme->pluck('primary_color')->implode('') }}"></div>
-                                                @error('primary_color')
-                                                    <p class="text-red-400 font-small">{{ $message }}</p>
-                                                @enderror
-                                            </div>
-                                        </div>
-                                        <div class="col-md-1">
-                                            <div class="form-group">
-                                                <label>Secondary</label>
-                                                <input name="secondary_color" type="color" class="form-control" value="{{ old('secondary_color') }}" />
-                                                <div class="theme-primary" style="background-color: {{ $theme->pluck('secondary_color')->implode('') }}"></div>
-                                                @error('secondary_color')
-                                                    <p class="text-red-400 font-small">{{ $message }}</p>
-                                                @enderror
-                                            </div>
-                                        </div>
-                                        <div class="col-md-1">
-                                            <div class="form-group">
-                                                <label>Sidebar</label>
-                                                <input name="sidebar_color" type="color" class="form-control" value="{{ old('sidebar_color') }}" />
-                                                <div class="theme-primary" style="background-color: {{ $theme->pluck('sidebar_color')->implode('') }}"></div>
-                                                @error('sidebar_color')
-                                                    <p class="text-red-400 font-small">{{ $message }}</p>
-                                                @enderror
-                                            </div>
-                                        </div>
-                                        <div class="col-md-1">
-                                            <button class="btn btn-primary mt-2">Submit</button>
-                                        </div>
-                                    </div>
-                                </form> 
-                            </div>
-                        </div>
-                    </div>
+                    
                     <div class="accordion-item">
                         <h5 class="accordion-header m-0" id="headingThree">
                             <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
@@ -201,46 +222,21 @@
                             </button>
                         </h5>
                         <div id="collapseThree" class="accordion-collapse collapse" aria-labelledby="headingThree" data-bs-parent="#accordionExample">
-                            <div class="accordion-body">                                        
-                                {{ $configurations->pluck('taxes')->implode('') }}
-                                {{ $configurations->pluck('percentages')->implode('') }} %
-                                {{ $configurations->pluck('plan')->implode('') }}
-
-                                @if ($payments->count())
-                                    <p>Your Key ID: {{ $payments->pluck('your_key_id')->implode('') }}<br />
-                                    Your Key ID: {{ $payments->pluck('your_key_secret')->implode('') }}</p>
-                                @else
-                                    <form action="{{ route('payment.store') }}" method="post">
-                                        @csrf
-                                        <div class="form-group">
-                                            <label>Your Key ID</label>
-                                            <input type="text" name="your_key_id" id="your_key_id" class="form-control" placeholder="Your Key ID" >
-                                            @error('your_key_id')
-                                                <p class="text-red-400 font-small">Key ID</p>
-                                            @enderror
-                                        </div>
-                                        <div class="form-group">
-                                            <label>Your Key Secret</label>
-                                            <input type="text" name="your_key_secret" id="your_key_secret" class="form-control" placeholder="Your Key ID">
-                                            @error('your_key_secret')
-                                                <p class="text-red-400 font-small">Secret Key</p>
-                                            @enderror
-                                        </div>
-                                        <button type="submit" class="btn btn-primary">Submit</button>
-                                    </form> 
-                                @endif   
+                            <div class="accordion-body">    
+                                Payment Key Id: {{ $config->pluck('payment_key_id')->implode('') }}<br />
+                                Payment Key Secret: {{ $config->pluck('payment_key_secret')->implode('') }}<br />
                             </div>
                         </div>
                     </div>
                     <div class="accordion-item">
                         <h5 class="accordion-header m-0" id="headingFour">
                             <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFour" aria-expanded="false" aria-controls="collapseFour">
-                                Website
+                                Plan
                             </button>
                         </h5>
                         <div id="collapseFour" class="accordion-collapse collapse" aria-labelledby="headingFour" data-bs-parent="#accordionExample">
                             <div class="accordion-body">                                        
-                                Website  
+                                Website
                             </div>
                         </div>
                     </div>
@@ -617,59 +613,7 @@
         
 @section('customJs')
 <script type="text/javascript">
-    $("#addingTableForm").submit(function(event){
-        event.preventDefault();
-
-        var element = $('#addingTableForm');
-        $("button[type=submit]").prop('disabled', true);
-
-        $.ajax({
-            url: '{{ route("seatings.store") }}',
-            type: 'post',
-            data: element.serializeArray(),
-            dataType: 'json',
-            success: function(response){
-                $("button[type=submit]").prop('disabled', false);
-
-                if(response["status"] == true){
-                    window.location.href="{{ route('configurations.index') }}"
-                    $('#name').removeClass('is-invalid')
-                    .siblings('p')
-                    .removeClass('invalid-feedback').html("");
-                    
-                    $('#category').removeClass('is-invalid')
-                    .siblings('p')
-                    .removeClass('invalid-feedback').html("");
-
-                } else {
-                    var errors = response['errors']
-                    if(errors['name']){
-                        $('#name').addClass('is-invalid')
-                        .siblings('p')
-                        .addClass('invalid-feedback').html(errors['name']);
-                    } else {
-                        $('#name').removeClass('is-invalid')
-                        .siblings('p')
-                        .removeClass('invalid-feedback').html("");
-                    }
-                    
-                    if(errors['category']){
-                        $('#category').addClass('is-invalid')
-                        .siblings('p')
-                        .addClass('invalid-feedback').html(errors['category']);
-                    } else {
-                        $('#category').removeClass('is-invalid')
-                        .siblings('p')
-                        .removeClass('invalid-feedback').html("");
-                    }
-                }
-
-            }, error: function(jqXHR, exception) {
-                console.log("Something event wrong");
-            }
-        })
-    });
-            
+      
     $(document).on("click", ".user_dialog", function () {
         alert("H");
         var UserName = $(this).data('id');

@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class Configuration extends Model
 {
    use HasFactory;
-   protected $fillable = ['name','logo','email','phone','address','theme','taxes','percentages','plan'];
+   protected $fillable = ['name','logo','email','phone','address','primary_color','secondary_color', 'payment_key_id', 'payment_key_secret'];
 
    protected $primaryKey = null;
    public $incrementing = false;

@@ -94,22 +94,22 @@ class ConfigurationController extends Controller implements HasMiddleware {
         $permissionCount = DB::table('permissions')
                     ->select(DB::raw('count(*) as total'))
                     ->get()[0]->total;
-
-        $configurations = Configuration::get();
+        
         $payments = Payment::get();        
         $branches = Area::withCount('seat as total_seats')->with('seats')->get();
         $theme = Theme::get();
-        $users = User::get();
+        $users = User::get();        
         $pages = Page::get();
         $roles = Role::get();
         $permissions = Permission::get();
+        $config = Configuration::first();
 
         if($request->keyword != ''){
             $pages = $pages->where('name','like','%'.$request->keyword.'%');
         }                      
 
         $data = [
-            'configurations'        => $configurations,
+            'config'                => $config,
             'branches'              => $branches,
             'payments'              => $payments,
             'theme'                 => $theme,
@@ -326,96 +326,34 @@ class ConfigurationController extends Controller implements HasMiddleware {
         return view('admin.configurations.list', $data);        
     }
 
-    public function index_old(Request $request){
-        $configurations = Configuration::get();
-        $payments = Payment::get();        
-        $branches = Area::withCount('seat as total_seats')->with('seats')->get();
-        $theme = Theme::get();
-        $areas = Area::orderBy('area_name','ASC')->get();
-        $seats = Seat::where('area_id',NULL)->with('seat')->get();
-        $tableRunning = OrderItem::with('seat')->get();
+    
 
-        $totalTable = DB::table('seats')
-                    ->select(DB::raw('count(*) as total_tables'))
-                    ->get()[0]->total_tables;
+    // public function configurations_create(){        
+    //     return view("admin.configurations.create");
+    // }
 
-        $totalArea = DB::table('areas')
-                    ->select(DB::raw('count(*) as total_tables'))
-                    ->get()[0]->total_tables;
+    // public function configurations_edit($id, Request $request){
+    //     $configuration = Configuration::find($id);
 
-        $tableIndividual = DB::table('seats')
-                    //->join('areas','seatings.area_id','=','areas.id')
-                    ->select(DB::raw('count(*) as number'), 'area_id')
-                    ->groupBy('area_id')
-                    ->get()[0]->number;
+    //     return view('admin.configurations.edit', compact('configuration'));
+    // }
 
-        $permissions = Permission::orderBy('created_at','DESC')->paginate(10);
-        $totalPermissions = DB::table('permissions')
-                    ->select(DB::raw('count(*) as total'))
-                    ->get()[0]->total;
+    // public function configurations_update(Request $request) {
+    //     $config = Configuration::find($request->id);
 
-        $roles = Role::orderBy('created_at','DESC')->paginate(10);        
-        $totalRoles = DB::table('roles')
-                    ->select(DB::raw('count(*) as total'))
-                    ->get()[0]->total;
-        $permissionCount = DB::table('permissions')
-                    ->select(DB::raw('count(*) as total'))
-                    ->get()[0]->total;
+    //     if (!$config) {
+    //         return redirect()->back()
+    //             ->with('error', 'Configuration not found');
+    //     }
 
-        $pages = Page::get();
+    //     $config->name = $request->name;
+    //     $config->value = $request->value;
 
-        if($request->keyword != ''){
-            $pages = $pages->where('name','like','%'.$request->keyword.'%');
-        }        
+    //     $config->save();
 
-        //dd($pages);       
-
-        return view("admin.configurations.list", [
-            'configurations' => $configurations,
-            'branches' => $branches,
-            'payments' => $payments,
-            'theme' => $theme,
-            'areas' => $areas,
-            'seats' => $seats,
-            'tableIndividual' => $tableIndividual,
-            'totalTable' => $totalTable,
-            'totalArea' => $totalArea,
-            'tableRunning' => $tableRunning,
-            'permissions' => $permissions,
-            'totalPermissions' => $totalPermissions,
-            'roles' => $roles,            
-            'totalRoles' => $totalRoles,
-            'permissionCount' => $permissionCount,
-            'pages' => $pages
-        ]);
-    }
-
-    public function configurations_create(){        
-        return view("admin.configurations.create");
-    }
-
-    public function configurations_edit($id, Request $request){
-        $configuration = Configuration::find($id);
-
-        return view('admin.configurations.edit', compact('configuration'));
-    }
-
-    public function configurations_update(Request $request) {
-        $config = Configuration::find($request->id);
-
-        if (!$config) {
-            return redirect()->back()
-                ->with('error', 'Configuration not found');
-        }
-
-        $config->name = $request->name;
-        $config->value = $request->value;
-
-        $config->save();
-
-        return redirect()->back()
-            ->with('success', 'Configuration updated successfully');
-    }
+    //     return redirect()->back()
+    //         ->with('success', 'Configuration updated successfully');
+    // }
 
     // public function configurations_update(Request $request){
     //     $configurations = Configuration::first()->update($request->all());
@@ -473,6 +411,55 @@ class ConfigurationController extends Controller implements HasMiddleware {
         $theme->save();
 
         return redirect()->route('configurations.index')->with('success','Theme added successfully.');
+    }
+
+
+    public function configurations_update(Request $request) {
+        $validator = Validator::make($request->all(), [
+            'name' => 'required',
+            'email' => 'required|email',
+            'phone' => 'required',
+            'address' => 'required',
+        ]);
+
+        if ($validator->fails()) {
+            return redirect()->back()
+                ->withErrors($validator)
+                ->withInput();
+        }
+
+        $data = Configuration::first();
+
+        if (!$data) {
+            $data = new Configuration();
+        }
+
+        $data->name = $request->name;
+        $data->email = $request->email;
+        $data->phone = $request->phone;
+        $data->address = $request->address;
+        $data->primary_color = $request->primary_color;
+        $data->secondary_color = $request->secondary_color;
+        $data->payment_key_id = $request->payment_key_id;
+        $data->payment_key_secret = $request->payment_key_secret;
+        
+        //Image upload
+        if ($request->hasFile('logo')) { 
+            $file = $request->file('logo');
+            $extenstion = $file->getClientOriginalExtension();
+            $fileName = $data->name.'.'.$extenstion;
+            $path = public_path().'/uploads/logo/'.$fileName;
+            $manager = new ImageManager(new Driver());
+            $logo = $manager->read($file);
+            $logo->toJpeg(80)->save($path);
+            $logo->cover(300,300)->save($path);
+            $data->logo = $fileName;
+        }
+        
+        $data->save();
+
+        return redirect()->back()
+            ->with('success', 'Restaurant details updated successfully.');
     }
 
 
@@ -792,4 +779,7 @@ class ConfigurationController extends Controller implements HasMiddleware {
 
         return redirect()->with('success','User deleted successfully.');
     }   
+
+
+   
 }
