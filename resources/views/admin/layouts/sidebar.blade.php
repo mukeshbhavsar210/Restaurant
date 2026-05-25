@@ -23,7 +23,7 @@
             <span>Orders</span>
         </a>
     </li>
-    
+
     @can('view permissions')
         <li class="nav-item">
             <a href="{{ route('configurations.index') }}" class="nav-link {{ (\Request::route()->getName() == 'configurations.index') || (\Request::route()->getName() == 'roles.edit') || (\Request::route()->getName() == 'permissions.edit') || (\Request::route()->getName() == 'users.edit') || (\Request::route()->getName() == 'articles.edit') ? 'active' : '' }}">

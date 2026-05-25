@@ -49,17 +49,44 @@
                                     
         <div class="tab-content mt-3">
             <div class="tab-pane active" id="tabs-1" role="tabpanel">
-                <h4>Configurations</h4>
-                <div class="accordion" id="accordionExample">
-                    <div class="accordion-item">
-                        <h5 class="accordion-header m-0" id="headingOne">
-                            <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-                                Company Details
-                            </button>
-                        </h5>
-                        <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#accordionExample" style="">
-                            <div class="accordion-body">
-                                @if ($config->count())
+                <div class="flex-justify">
+                    <h4>Configurations</h4>
+                    @if (!empty($config))
+                        <a href="javascript:void(0)"
+                            class="editConfig btn btn-outline-primary"
+                            data-bs-toggle="modal"
+                            data-bs-target="#createConfigModal"
+                            data-action="{{ route('configurations.update') }}"
+                            data-method="PUT"
+                            data-title="Edit Restaurant"
+                            data-button="Update Restaurant"
+                            data-business_types="{{ $config->pluck('business_types')->implode('') }}"
+                            data-name="{{ $config->pluck('name')->implode('') }}"
+                            data-email="{{ $config->pluck('email')->implode('') }}"
+                            data-phone="{{ $config->pluck('phone')->implode('') }}"                                                        
+                            data-address="{{ $config->pluck('address')->implode('') }}"
+                            data-primary_color="{{ $config->pluck('primary_color')->implode('') }}"
+                            data-secondary_color="{{ $config->pluck('secondary_color')->implode('') }}"
+                            data-payment_key_id="{{ $config->pluck('payment_key_id')->implode('') }}"
+                            data-payment_key_secret="{{ $config->pluck('payment_key_secret')->implode('') }}"
+                            >
+                            Edit Details
+                        </a>                        
+                    @else
+                        <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#{{ $configForm['modal_id'] }}">{{ $configForm['title'] }}</button>
+                    @endif
+                </div>
+
+                @if (!empty($config))
+                    <div class="accordion mt-2" id="accordionExample">
+                        <div class="accordion-item">
+                            <h5 class="accordion-header m-0" id="headingOne">
+                                <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                                    Company Details
+                                </button>
+                            </h5>
+                            <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#accordionExample" style="">
+                                <div class="accordion-body">                                                                    
                                     <div class="row pt-2">
                                         <div class="col-md-8">
                                             <div class="row">
@@ -74,173 +101,38 @@
                                                     <a href="javascript:0" class="btn btn-primary float-right" data-bs-toggle="modal" data-bs-target="#editCompanyModal">Edit</a>                                                    
                                                 </div>
                                             </div>
-                                        </div>                                                
-                                    </div>    
-
-                                    <div class="modal fade drawer right-align" id="editCompanyModal" tabindex="-1" aria-labelledby="editCompanyModalLabel" aria-hidden="true" style="display: none;">
-                                        <div class="modal-dialog" role="document">
-                                            <div class="modal-content">
-                                                <div class="modal-header">
-                                                    <h5 class="modal-title" id="exampleModalLabel">Update Details</h5>
-                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                                </div>
-                                                <form action="{{ route('configurations.update') }}" method="post" enctype="multipart/form-data">
-                                                    @csrf
-                                                    <div class="modal-body">                                                    
-                                                        <div class="form-group">
-                                                            <label for="name">Restaurant Name*</label>
-                                                            <input type="text" id="name" name="name" placeholder="Restaurant Name" class="form-control" value="{{ old('name', $config->name ?? '') }}">
-                                                            <p></p>
-                                                        </div>                                                                                                                                                                       
-                                                        <div class="form-group">
-                                                            <label for="email">Email*</label>
-                                                            <input type="email" id="email" name="email" placeholder="Enter Email" class="form-control" value="{{ old('email', $config->email ?? '') }}">
-                                                            <p></p>
-                                                        </div>
-                                                        <div class="row">
-                                                            <div class="col-5">
-                                                                <div class="form-group">
-                                                                    <label for="phone">Phone*</label>
-                                                                    <input type="text" id="phone" name="phone" placeholder="phone" class="form-control" value="{{ old('phone', $config->phone ?? '') }}">
-                                                                    <p></p>
-                                                                </div>
-                                                            </div>
-                                                            <div class="col-7">
-                                                                <div class="form-group">
-                                                                    <label for="image">Logo</label>
-                                                                    <input type="file" class="form-control" name="logo" />
-                                                                </div> 
-                                                            </div>                                                            
-                                                        </div>
-
-                                                        <div class="form-group">
-                                                            <label for="address">Address*</label>
-                                                            <textarea type="text" id="address" rows="3" cols="30" name="address" placeholder="address" class="form-control">{{ old('address', $config->address ?? '') }}</textarea>
-                                                            <p></p>
-                                                        </div> 
-                                                        
-                                                        <div class="row">
-                                                            <div class="col-6">
-                                                                <div class="form-group">
-                                                                    <label for="primary_color">Primary</label>
-                                                                    <input name="primary_color" type="color" class="form-control" value="{{ old('primary_color', $config->primary_color ?? '') }}" />
-                                                                    <div class="theme-primary" style="background-color: {{ $theme->pluck('primary_color')->implode('') }}"></div>
-                                                                </div>
-                                                            </div>
-                                                            <div class="col-6">
-                                                                <div class="form-group">
-                                                                    <label for="secondary_color">Secondary</label>
-                                                                    <input name="secondary_color" type="color" class="form-control" value="{{ old('secondary_color', $config->secondary_color ?? '') }}" />
-                                                                    <div class="theme-primary" style="background-color: {{ $theme->pluck('secondary_color')->implode('') }}"></div>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                        <div class="row">
-                                                            <div class="col-5">
-                                                                <div class="form-group">
-                                                                    <label for="payment_key_id">Payment key id</label>
-                                                                    <input type="text" id="payment_key_id" name="payment_key_id" placeholder="Payment key id" class="form-control" value="{{ old('payment_key_id', $config->payment_key_id ?? '') }}">                                                                    
-                                                                </div>
-                                                            </div>
-                                                            <div class="col-7">
-                                                                <div class="form-group">
-                                                                    <label for="payment_key_secret">Payment key secret</label>
-                                                                    <input type="text" id="payment_key_secret" name="payment_key_secret" placeholder="Payment key secret" class="form-control" value="{{ old('payment_key_secret', $config->payment_key_secret ?? '') }}">
-                                                                </div> 
-                                                            </div>                                                            
-                                                        </div>
-                                                    </div>
-                                                    <div class="modal-footer">
-                                                        <button type="submit" class="btn btn-primary">Update details</button>
-                                                    </div>
-                                                </form>
-                                            </div>
                                         </div>
                                     </div>
-                                @else
-                                    <form action="{{ route('configurations.store') }}" method="post" enctype="multipart/form-data" >
-                                    @csrf
-                                        <div class="row">   
-                                            <div class="col-md-8">
-                                                <div class="row">   
-                                                    <div class="col-md-6">
-                                                        <div class="form-group">
-                                                            <label>Name</label>
-                                                            <input name="name" type="text" class="form-control" placeholder="Restaurant Name" value="{{ old('name') }}" />
-                                                            @error('name')
-                                                                <p class="alert alert-danger">{{ $message }}</p>
-                                                            @enderror
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-md-6">
-                                                        <div class="form-group">
-                                                            <label for="image">Logo</label>
-                                                            <input type="file" class="form-control" name="logo" />
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-md-6">
-                                                        <div class="form-group">
-                                                            <label>Email</label>
-                                                            <input name="email" placeholder="email" type="email" class="form-control" value="{{ old('email') }}" />
-                                                            @error('email')
-                                                                <p class="text-red-400 font-small">{{ $message }}</p>
-                                                            @enderror
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-md-6">
-                                                        <div class="form-group">
-                                                            <label>Phone</label>
-                                                            <input name="phone" placeholder="Phone" type="text" class="form-control" value="{{ old('phone') }}" />
-                                                            @error('phone')
-                                                                <p class="text-red-400 font-small">{{ $message }}</p>
-                                                            @enderror
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-md-12">
-                                                        <div class="form-group">
-                                                            <label>Address</label>
-                                                            <textarea name="address" placeholder="Restaurant address" type="text" cols="3" rows="4" class="form-control">{{ old('address') }}</textarea>
-                                                            @error('address')
-                                                                <p class="text-red-400 font-small">{{ $message }}</p>
-                                                            @enderror
-                                                        </div>
-                                                    </div>                                                    
-                                                </div>
-                                                <button class="btn btn-primary">Submit</button>
-                                            </form>
-                                        </div>                                                         
-                                    </div>
-                                @endif      
+                                </div>
+                            </div>                                    
+                        </div>
+                        <div class="accordion-item">
+                            <h5 class="accordion-header m-0" id="headingThree">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                                    Payment Gateway
+                                </button>
+                            </h5>
+                            <div id="collapseThree" class="accordion-collapse collapse" aria-labelledby="headingThree" data-bs-parent="#accordionExample">
+                                <div class="accordion-body">                                    
+                                    Payment Key Id: {{ $config->pluck('payment_key_id')->implode('') }}<br />
+                                    Payment Key Secret: {{ $config->pluck('payment_key_secret')->implode('') }}<br />                                
+                                </div>
+                            </div>
+                        </div>
+                        <div class="accordion-item">
+                            <h5 class="accordion-header m-0" id="headingFour">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFour" aria-expanded="false" aria-controls="collapseFour">
+                                    Plan
+                                </button>
+                            </h5>
+                            <div id="collapseFour" class="accordion-collapse collapse" aria-labelledby="headingFour" data-bs-parent="#accordionExample">
+                                <div class="accordion-body">                                        
+                                    Website
+                                </div>
                             </div>
                         </div>
                     </div>
-                    
-                    <div class="accordion-item">
-                        <h5 class="accordion-header m-0" id="headingThree">
-                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
-                                Payment Gateway
-                            </button>
-                        </h5>
-                        <div id="collapseThree" class="accordion-collapse collapse" aria-labelledby="headingThree" data-bs-parent="#accordionExample">
-                            <div class="accordion-body">    
-                                Payment Key Id: {{ $config->pluck('payment_key_id')->implode('') }}<br />
-                                Payment Key Secret: {{ $config->pluck('payment_key_secret')->implode('') }}<br />
-                            </div>
-                        </div>
-                    </div>
-                    <div class="accordion-item">
-                        <h5 class="accordion-header m-0" id="headingFour">
-                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFour" aria-expanded="false" aria-controls="collapseFour">
-                                Plan
-                            </button>
-                        </h5>
-                        <div id="collapseFour" class="accordion-collapse collapse" aria-labelledby="headingFour" data-bs-parent="#accordionExample">
-                            <div class="accordion-body">                                        
-                                Website
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                @endif
             </div>
 
             <div class="tab-pane" id="tabs-2" role="tabpanel">
@@ -254,8 +146,8 @@
                     
                     <div class="col-md-3 col-12">
                         <div class="flex float-end">
-                            <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#{{ $branchForm['modal_id'] }}">{{ $branchForm['button_modal'] }}</button>
-                            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#{{ $tableForm['modal_id'] }}">{{ $tableForm['button_modal'] }}</button>
+                            <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#{{ $branchForm['modal_id'] }}">{{ $branchForm['title'] }}</button>
+                            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#{{ $tableForm['modal_id'] }}">{{ $tableForm['title'] }}</button>
                         </div>
                     </div>            
                 </div>                        
@@ -350,7 +242,7 @@
                     </div>
                     
                     <div class="col-md-2 col-12">
-                        <button type="button" class="btn btn-primary float-end" data-bs-toggle="modal" data-bs-target="#{{ $pageForm['modal_id'] }}">{{ $pageForm['button_modal'] }}</button>                        
+                        <button type="button" class="btn btn-primary float-end" data-bs-toggle="modal" data-bs-target="#{{ $pageForm['modal_id'] }}">{{ $pageForm['title'] }}</button>
                     </div>            
                 </div>                       
 
@@ -414,7 +306,7 @@
                     </div>
 
                     <div class="col-md-5 col-12 float-end">                
-                        <button type="button" class="btn btn-primary float-end" data-bs-toggle="modal" data-bs-target="#{{ $permissionForm['modal_id'] }}">{{ $permissionForm['button_modal'] }}</button>                                
+                        <button type="button" class="btn btn-primary float-end" data-bs-toggle="modal" data-bs-target="#{{ $permissionForm['modal_id'] }}">{{ $permissionForm['title'] }}</button>                                
                     </div>
                 </div>  
                 
@@ -452,7 +344,7 @@
                     </div>
                 </div>
                 <div class="col-md-5 col-12">
-                    <button type="button" class="btn btn-primary float-end" data-bs-toggle="modal" data-bs-target="#{{ $roleForm['modal_id'] }}">{{ $roleForm['button_modal'] }}</button>                                
+                    <button type="button" class="btn btn-primary float-end" data-bs-toggle="modal" data-bs-target="#{{ $roleForm['modal_id'] }}">{{ $roleForm['title'] }}</button>                                
                 </div>
             </div>
 
@@ -518,7 +410,7 @@
                     </div>
                 </div>
                 <div class="col-md-5 col-12">
-                    <button type="button" class="btn btn-primary float-end" data-bs-toggle="modal" data-bs-target="#{{ $roleForm['modal_id'] }}">{{ $roleForm['button_modal'] }}</button>
+                    <button type="button" class="btn btn-primary float-end" data-bs-toggle="modal" data-bs-target="#{{ $userForm['modal_id'] }}">{{ $userForm['title'] }}</button>
                 </div>
             </div>
 
@@ -526,59 +418,53 @@
                 <table class="table mb-0 checkbox-all dataTable-table">
                     <thead class="table-light">
                         <tr>
-                            <th class="ps-0" data-sortable="" style="width: 18.5247%;">
-                                <a href="#" class="dataTable-sorter">Customer</a>
-                            </th>
-                            <th data-sortable="" style="width: 27.4937%;">
-                                <a href="#" class="dataTable-sorter">Email</a>
-                            </th>
-                            <th data-sortable="" style="width: 17.0997%;">
-                                <a href="#" class="dataTable-sorter">Phone No</a>
-                            </th>
-                            <th data-sortable="" style="width: 13.3277%;">
-                                <a href="#" class="dataTable-sorter">Status</a>
-                            </th>
-                            <th class="text-end" data-sortable="" style="width: 10.3101%;">
-                                <a href="#" class="dataTable-sorter">Action</a>
-                            </th>
+                            <th>Customer</th>
+                            <th>Phone No</a></th>
+                            <th>Status</a></th>
+                            <th>Action</th>
                         </tr>
                     </thead>                  
                     <tbody>                    
                         @if($users->isNotEmpty())
                             @foreach ($users as $value)
-                            <tr>                               
-                                <td class="ps-0">
-                                    <img src="assets/images/users/avatar-2.jpg" alt="" class="thumb-md d-inline rounded-circle me-1">
-                                    <p class="d-inline-block align-middle mb-0">
-                                        <span class="font-13 fw-medium">{{ $value->name }}</span> 
-                                    </p>
-                                </td>
-                                <td>
-                                    <a href="" class="d-inline-block align-middle mb-0 text-body">{{ $value->email }}</a> 
-                                </td>
-                                <td>{{ $value->mobile }}</td>
-                                <td>
-                                    @if($value->status == 1)
-                                       <span class="badge bg-success-subtle text-success">Active</span>
-                                    @else
-                                        <span class="badge bg-secondary-subtle text-secondary">Inactive</span>
-                                    @endif                                    
-                                </td>                                
-                                <td class="text-end">                                        
-                                    @if($value->name !== 'superadmin')                                    
-                                        @can('edit users')
-                                            <a href="{{ route("users.edit", $value->id) }}"><i class="las la-pen text-secondary fs-18"></i></a>                                            
-                                        @endcan  
-                                        @can('delete users')
-                                            <a href="javascript:void(0)" class="commonDeleteBtn"
-                                                data-bs-toggle="modal" data-bs-target="#commonDeleteModal"
-                                                data-url="{{ route('users.destroy', $value->id) }}" data-title="{{ $value->name }}">
-                                                <i class="las la-trash-alt text-secondary fs-18"></i>
-                                            </a>
-                                        @endcan
-                                    @endif
-                                </td>
-                            </tr>                               
+                                <tr>                               
+                                    <td>
+                                        <div class="product-row">
+                                            <img src="assets/images/users/avatar-2.jpg" alt="" class="thumb-md d-inline rounded-circle me-3">
+                                            <div class="flex-grow-2 text-truncate">
+                                                <h5 class="mb-0">{{ ucfirst($value->name) }}</h5>
+                                                <p class="text-muted tiny-font">{{ ucfirst($value->roles->pluck('name')->implode(', ')) }}</p>
+                                            </div>
+                                        </div>
+                                    </td>                                
+                                    <td>
+                                        <p class="text-muted tiny-font">{{ $value->email }}</p>
+                                        <p class="text-muted tiny-font">{{ $value->mobile }}</p>
+                                    </td>
+                                    <td>
+                                        @if($value->status == 1)
+                                        <span class="badge bg-success-subtle text-success">Active</span>
+                                        @else
+                                            <span class="badge bg-secondary-subtle text-secondary">Inactive</span>
+                                        @endif                                    
+                                    </td>                                
+                                    <td class="text-end">                                        
+                                        @if($value->name !== 'superadmin')                                    
+                                            @can('edit users')
+                                                <a href="{{ route("users.edit", $value->id) }}">
+                                                    <i class="las la-pen text-secondary fs-18"></i>
+                                                </a>
+                                            @endcan  
+                                            @can('delete users')
+                                                <a href="javascript:void(0)" class="commonDeleteBtn"
+                                                    data-bs-toggle="modal" data-bs-target="#commonDeleteModal"
+                                                    data-url="{{ route('users.destroy', $value->id) }}" data-title="{{ $value->name }}">
+                                                    <i class="las la-trash-alt text-secondary fs-18"></i>
+                                                </a>
+                                            @endcan
+                                        @endif
+                                    </td>
+                                </tr>                               
                             @endforeach
                         @endif
                     </tbody>
@@ -588,6 +474,10 @@
         </div>           
     </div>
 </div>
+
+@include('components.common-modal', [
+    'modal' => $configForm,
+])
 
 @include('components.common-modal', [
     'modal' => $branchForm,
@@ -607,6 +497,10 @@
 
 @include('components.common-modal', [
     'modal' => $roleForm,
+])
+
+@include('components.common-modal', [
+    'modal' => $userForm,
 ])
 
 @endsection

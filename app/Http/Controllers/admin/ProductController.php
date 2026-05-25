@@ -36,16 +36,13 @@ class ProductController extends Controller {
         $data['menuCount'] = $menuCount;  
         
         $data['productForm'] = [
-            'title' => 'Create Product',
-            'button_modal' => 'Add Product',
+            'title' => 'Create Product',            
             'modal_id' => 'createProductModal',            
 
             'formConfig' => [
                 'action' => route('products.store'),
                 'method' => 'POST',
-                'button' => 'Create Product',
-                'modal' => 'drawer right-align',
-                'modalSize' => '',
+                'button' => 'Create Product',                
                 'fields' => [
                     [
                         'type' => 'text',
@@ -121,8 +118,6 @@ class ProductController extends Controller {
             ]
         ]; 
         
-        
-
         return view ('admin.products.list', $data);
     }
 

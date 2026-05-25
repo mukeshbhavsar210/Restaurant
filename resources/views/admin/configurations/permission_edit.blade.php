@@ -47,31 +47,65 @@
             @endforeach
         </ul>
 
-        <div class="mt-3">        
-            <div class="flex-2">
-                <h4>Edit Permission</h4>            
-                <a href="{{ route('configurations.index') }}" >Back</a>
+        <div class="mt-3">                    
+            <div class="page-title">
+                <h4>Permissions</h4>
+                <span class="counts">{{ $totalPermissions }}</span>
             </div>
-                    
-            <form action="{{ route('permissions.update',$permission->id) }}" method="post">
-                @csrf
-                <div class="row mt-2">
-                    <div class="col-md-3">                    
-                        <div class="form-group">
-                            <label for="" >Name</label>
-                            <input value="{{ old('name', $permission->name) }}" name="name" placeholder="Permission name" type="text" class="form-control"/>
-                            @error('name')
-                                <p class="text-red-400 font-small">{{ $message }}</p>
-                            @enderror
+
+            <div class="card-small">  
+                @if($permissions->isNotEmpty())
+                    @foreach ($permissions as $value)                    
+                    <div class="card-small-body">
+                        <div>{{ ucwords($value->name) }}</div>
+                        <div class="flex">
+                            @can('edit permissions')
+                                <a href="{{ route("permissions.edit", $value->id) }}" class="edit-icon">
+                                    <span class="sprites"></span>
+                                </a>
+                            @endcan
+                            @can('delete permissions')
+                                <a href="javascript:void(0)" class="delete-icon commonDeleteBtn"
+                                    data-bs-toggle="modal" data-bs-target="#commonDeleteModal"
+                                    data-url="{{ route('permissions.destroy', $value->id) }}" data-title="{{ ucwords($value->name) }}">
+                                    <span class="sprites"></span>
+                                </a>
+                            @endcan
                         </div>
                     </div>
-                    <div class="col">
-                        <button class="btn btn-primary mt-3">Update</button>
+                @endforeach
+            @endif                 
+        </div>
+
+            <div class="modal fade drawer right-align show" tabindex="-1">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">Edit Permission</h5>
+                            <a href="{{ route('configurations.index') }}" class="btn-close"></a>                            
+                        </div>
+                    
+                        <form action="{{ route('permissions.update',$permission->id) }}" method="post">
+                            @csrf
+                            <div class="modal-body">                                
+                                <div class="form-group">
+                                    <label for="" >Name</label>
+                                    <input value="{{ old('name', $permission->name) }}" name="name" placeholder="Permission name" type="text" class="form-control"/>
+                                    @error('name')
+                                        <p class="text-red-400 font-small">{{ $message }}</p>
+                                    @enderror
+                                </div>                                
+                            </div>
+                            <div class="modal-footer">
+                                <button class="btn btn-primary">Update Permission</button>
+                            </div>                        
+                        </form>            
                     </div>
                 </div>
-            </form>
-            
+            </div>
         </div>
     </div>
 </div>
+
+<div class="modal-backdrop fade show"></div>
 @endsection
