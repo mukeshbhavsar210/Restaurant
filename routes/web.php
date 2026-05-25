@@ -12,12 +12,8 @@ use App\Http\Controllers\admin\SeatController;
 use App\Http\Controllers\admin\SettingController;
 use App\Http\Controllers\admin\TempImagesController;
 use App\Http\Controllers\FrontController;
-
 use App\Http\Controllers\ArticleController;
-use App\Http\Controllers\PermissionController;
-use App\Http\Controllers\RoleController;
 use App\Http\Controllers\UserController;
-
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 
@@ -129,23 +125,7 @@ Route::group(['prefix' => 'admin'], function(){
             Route::patch('/profile', 'update')->name('profile.update');
             Route::delete('/profile', 'destroy')->name('profile.destroy');
         });
-
-        // Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
-        // Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
-        // Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-
-        //Permissions
-        Route::post('/configurations/permissions', [PermissionController::class, 'store'])->name('permissions.store');
-        Route::get('/configurations/permissions/{id}/edit', [PermissionController::class, 'edit'])->name('permissions.edit');
-        Route::post('/configurations/permissions/{id}', [PermissionController::class, 'update'])->name('permissions.update');
-        Route::get('/configurations/permissions/delete/{id}', [PermissionController::class, 'destroy'])->name('permissions.destroy');
-
-        //Roles        
-        Route::post('/configurations/roles', [RoleController::class, 'store'])->name('roles.store');
-        Route::get('/configurations/roles/{id}/edit', [RoleController::class, 'edit'])->name('roles.edit');
-        Route::post('/configurations/roles/{id}', [RoleController::class, 'update'])->name('roles.update');        
-        Route::get('/configurations/roles/delete/{id}', [RoleController::class, 'destroy'])->name('roles.destroy');
-
+                    
         //Articles
         Route::get('/configurations/articles', [ArticleController::class, 'index'])->name('articles.index');
         Route::get('/configurations/articles/create', [ArticleController::class, 'create'])->name('articles.create');
@@ -154,20 +134,15 @@ Route::group(['prefix' => 'admin'], function(){
         Route::post('/configurations/articles/{id}', [ArticleController::class, 'update'])->name('articles.update');
         Route::delete('/configurations/articles', [ArticleController::class, 'destroy'])->name('articles.destroy');
 
-        //Users        
-        Route::get('/configurations/users/create', [UserController::class, 'create'])->name('users.create');
-        Route::post('/configurations/users', [UserController::class, 'store'])->name('users.store');
-        Route::get('/configurations/users/{id}/edit', [UserController::class, 'edit'])->name('users.edit');
-        Route::post('/configurations/users/{id}', [UserController::class, 'update'])->name('users.update');
-        Route::delete('/configurations/users', [UserController::class, 'destroy'])->name('users.destroy');
-        Route::get('/logout', [UserController::class, 'logout'])->name('users.logout');
+       
+        // Route::get('/logout', [UserController::class, 'logout'])->name('users.logout');
         
         //Permissions
         Route::controller(ConfigurationController::class)->group(function() { 
             Route::get('/configurations', 'index')->name('configurations.index');
             Route::get('/configurations/create', 'configurations_create')->name('configurations.create');
             Route::post('/configurations', 'configurations_store')->name('configurations.store');
-            Route::post('/configurations/restaurant', 'configurations_update')->name('configurations.update');
+            Route::put('/configurations/restaurant', 'configurations_update')->name('configurations.update');            
 
             Route::post('/configurations/theme', 'store_theme')->name('configurations.theme');
             Route::get('/configurations/{id}/edit', 'configurations_edit')->name('configurations.edit');            
@@ -194,6 +169,24 @@ Route::group(['prefix' => 'admin'], function(){
             
             Route::get('/logout', 'logout')->name('users.logout');
 
+            //Permissions
+            Route::post('/configurations/permissions', 'permission_store')->name('permissions.store');
+            Route::get('/configurations/permissions/{id}/edit', 'permission_edit')->name('permissions.edit');
+            Route::post('/configurations/permissions/{id}', 'permission_update')->name('permissions.update');
+            Route::get('/configurations/permissions/delete/{id}', 'permission_destroy')->name('permissions.destroy');
+
+            //Roles        
+            Route::post('/configurations/roles', 'roles_store')->name('roles.store');
+            Route::get('/configurations/roles/{id}/edit', 'roles_edit')->name('roles.edit');
+            Route::post('/configurations/roles/{id}', 'roles_update')->name('roles.update');        
+            Route::get('/configurations/roles/delete/{id}', 'roles_destroy')->name('roles.destroy');
+
+            //Users            
+            Route::post('/configurations/users', 'users_store')->name('users.store');
+            Route::get('/configurations/users/{id}/edit', 'users_edit')->name('users.edit');
+            Route::post('/configurations/users/{id}', 'users_update')->name('users.update');
+            Route::get('/configurations/users/delete/{id}', 'users_destroy')->name('users.destroy');
+            //Route::get('/logout', [UserController::class, 'logout'])->name('users.logout');
             
         });        
         

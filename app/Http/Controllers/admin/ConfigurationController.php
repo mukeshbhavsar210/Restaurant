@@ -29,33 +29,29 @@ use App\Models\User;
 use App\Models\Page;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Hash;
 
 
 class ConfigurationController extends Controller implements HasMiddleware {
     public static function middleware(): array {
-    return [
-            //new Middleware('permission:view permissions', only: ['index']),
-            //new Middleware('permission:edit permissions', only: ['edit']),
-            //new Middleware('permission:create permissions', only: ['create']),
-            //new Middleware('permission:delete permissions', only: ['destroy']),
-            //new Middleware('permission:view permissions', only: ['index']),
-            //new Middleware('permission:edit permissions', only: ['edit']),
-            //new Middleware('permission:create permissions', only: ['create']),
-            //new Middleware('permission:delete permissions', only: ['destroy']),
+        return [
+                new Middleware('permission:view permissions', only: ['index']),
+                new Middleware('permission:edit permissions', only: ['edit']),
+                new Middleware('permission:create permissions', only: ['create']),
+                new Middleware('permission:delete permissions', only: ['destroy']),
 
-            //new Middleware('permission:view roles', only: ['index']),
-            //new Middleware('permission:edit roles', only: ['edit']),
-            //new Middleware('permission:create roles', only: ['create']),
-            //new Middleware('permission:delete roles', only: ['destroy']),
+                new Middleware('permission:view roles', only: ['index']),
+                new Middleware('permission:edit roles', only: ['edit']),
+                new Middleware('permission:create roles', only: ['create']),
+                new Middleware('permission:delete roles', only: ['destroy']),
 
-            //new Middleware('permission:view users', only: ['index']),
-            //new Middleware('permission:edit users', only: ['edit']),
-            //new Middleware('permission:create roles', only: ['create']),
-            //new Middleware('permission:delete roles', only: ['destroy']),
-        ];
-    }
+                new Middleware('permission:view users', only: ['index']),
+                new Middleware('permission:edit users', only: ['edit']),
+                new Middleware('permission:create roles', only: ['create']),
+                new Middleware('permission:delete roles', only: ['destroy']),
+            ];
+        }
 
-   
 
     public function index(Request $request){
         $areas = Area::orderBy('area_name','ASC')->get();
@@ -130,17 +126,119 @@ class ConfigurationController extends Controller implements HasMiddleware {
             'userCounts'            => $userCounts,
         ];
 
+        $seatingCapacities = [1, 2, 4, 6, 8, 10];
+        $businessTypes = [
+            ['id' => 'Dinein', 'name' => 'Dinein'],
+            ['id' => 'Takeaway', 'name' => 'Takeaway'],
+            ['id' => 'Delivery', 'name' => 'Delivery'],
+        ];
+
+        $data['configForm'] = [
+            'title' => 'Setup Restaurant',
+            'modal_id' => 'createConfigModal',            
+
+            'formConfig' => [
+                'action' => route('configurations.store'),
+                'method' => 'POST',
+                'button' => 'Add Restaurant',
+                                
+                'fields' => [
+                    [
+                        'type' => 'checkbox',
+                        'name' => 'business_types',
+                        'label' => 'Business Types',
+                        'options' => $businessTypes,
+                        'option_value' => 'id',
+                        'option_text' => 'name',
+                        'col' => 'col-md-6',
+                        'class' => 'flex-2',
+                    ],
+                    [
+                        'type' => 'text',
+                        'name' => 'name',
+                        'label' => 'Name',
+                        'required' => true,
+                        'placeholder' => 'Name',
+                        'col' => 'col-12',                        
+                    ],
+                    [
+                        'type' => 'email',
+                        'name' => 'email',
+                        'label' => 'Email',
+                        'required' => true,
+                        'placeholder' => 'Email',
+                        'col' => 'col-12'
+                    ],
+                    [
+                        'type' => 'text',
+                        'name' => 'phone',
+                        'label' => 'Phone',
+                        'required' => true,
+                        'placeholder' => 'Phone',
+                        'col' => 'col-12'
+                    ],
+                    [
+                        'type' => 'file',
+                        'name' => 'logo',
+                        'label' => 'Logo',
+                        'required' => true,
+                        'placeholder' => '',
+                        'col' => 'col-12'
+                    ],
+                    [
+                        'type' => 'textarea',
+                        'name' => 'address',
+                        'label' => 'Address',
+                        'required' => true,
+                        'placeholder' => 'Address',
+                        'col' => 'col-12'
+                    ],
+                    
+                    [
+                        'type' => 'text',
+                        'name' => 'primary_color',
+                        'label' => 'Primary Color',
+                        'required' => false,
+                        'placeholder' => 'Primary Color',
+                        'col' => 'col-6'
+                    ],
+                    [
+                        'type' => 'text',
+                        'name' => 'secondary_color',
+                        'label' => 'Secondary Color',
+                        'required' => false,
+                        'placeholder' => 'Secondary Color',
+                        'col' => 'col-6'
+                    ],
+                    [
+                        'type' => 'text',
+                        'name' => 'payment_key_id',
+                        'label' => 'Payment key id',
+                        'required' => false,
+                        'placeholder' => 'Payment key id',
+                        'col' => 'col-12'
+                    ],
+                    [
+                        'type' => 'text',
+                        'name' => 'payment_key_secret',
+                        'label' => 'Payment key secret',
+                        'required' => false,
+                        'placeholder' => 'Payment key secret',
+                        'col' => 'col-12'
+                    ],
+                ]
+            ]
+        ]; 
+
         $data['branchForm'] = [
             'title' => 'Create Branch',
-            'button_modal' => 'Add Branch',
             'modal_id' => 'createBranchModal',            
 
             'formConfig' => [
                 'action' => route('branch.store'),
                 'method' => 'POST',
                 'button' => 'Add Branch',
-                'modal' => 'drawer right-align',
-                'modalSize' => '',
+                                
                 'fields' => [
                     [
                         'type' => 'text',
@@ -166,19 +264,17 @@ class ConfigurationController extends Controller implements HasMiddleware {
             ]
         ];  
 
-        $seatingCapacities = [1, 2, 4, 6, 8, 10];
+        
         
         $data['tableForm'] = [
             'title' => 'Add Table',
-            'button_modal' => 'Add Table',
             'modal_id' => 'createTableModal',            
 
             'formConfig' => [
                 'action' => route('table.store'),
                 'method' => 'POST',
-                'button' => 'Add Table',
-                'modal' => 'drawer right-align',
-                'modalSize' => '',
+                'button' => 'Add Table',                
+                
                 'fields' => [
                     [
                         'type' => 'text',
@@ -225,15 +321,13 @@ class ConfigurationController extends Controller implements HasMiddleware {
 
         $data['pageForm'] = [
             'title' => 'Create Page',
-            'button_modal' => 'Create Page',
             'modal_id' => 'createPageModal',            
 
             'formConfig' => [
                 'action' => route('pages.store'),
                 'method' => 'POST',
-                'button' => 'Create Page',
-                'modal' => 'drawer right-align',
-                'modalSize' => '',
+                'button' => 'Create Page',                
+                
                 'fields' => [
                     [
                         'type' => 'text',
@@ -270,15 +364,13 @@ class ConfigurationController extends Controller implements HasMiddleware {
 
         $data['permissionForm'] = [
             'title' => 'Create Permission',
-            'button_modal' => 'Create Permission',
             'modal_id' => 'createPermissionModal',            
 
             'formConfig' => [
                 'action' => route('permissions.store'),
                 'method' => 'POST',
-                'button' => 'Create Permission',
-                'modal' => 'drawer right-align',
-                'modalSize' => '',
+                'button' => 'Create Permission',                
+                
                 'fields' => [
                     [
                         'type' => 'text',
@@ -293,15 +385,13 @@ class ConfigurationController extends Controller implements HasMiddleware {
 
         $data['roleForm'] = [
             'title' => 'Create Role',
-            'button_modal' => 'Create Role',
             'modal_id' => 'createRoleModal',            
 
             'formConfig' => [
                 'action' => route('roles.store'),
                 'method' => 'POST',
-                'button' => 'Create Role',
-                'modal' => 'drawer right-align',
-                'modalSize' => '',
+                'button' => 'Create Role',                
+                
                 'fields' => [
                     [
                         'type' => 'text',
@@ -321,85 +411,107 @@ class ConfigurationController extends Controller implements HasMiddleware {
                     ]
                 ]
             ]
-        ];                    
+        ]; 
+        
+        $data['userForm'] = [
+            'title' => 'Create User',
+            'modal_id' => 'createUserModal',            
+
+            'formConfig' => [
+                'action' => route('users.store'),
+                'method' => 'POST',
+                'button' => 'Create User',
+                            
+                'fields' => [
+                    [
+                        'type' => 'text',
+                        'name' => 'name',
+                        'label' => 'User Name',
+                        'placeholder' => 'Enter User Name',
+                        'col' => 'col-md-12'
+                    ],
+                    [
+                        'type' => 'email',
+                        'name' => 'email',
+                        'label' => 'Email',
+                        'placeholder' => 'Enter Email',
+                        'col' => 'col-md-12'
+                    ],
+                    [
+                        'type' => 'password',
+                        'name' => 'password',
+                        'label' => 'Password',
+                        'placeholder' => 'Password',
+                        'col' => 'col-6'
+                    ],
+                    [
+                        'type' => 'password',
+                        'name' => 'confirm_password',
+                        'label' => 'Confirm Password',
+                        'placeholder' => 'Confirm Password',
+                        'col' => 'col-6'
+                    ],
+                    [
+                        'type' => 'checkbox',
+                        'name' => 'role',
+                        'label' => 'Select Permission',
+                        'options' => $roles,
+                        'option_value' => 'id',
+                        'option_text' => 'name',                        
+                        'col' => 'col-12'
+                    ]
+                ]
+            ]
+        ]; 
 
         return view('admin.configurations.list', $data);        
     }
-
     
 
-    // public function configurations_create(){        
-    //     return view("admin.configurations.create");
-    // }
-
-    // public function configurations_edit($id, Request $request){
-    //     $configuration = Configuration::find($id);
-
-    //     return view('admin.configurations.edit', compact('configuration'));
-    // }
-
-    // public function configurations_update(Request $request) {
-    //     $config = Configuration::find($request->id);
-
-    //     if (!$config) {
-    //         return redirect()->back()
-    //             ->with('error', 'Configuration not found');
-    //     }
-
-    //     $config->name = $request->name;
-    //     $config->value = $request->value;
-
-    //     $config->save();
-
-    //     return redirect()->back()
-    //         ->with('success', 'Configuration updated successfully');
-    // }
-
-    // public function configurations_update(Request $request){
-    //     $configurations = Configuration::first()->update($request->all());
-    //     //$configurations->name = $request->name;
-    //     // $configurations->logo = $request->logo;
-    //     // $configurations->email = $request->email;
-    //     // $configurations->phone = $request->phone;
-    //     // $configurations->address = $request->address;
-    //     // $configurations->theme = $request->theme;
-    //     $configurations->save();
-
-    //     return redirect()->route('configurations.index')->with('success','Configuration updated successfully.');
-    // }
-
-    public function configurations_store(Request $request){
-        $validator = Validator::make($request->all(), [ 
+    public function configurations_store(Request $request) {
+        $validator = Validator::make($request->all(), [
             'name' => 'required',
-            //'image' => 'required|image|mimes:png,jpg,jpeg|max:2048'
-        ]);   
+        ]);
 
-        if($validator->passes()){
-            $data = new Configuration();
-            $data->name = $request->name;
-            $data->email = $request->email;
-            $data->phone = $request->phone;
-            $data->address = $request->address;
-
-            //Image upload
-            if ($request->hasFile('logo')) { 
-                $file = $request->file('logo');
-                $extenstion = $file->getClientOriginalExtension();
-                $fileName = $data->name.'.'.$extenstion;
-                $path = public_path().'/uploads/logo/'.$fileName;
-                $manager = new ImageManager(new Driver());
-                $logo = $manager->read($file);
-                $logo->toJpeg(80)->save($path);
-                $logo->cover(300,300)->save($path);
-                $data->logo = $fileName;
-            }
-
-            $data->save();
-
-            return redirect()->route('configurations.index')->with('success','Configurations added successfully.');
-        } else {
-            return redirect()->route('configurations.index')->withInput()->withErrors($validator);
+        if ($validator->fails()) {
+            return back()
+                ->withInput()
+                ->withErrors($validator);
         }
+
+        $data = new Configuration();
+
+        $data->name = $request->name;
+        $data->email = $request->email;
+        $data->phone = $request->phone;
+        $data->address = $request->address;
+        $data->business_types = implode(',', $request->business_types ?? []);
+        $data->primary_color = $request->primary_color;
+        $data->secondary_color = $request->secondary_color;
+        $data->payment_key_id = $request->payment_key_id;
+        $data->payment_key_secret = $request->payment_key_secret;
+
+        // Image upload
+        if ($request->hasFile('logo')) {
+
+            $file = $request->file('logo');
+            $extension = $file->getClientOriginalExtension();
+            $fileName = $data->name . '.' . $extension;
+
+            $path = public_path('/uploads/logo/' . $fileName);
+
+            $manager = new ImageManager(new Driver());
+
+            $logo = $manager->read($file);
+
+            $logo->cover(300, 300)->save($path);
+
+            $data->logo = $fileName;
+        }
+
+        $data->save();
+
+        return back()->with('success', 'Configurations added successfully.');
     }
 
 
@@ -438,6 +550,7 @@ class ConfigurationController extends Controller implements HasMiddleware {
         $data->email = $request->email;
         $data->phone = $request->phone;
         $data->address = $request->address;
+        $data->business_types = $request->business_types;
         $data->primary_color = $request->primary_color;
         $data->secondary_color = $request->secondary_color;
         $data->payment_key_id = $request->payment_key_id;
@@ -613,6 +726,9 @@ class ConfigurationController extends Controller implements HasMiddleware {
     }
 
 
+
+
+
     //Pages
     public function page_store(Request $request){
         $validator = Validator::make($request->all(), [
@@ -633,7 +749,6 @@ class ConfigurationController extends Controller implements HasMiddleware {
 
         return redirect()->back()->with('success', 'Page added successfully');       
     }
-   
 
     public function page_edit($id){
         $page = Page::find($id);
@@ -647,9 +762,6 @@ class ConfigurationController extends Controller implements HasMiddleware {
             'page' => $page
         ]);
     }
-
-    
-
 
     public function page_update(Request $request, $id){
         $page = Page::find($id);
@@ -695,17 +807,142 @@ class ConfigurationController extends Controller implements HasMiddleware {
     }
     
 
-    //Users
-    public function user_create(){
-        $roles = Role::orderBy('name','ASC')->get();
 
-        return view("admin.users.create", [  
-            'roles' => $roles
+    //Permissions
+    public function permission_store(Request $request){
+        $validator = Validator::make($request->all(), [ 
+            'name' => 'required|unique:permissions|min:3'
+        ]);        
+
+        if($validator->passes()){
+            Permission::create([ 'name' => $request->name ]);
+
+            return redirect()->route('configurations.index')->with('success','Permission added successfully.');
+        } else {
+            return redirect()->route('permissions.create')->withInput()->withErrors($validator);
+        }
+    }
+
+    public function permission_edit($id){
+        $permission = Permission::findOrFail($id);
+        $permissions = Permission::get();
+        $totalPermissions = DB::table('permissions')
+                    ->select(DB::raw('count(*) as total'))
+                    ->get()[0]->total;
+
+        return view("admin.configurations.permission_edit", [
+            'permission' => $permission,
+            'permissions' => $permissions,
+            'totalPermissions' => $totalPermissions
+        ]);
+    }
+
+    public function permission_update($id, Request $request){
+        $permission = Permission::findOrFail($id);
+
+        $validator = Validator::make($request->all(), [ 
+            'name' => 'required|min:3|unique:permissions,name,'.$id.',id'
+        ]);        
+
+        if($validator->passes()){
+            $permission->name = $request->name;
+            $permission->save();
+
+            return redirect()->route('configurations.index')->with('success','Permission updated successfully.');
+        } else {
+            return redirect()->route('permissions.edit',$id)->withInput()->withErrors($validator);
+        }
+    }
+
+    public function permission_destroy($id, Request $request){
+        $permission = Permission::find($id);
+        $permission->delete();
+
+        $request->session()->flash('success','Permission deleted successfully');
+        return redirect()->route('configurations.index')->with('success','Permission deleted successfully.');
+    }
+
+
+
+    //Roles
+     public function roles_store(Request $request){
+        $validator = Validator::make($request->all(), [ 
+            'name' => 'required|unique:roles|min:3'
+        ]);        
+
+        if($validator->passes()){
+            $role = Role::create([ 'name' => $request->name ]);
+
+            if(!empty($request->permission)){
+                foreach ($request->permission as $name) {
+                    $role->givePermissionTo($name);
+                }
+            }
+
+            return redirect()->route('configurations.index')->with('success','Role added successfully.');
+        } else {
+            return redirect()->route('roles.create')->withInput()->withErrors($validator);
+        }
+    }
+
+
+    public function roles_edit($id){
+        $role = Role::findOrFail($id);
+        $roles = Role::get();
+        $hasPermissions = $role->permissions->pluck('name');
+        $permissions = Permission::orderBy('name','ASC')->get();
+
+        $totalRoles = DB::table('roles')
+                    ->select(DB::raw('count(*) as total'))
+                    ->get()[0]->total;
+
+        return view("admin.configurations.roles_edit", [
+            'role' => $role,
+            'roles' => $roles,
+            'totalRoles' => $totalRoles,
+            'permissions' => $permissions,
+            'hasPermissions' => $hasPermissions
         ]);
     }
 
 
-    public function user_store(Request $request){    
+
+    public function roles_update($id, Request $request){
+        $role = Role::findOrFail($id);
+
+        $validator = Validator::make($request->all(), [ 
+            'name' => 'required|unique:roles,name,'.$id.',id'
+        ]);        
+
+        if($validator->passes()){
+            $role->name = $request->name;
+            $role->save();
+
+            if(!empty($request->permission)){
+                $role->syncPermissions($request->permission);
+            } else {
+                $role->syncPermissions([]);
+            }
+
+            return redirect()->route('configurations.index')->with('success','role updated successfully.');
+        } else {
+            return redirect()->route('roles.edit',$id)->withInput()->withErrors($validator);
+        }
+    }
+
+    public function roles_destroy($id, Request $request){
+        $roles = Role::find($id);
+        $roles->delete();
+
+        $request->session()->flash('success','Role deleted successfully');
+
+        return redirect()->route('configurations.index')->with('success','Role deleted successfully.');
+    } 
+
+
+    //Users
+    public function users_store(Request $request){
+        
         $validator = Validator::make($request->all(), [ 
             'name' => 'required|min:5',
             'email' => 'required|email|unique:users,email',
@@ -729,27 +966,25 @@ class ConfigurationController extends Controller implements HasMiddleware {
     }
    
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function user_edit(string $id) {
+    public function users_edit(string $id) {
+        $users = User::get();    
         $user = User::findOrFail($id);
         $roles = Role::orderBy('name','ASC')->get();
         $hasRoles = $user->roles()->pluck('id');
-        
-        //dd($roles);
+        $userCounts = DB::table('users')
+                    ->select(DB::raw('count(*) as total_users'))
+                    ->get()[0]->total_users;
 
-        return view("users.edit", [
+        return view("admin.configurations.user_edit", [
             'user' => $user,
+            'users' => $users,
+            'userCounts' => $userCounts,
             'roles' => $roles,
             'hasRoles' => $hasRoles,
         ]);
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function user_update(Request $request, string $id) {
+    public function users_update(Request $request, string $id) {
         $user = User::findOrFail($id);
 
         $validator = Validator::make($request->all(), [ 
@@ -767,19 +1002,15 @@ class ConfigurationController extends Controller implements HasMiddleware {
 
         $user->syncRoles($request->role);
 
-        return redirect()->route('configurations.index')->with('success','User updated successfully');
-           
-    }    
+        return redirect()->route('configurations.index')->with('success','User updated successfully');           
+    }
 
+    public function users_destroy($id, Request $request){
+        $user = User::find($id);
+        $user->delete();
+
+        $request->session()->flash('success','User deleted successfully');
+        return redirect()->route('configurations.index')->with('success','User deleted successfully.');
+    }
     
-
-    public function user_delete(Request $request){
-        $users = User::find($request->id);
-        $users->delete();
-
-        return redirect()->with('success','User deleted successfully.');
-    }   
-
-
-   
 }

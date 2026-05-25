@@ -1,5 +1,5 @@
-<div class="modal fade {{ $modal['formConfig']['modal'] }}" id="{{ $modal['modal_id'] }}" tabindex="-1">
-    <div class="modal-dialog {{ $modal['formConfig']['modalSize'] }}" {{ $modal['formConfig']['modal_size'] ?? '' }}">
+<div class="modal fade drawer right-align" id="{{ $modal['modal_id'] }}" tabindex="-1">
+    <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title">{{ $modal['title'] }}</h5>
@@ -71,36 +71,18 @@
                                         </div>
 
                                     @elseif($field['type'] == 'checkbox')
-                                        <div class="row">
+                                        <div class="{{ isset($field['class']) ? $field['class'] : 'row' }}">
                                             @foreach($field['options'] as $option)
-                                                <div class="col-6">
-                                                    <label class="custom-checkbox mt-1" for="permission_{{ $option->{$field['option_value']} }}">                                                        
-                                                        <input type="checkbox" id="permission_{{ $option->{$field['option_value']} }}" name="{{ $field['name'] }}[]" value="{{ $option->{$field['option_value']} }}">
+                                                <div class="col-6">                                                    
+                                                    <label class="custom-checkbox mt-1" for="data_{{ $option[$field['option_value']] }}">
+                                                        <input type="checkbox" id="data_{{ $option[$field['option_value']] }}" name="{{ $field['name'] }}[]"
+                                                            value="{{ $option[$field['option_text']] }}">
                                                         <span class="checkmark"></span>
-                                                        {{ ucwords($option->{$field['option_text']}) }}                                                        
+                                                        {{ $option[$field['option_text']] }}
                                                     </label>
                                                 </div>
                                             @endforeach
                                         </div>
-
-                                    @elseif($field['type'] == 'rolecheckbox')
-                                        <div class="row">
-                                            @foreach($field['options'] as $option)
-                                                @php
-                                                    $optionValue = $option->{$field['option_value']};
-                                                    $checked = isset($field['checked_values']) &&
-                                                            collect($field['checked_values'])->contains($optionValue);
-                                                @endphp
-
-                                                <div class="col-6">
-                                                    <label class="custom-checkbox mt-1" for="permission_{{ $optionValue }}">
-                                                    <input type="checkbox" id="permission_{{ $optionValue }}" name="{{ $field['name'] }}[]" value="{{ $option->{$field['option_text']} }}" {{ $checked ? 'checked' : '' }}>
-                                                        <span class="checkmark"></span>
-                                                        {{ $option->{$field['option_text']} }}
-                                                    </label>
-                                                </div>
-                                            @endforeach
-                                        </div>                                    
 
                                     @elseif($field['type'] == 'select')
                                         <select name="{{ $field['name'] }}" id="{{ $field['name'] }}" class="form-select">
@@ -118,8 +100,11 @@
                                             <option value="">Select Menu</option>
                                         </select>
 
-                                    @elseif($field['type'] == 'email')                                                                                    
-                                        <input type="{{ $field['type'] }}" id="{{ $field['name'] }}" name="{{ $field['name'] }}" class="form-control" placeholder="{{ $field['placeholder'] ?? '' }}">                                            
+                                    @elseif($field['type'] == 'email')
+                                        <input type="{{ $field['type'] }}" id="{{ $field['name'] }}" name="{{ $field['name'] }}" class="form-control" placeholder="{{ $field['placeholder'] ?? '' }}">
+
+                                    @elseif($field['type'] == 'password')
+                                        <input type="{{ $field['type'] }}" id="{{ $field['name'] }}" name="{{ $field['name'] }}" class="form-control" placeholder="{{ $field['placeholder'] ?? '' }}">
 
                                     @elseif($field['type'] == 'textarea')
                                         <textarea name="{{ $field['name'] }}" class="form-control {{ !empty($field['summer_class']) ? $field['summer_class'] : '' }}" rows="3"></textarea>
@@ -235,6 +220,37 @@
 
 @section('customJs')
     <script>
+        $('.editConfig').click(function () {
+            $('.controlForm').attr('action', $(this).data('action'));            
+            $('.formMethod').val($(this).data('method'));            
+            $('.modal-title').text($(this).data('title'));
+            $('.btn-primary').text($(this).data('button'));
+
+            // Reset all checkboxes first
+            $('input[name="business_types[]"]').prop('checked', false);
+
+            // Get DB values
+            let businessTypes = $(this).data('business_types');
+
+            if (businessTypes) {
+                businessTypes = businessTypes.split(',');
+                businessTypes.forEach(function (value) {
+                    $('input[name="business_types[]"][value="' + value + '"]')
+                        .prop('checked', true);
+
+                });
+            }
+            
+            $('input[name="name"]').val($(this).data('name'));
+            $('input[name="email"]').val($(this).data('email'));
+            $('input[name="phone"]').val($(this).data('phone'));
+            $('textarea[name="address"]').val($(this).data('address'));            
+            $('input[name="primary_color"]').val($(this).data('primary_color'));
+            $('input[name="secondary_color"]').val($(this).data('secondary_color'));
+            $('input[name="payment_key_id"]').val($(this).data('payment_key_id'));
+            $('input[name="payment_key_secret"]').val($(this).data('payment_key_secret'));
+        });
+
         $('.editPage').click(function () {
             $('.controlForm').attr('action', $(this).data('action'));            
             $('.formMethod').val($(this).data('method'));            

@@ -40,7 +40,7 @@
                             </div>
                         </div>
                     </form> --}}
-                    <button type="button" class="btn btn-primary float-right" data-bs-toggle="modal" data-bs-target="#{{ $productForm['modal_id'] }}">{{ $productForm['button_modal'] }}</button>                    
+                    <button type="button" class="btn btn-primary float-right" data-bs-toggle="modal" data-bs-target="#{{ $productForm['modal_id'] }}">{{ $productForm['title'] }}</button>                    
                 </div>                         
             </div>
         </div>                            
