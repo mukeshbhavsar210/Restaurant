@@ -249,6 +249,9 @@
             $('input[name="secondary_color"]').val($(this).data('secondary_color'));
             $('input[name="payment_key_id"]').val($(this).data('payment_key_id'));
             $('input[name="payment_key_secret"]').val($(this).data('payment_key_secret'));
+            $('input[name="gst"]').val($(this).data('gst'));
+            $('input[name="sgst"]').val($(this).data('sgst'));
+            $('input[name="cgst"]').val($(this).data('cgst'));
         });
 
         $('.editPage').click(function () {

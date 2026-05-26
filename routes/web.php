@@ -58,12 +58,8 @@ Route::group(['prefix' => 'admin'], function(){
     //         Route::post('/authenticate', 'authenticate')->name('admin.authenticate');
     //     });
     // });
-
-    //Route::group(['middleware' => 'admin.auth'], function(){
+    
     Route::middleware('auth')->group(function () {
-
-        
-
         //Category Routes
         Route::controller(CategoryController::class)->group(function() {
             Route::get('/categories', 'index')->name('categories.index');        

@@ -1,7 +1,7 @@
 <ul class="navbar-nav mb-auto w-100">    
     <li class="nav-item">
         <a href="{{ route('dashboard') }}" class="nav-link {{ (\Request::route()->getName() == 'admin.dashboard') ? 'active' : '' }}">
-            <i class="iconoir-view-grid menu-icon"></i>
+            <i class="iconoir-home-simple menu-icon"></i>
             <span>Dashboard</span>                        
         </a>
     </li>
@@ -27,11 +27,11 @@
     @can('view permissions')
         <li class="nav-item">
             <a href="{{ route('configurations.index') }}" class="nav-link {{ (\Request::route()->getName() == 'configurations.index') || (\Request::route()->getName() == 'roles.edit') || (\Request::route()->getName() == 'permissions.edit') || (\Request::route()->getName() == 'users.edit') || (\Request::route()->getName() == 'articles.edit') ? 'active' : '' }}">
-                <i class="iconoir-journal-page menu-icon"></i>
+                <i class="iconoir-fingerprint-lock-circle menu-icon"></i>
                 <span>Configuration</span>
             </a>
         </li>
-    @endcan
+    @endcan    
 
     {{-- <li class="nav-item">
         <a class="nav-link" href="#extra" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="sidebarApplications">

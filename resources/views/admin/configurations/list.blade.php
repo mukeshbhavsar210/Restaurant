@@ -47,38 +47,12 @@
             @endforeach
         </ul>
                                     
-        <div class="tab-content mt-3">
-            <div class="tab-pane active" id="tabs-1" role="tabpanel">
-                <div class="flex-justify">
-                    <h4>Configurations</h4>
-                    @if (!empty($config))
-                        <a href="javascript:void(0)"
-                            class="editConfig btn btn-outline-primary"
-                            data-bs-toggle="modal"
-                            data-bs-target="#createConfigModal"
-                            data-action="{{ route('configurations.update') }}"
-                            data-method="PUT"
-                            data-title="Edit Restaurant"
-                            data-button="Update Restaurant"
-                            data-business_types="{{ $config->pluck('business_types')->implode('') }}"
-                            data-name="{{ $config->pluck('name')->implode('') }}"
-                            data-email="{{ $config->pluck('email')->implode('') }}"
-                            data-phone="{{ $config->pluck('phone')->implode('') }}"                                                        
-                            data-address="{{ $config->pluck('address')->implode('') }}"
-                            data-primary_color="{{ $config->pluck('primary_color')->implode('') }}"
-                            data-secondary_color="{{ $config->pluck('secondary_color')->implode('') }}"
-                            data-payment_key_id="{{ $config->pluck('payment_key_id')->implode('') }}"
-                            data-payment_key_secret="{{ $config->pluck('payment_key_secret')->implode('') }}"
-                            >
-                            Edit Details
-                        </a>                        
-                    @else
-                        <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#{{ $configForm['modal_id'] }}">{{ $configForm['title'] }}</button>
-                    @endif
-                </div>
+        <div class="tab-content mt-1 mt-md-3">
+            <div class="tab-pane active" id="tabs-1" role="tabpanel">                
+                <h4>Configurations</h4>
 
                 @if (!empty($config))
-                    <div class="accordion mt-2" id="accordionExample">
+                    <div class="accordion mt-0 mt-md-2" id="accordionExample">
                         <div class="accordion-item">
                             <h5 class="accordion-header m-0" id="headingOne">
                                 <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
@@ -88,18 +62,40 @@
                             <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#accordionExample" style="">
                                 <div class="accordion-body">                                                                    
                                     <div class="row pt-2">
-                                        <div class="col-md-8">
+                                        <div class="col-md-11">
                                             <div class="row">
-                                                <div class="col-md-3">
-                                                    <img style="width:100%;" src="{{ asset('uploads/logo/'.$config->pluck('logo')->implode('')) }}" />
+                                                <div class="col-md-2">
+                                                    <img src="{{ asset('uploads/logo/'.$config->logo) }}" alt="{{ $config->name }}" class="rounded img-fluid" />
                                                 </div>
-                                                <div class="col-md-9">
-                                                    <h2 class="mb-1">{{ $config->pluck('name')->implode('') }}</h2>
-                                                    <p>{{ $config->pluck('address')->implode('') }}<br />
-                                                    Email: {{ $config->pluck('email')->implode('') }}<br />
-                                                    Mobile: {{ $config->pluck('phone')->implode('') }}</p>
-                                                    <a href="javascript:0" class="btn btn-primary float-right" data-bs-toggle="modal" data-bs-target="#editCompanyModal">Edit</a>                                                    
-                                                </div>
+                                                <div class="col-md-10">
+                                                    <h2 class="mb-2">{{ $config->name }}</h2>
+                                                    <p class="mb-2 mt-2">{{ $config->address }}<br />
+                                                    Email: {{ $config->email }}<br /> 
+                                                    Mobile: {{ $config->phone }}</p>
+                                                     <a href="javascript:void(0)"
+                                                        class="editConfig btn btn-outline-primary"
+                                                        data-bs-toggle="modal"
+                                                        data-bs-target="#createConfigModal"
+                                                        data-action="{{ route('configurations.update') }}"
+                                                        data-method="PUT"
+                                                        data-title="Edit Restaurant"
+                                                        data-button="Update Restaurant"
+                                                        data-business_types="{{ $config->business_types }}"
+                                                        data-name="{{ $config->name }}"
+                                                        data-email="{{ $config->email }}"
+                                                        data-phone="{{ $config->phone }}"                                                        
+                                                        data-address="{{ $config->address }}"
+                                                        data-primary_color="{{ $config->primary_color }}"
+                                                        data-secondary_color="{{ $config->secondary_color }}"
+                                                        data-payment_key_id="{{ $config->payment_key_id }}"
+                                                        data-payment_key_secret="{{ $config->payment_key_secret }}"
+                                                        data-gst="{{ $config->gst }}"
+                                                        data-sgst="{{ $config->sgst }}"
+                                                        data-cgst="{{ $config->cgst }}"
+                                                        >
+                                                        Edit
+                                                    </a>  
+                                                </div>                                                
                                             </div>
                                         </div>
                                     </div>
@@ -109,34 +105,83 @@
                         <div class="accordion-item">
                             <h5 class="accordion-header m-0" id="headingThree">
                                 <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
-                                    Payment Gateway
+                                    Order Details
                                 </button>
                             </h5>
                             <div id="collapseThree" class="accordion-collapse collapse" aria-labelledby="headingThree" data-bs-parent="#accordionExample">
-                                <div class="accordion-body">                                    
-                                    Payment Key Id: {{ $config->pluck('payment_key_id')->implode('') }}<br />
-                                    Payment Key Secret: {{ $config->pluck('payment_key_secret')->implode('') }}<br />                                
+                                <div class="accordion-body"> 
+                                    <div class="row">
+                                        <div class="col-md-3 col-12">
+                                            <div class="card border-1">
+                                                <div class="card-header">
+                                                    <h4 class="card-title">Types</h4>
+                                                </div>
+                                                <div class="card-body pt-0">
+                                                     @php
+                                                        $classes = ['border-primary text-primary', 'border-warning text-warning', 'border-purple text-purple'];
+                                                    @endphp
+                                                    
+                                                    <div class="flex">
+                                                        @foreach(explode(',', $config->business_types) as $type)
+                                                            <p class="types-restaurant border {{ $classes[$loop->index] ?? 'text-dark' }} me-1">
+                                                                {{ trim($type) }}
+                                                            </p>
+                                                        @endforeach
+                                                    </div>    
+                                                </div>
+                                            </div>                                                                           
+                                        </div>
+                                        <div class="col-md-4 col-12">
+                                            <div class="card border-1">
+                                                <div class="card-header">
+                                                    <h4 class="card-title">Payment Gateway</h4>
+                                                </div>
+                                                <div class="card-body pt-0">
+                                                    <p class="card-text text-muted mb-1">Payment Key Id: {{ $config->payment_key_id }}</p>
+                                                    <p class="card-text text-muted">Payment Key Secret: {{ $config->payment_key_secret }}</p>
+                                                </div>
+                                            </div>                                                                           
+                                        </div>
+                                        <div class="col-md-2 col-12">
+                                            <div class="card border-1">
+                                                <div class="card-header">
+                                                    <h4 class="card-title">Taxes</h4>
+                                                </div>
+                                                <div class="card-body pt-0">
+                                                    <p class="card-text text-muted mb-1">GST: {{ $config->gst }}</p>
+                                                    <p class="card-text text-muted">SGST:{{ $config->sgst }}, CGST: {{ $config->cgst }}</p>
+                                                </div>
+                                            </div>                                                                           
+                                        </div>                                        
+                                        <div class="col-md-3 col-12">
+                                            <div class="card border-1">
+                                                <div class="card-header">
+                                                    <h4 class="card-title">Theme Color</h4>
+                                                </div>
+                                                <div class="card-body pt-0">                                                                                                            
+                                                    <div class="flex">
+                                                        <p class="text-muted mb-1">Primary:</p>
+                                                        <p class="themeColor mb-1" style="background-color:{{ $config->primary_color }}"></p>
+                                                    </div>
+                                                    <div class="flex">
+                                                        <p class="text-muted mb-0">Secondary:</p>
+                                                        <p class="themeColor mb-0" style="background-color:{{ $config->secondary_color }}"></p>
+                                                    </div>                                                    
+                                                </div>
+                                            </div>                                                                           
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                        <div class="accordion-item">
-                            <h5 class="accordion-header m-0" id="headingFour">
-                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFour" aria-expanded="false" aria-controls="collapseFour">
-                                    Plan
-                                </button>
-                            </h5>
-                            <div id="collapseFour" class="accordion-collapse collapse" aria-labelledby="headingFour" data-bs-parent="#accordionExample">
-                                <div class="accordion-body">                                        
-                                    Website
-                                </div>
-                            </div>
-                        </div>
+                        </div>                       
                     </div>
+                @else
+                    <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#{{ $configForm['modal_id'] }}">{{ $configForm['title'] }}</button>
                 @endif
             </div>
 
             <div class="tab-pane" id="tabs-2" role="tabpanel">
-                <div class="row mt-3">
+                <div class="row mt-0 mt-md-2">
                     <div class="col-md-9 col-12">
                         <div class="page-title">
                             <h4>Branches</h4> 
@@ -144,7 +189,7 @@
                         </div>
                     </div>
                     
-                    <div class="col-md-3 col-12">
+                    <div class="col-md-3 col-12 mt-2 mt-md-0">
                         <div class="flex float-end">
                             <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#{{ $branchForm['modal_id'] }}">{{ $branchForm['title'] }}</button>
                             <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#{{ $tableForm['modal_id'] }}">{{ $tableForm['title'] }}</button>
@@ -430,9 +475,14 @@
                                 <tr>                               
                                     <td>
                                         <div class="product-row">
-                                            <img src="assets/images/users/avatar-2.jpg" alt="" class="thumb-md d-inline rounded-circle me-3">
+                                            @if($value->image)
+                                                <img src="{{ asset('uploads/users/'.$value->image) }}" alt="{{ $value->name }}" class="thumb-md d-inline rounded-circle me-3" />
+                                            @else
+                                                <img src="{{ asset('admin-assets/images/avatar5.png') }}" class="thumb-md d-inline rounded-circle me-3" />
+                                            @endif                                            
+                                            
                                             <div class="flex-grow-2 text-truncate">
-                                                <h5 class="mb-0">{{ ucfirst($value->name) }}</h5>
+                                                <h5 class="mb-1">{{ ucfirst($value->name) }}</h5>
                                                 <p class="text-muted tiny-font">{{ ucfirst($value->roles->pluck('name')->implode(', ')) }}</p>
                                             </div>
                                         </div>
@@ -448,7 +498,7 @@
                                             <span class="badge bg-secondary-subtle text-secondary">Inactive</span>
                                         @endif                                    
                                     </td>                                
-                                    <td class="text-end">                                        
+                                    <td class="text-end">                                                                                        
                                         @if($value->name !== 'superadmin')                                    
                                             @can('edit users')
                                                 <a href="{{ route("users.edit", $value->id) }}">

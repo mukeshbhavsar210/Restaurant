@@ -41,18 +41,25 @@
         </div>
     
         <ul class="nav nav-tabs" role="tablist">
-            @foreach (['Dinein', 'Takeaway', 'Delivery'] as $type)
+            @php
+                $businessTypes = explode(',', $config->business_types);
+            @endphp
+
+            @foreach ($businessTypes as $type)
                 <li class="nav-item">
-                    <a class="nav-link {{ $loop->first ? 'active' : '' }}" data-bs-toggle="tab"  href="#{{ strtolower($type) }}" role="tab" aria-selected="true">
+                    <a class="nav-link {{ $loop->first ? 'active' : '' }}"
+                        data-bs-toggle="tab" href="#{{ strtolower($type) }}" role="tab" aria-selected="true">
                         {{ $type }}
-                        <span class="badge rounded text-blue bg-blue-subtle">{{ $orders->where('order_type', $type)->count() }}</span>
-                    </a>                        
+                        <span class="badge rounded text-blue bg-blue-subtle">
+                            {{ $orders->where('order_type', trim($type))->count() }}
+                        </span>
+                    </a>
                 </li>
             @endforeach
         </ul>
 
         <div class="tab-content">
-            @foreach (['Dinein', 'Takeaway', 'Delivery'] as $type)
+            @foreach ($businessTypes as $type)
                 <div class="tab-pane fade {{ $loop->first ? 'show active' : '' }}" id="{{ strtolower($type) }}">
                     @php
                         $filteredOrders = $orders->where('order_type', $type);

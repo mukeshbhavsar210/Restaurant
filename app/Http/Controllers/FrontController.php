@@ -6,6 +6,7 @@ use App\Models\Area;
 use App\Models\Category;
 use App\Models\Menu;
 use App\Models\Product;
+use App\Models\Configuration;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Validator;
@@ -27,6 +28,7 @@ class FrontController extends Controller {
         $products = Product::with('category', 'variants')->latest()->get();
         $areas = Area::with('seat')->latest()->get();
         $seats = Seat::with('area')->latest()->get();
+        $config = Configuration::first();
 
         // cart session
         $cart = session()->get('cart', []);
@@ -38,7 +40,8 @@ class FrontController extends Controller {
             'popularProducts' => $popularCategory?->products ?? collect(),
             'popularCategory' => $popularCategory,
             'areas' => $areas,
-            'seats' => $seats,            
+            'seats' => $seats,           
+            'config' => $config, 
             //'qty' => getCartQty(),
             'total' => getCartTotal(),
             'cartCount' => getCartCount(),
@@ -53,6 +56,7 @@ class FrontController extends Controller {
         $seats = Seat::orderBy('id','DESC')->get();  
         $variants = Variant::get();
         $query = Product::query();
+        $config = Configuration::first();
 
         // ALL products of category
         $query->where(function($q) use ($category, $menus) {
@@ -89,6 +93,7 @@ class FrontController extends Controller {
             'seats' => $seats,
             'variants' => $variants,
             'menuSlug' => $menuSlug,
+            'config' => $config,
             //'qty' => getCartQty(),
             'total' => getCartTotal(),
             'cartCount' => getCartCount(),
@@ -375,7 +380,7 @@ class FrontController extends Controller {
         $order->order_type = $request->order_type;
         $order->session_id = session('session_id');
         $order->notes = $request->notes;
-        $order->ready_time = $request->ready_time;
+        $order->ready_time = $request->ready_time;        
 
         // Dinein
         if ($request->order_type === 'dinein') {
