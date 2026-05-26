@@ -23,9 +23,15 @@
         <div class="scroll-order">                        
             @if($qty > 0)
                 <ul class="custom-tabs">
-                    <li class="tab-link active" data-tab="tab1">Dine in</li>
-                    <li class="tab-link" data-tab="tab2">Takeaway</li>
-                    <li class="tab-link" data-tab="tab3">Delivery</li>
+                    @php
+                        $businessTypes = explode(',', $config->business_types);
+                    @endphp
+
+                    @foreach ($businessTypes as $type)
+                        <li class="tab-link {{ $loop->first ? 'active' : '' }}" data-tab="tab{{ $loop->iteration }}">
+                            {{ $type }}
+                        </li>
+                    @endforeach
                 </ul>
                         
                 <form id="placeOrder" name="placeOrder" method="POST" action="{{ route('submit.order') }}">
@@ -83,91 +89,96 @@
                         <textarea name="notes" placeholder="Add note 🙏🏻..." ></textarea>
                     </div>
 
-                    <div class="tab-content tab1 active">
-                        <div class="basket-page__content__delivery-content mb-2">
-                            <select class="form-select mb-2" aria-label="Default select example" name="dinein_time">
-                                <option selected>When Ready</option>
-                                <option value="10">10:00</option>
-                                <option value="11">11:00</option>
-                                <option value="12">12:00</option>
-                            </select>
-                        </div>
+                    @foreach ($businessTypes as $type)                        
+                        @if($type == 'Dinein')
+                            <div class="tab-content tab1 active">
+                                <div class="basket-page__content__delivery-content mb-2">
+                                    <select class="form-select mb-2" aria-label="Default select example" name="dinein_time">
+                                        <option selected>When Ready</option>
+                                        <option value="10">10:00</option>
+                                        <option value="11">11:00</option>
+                                        <option value="12">12:00</option>
+                                    </select>
+                                </div>
 
-                        <div class="basket-page__content__delivery-content mb-3">
-                            <select name="seat_id" id="seat_id" class="form-select mb-3">
-                                <option value="">Table</option>
-                                @foreach ($seats as $value)
-                                    {{-- @if(empty($value->area_id))
-                                        <option value="{{ $value->id }}">
-                                            {{ $value->table_name }}
-                                        </option>
-                                    @endif --}}
-                                    @if($value->area_id == NULL)
-                                        <option value="{{ $value->id }}">{{ $value->table_name }}</option>
-                                    @elseif($value->area_id == '')
-                                        <option value="{{ $value->id }}">{{ $value->table_name }}</option>
-                                    @endif
-                                @endforeach
-                            </select>
-                        </div>
-                    </div>
-
-                    <div class="tab-content tab2">
-                        <div class="basket-page__content__delivery-content mb-2">
-                            <select class="form-select mb-2" name="ready_time">
-                                <option selected>When Ready</option>
-                                <option value="10">10:00</option>
-                                <option value="11">11:00</option>
-                                <option value="12">12:00</option>
-                            </select>
-                        </div>
-                        <div class="form-group mb-2">
-                            <input type="text" class="form-control" placeholder="Name" name="customer_name">
-                        </div>
-                        <div class="row">
-                            <div class="col-7">
-                                <div class="form-group mb-2">
-                                    <input type="email" class="form-control" placeholder="Email" name="customer_email">
+                                <div class="basket-page__content__delivery-content mb-3">
+                                    <select name="seat_id" id="seat_id" class="form-select mb-3">
+                                        <option value="">Table</option>
+                                        @foreach ($seats as $value)
+                                            {{-- @if(empty($value->area_id))
+                                                <option value="{{ $value->id }}">
+                                                    {{ $value->table_name }}
+                                                </option>
+                                            @endif --}}
+                                            @if($value->area_id == NULL)
+                                                <option value="{{ $value->id }}">{{ $value->table_name }}</option>
+                                            @elseif($value->area_id == '')
+                                                <option value="{{ $value->id }}">{{ $value->table_name }}</option>
+                                            @endif
+                                        @endforeach
+                                    </select>
                                 </div>
                             </div>
-                            <div class="col-5">
-                                <div class="form-group mb-2">
-                                    <input type="phone" class="form-control" placeholder="Phone" name="customer_phone">
+                        @elseif($type == 'Takeaway')
+                            <div class="tab-content tab2">
+                                <div class="basket-page__content__delivery-content mb-2">
+                                    <select class="form-select mb-2" name="ready_time">
+                                        <option selected>When Ready</option>
+                                        <option value="10">10:00</option>
+                                        <option value="11">11:00</option>
+                                        <option value="12">12:00</option>
+                                    </select>
                                 </div>
-                            </div>
-                        </div> 
-                    </div>
-                    <div class="tab-content tab3">
-                        <div class="basket-page__content__delivery-content mb-2">
-                            <select class="form-select mb-2" name="ready_time">
-                                <option selected>When Ready</option>
-                                <option value="10">10:00</option>
-                                <option value="11">11:00</option>
-                                <option value="12">12:00</option>
-                            </select>
-                        </div>
-
-                        <div class="basket-page__content__delivery-content mb-2" >
-                            <textarea class="form-control" id="delivery_address" name="delivery_address" placeholder="Enter address">address</textarea>
-                        </div>
-
-                        <div class="form-group mb-2">
-                            <input type="text" id="customer_name" class="form-control" placeholder="Customer Name" name="customer_name">
-                        </div>
-
-                        <div class="row">
-                            <div class="col-7">
                                 <div class="form-group mb-2">
-                                    <input type="email" id="customer_email" class="form-control" placeholder="Email" name="customer_email">
+                                    <input type="text" class="form-control" placeholder="Name" name="customer_name">
                                 </div>
+                                <div class="row">
+                                    <div class="col-7">
+                                        <div class="form-group mb-2">
+                                            <input type="email" class="form-control" placeholder="Email" name="customer_email">
+                                        </div>
+                                    </div>
+                                    <div class="col-5">
+                                        <div class="form-group mb-2">
+                                            <input type="phone" class="form-control" placeholder="Phone" name="customer_phone">
+                                        </div>
+                                    </div>
+                                </div> 
                             </div>
-                            <div class="col-5">
+                        @elseif($type == 'Delivery')
+                            <div class="tab-content tab3">
+                                <div class="basket-page__content__delivery-content mb-2">
+                                    <select class="form-select mb-2" name="ready_time">
+                                        <option selected>When Ready</option>
+                                        <option value="10">10:00</option>
+                                        <option value="11">11:00</option>
+                                        <option value="12">12:00</option>
+                                    </select>
+                                </div>
+
+                                <div class="basket-page__content__delivery-content mb-2" >
+                                    <textarea class="form-control" id="delivery_address" name="delivery_address" placeholder="Enter address">address</textarea>
+                                </div>
+
                                 <div class="form-group mb-2">
-                                    <input type="phone" id="customer_phone" class="form-control" placeholder="Phone" name="customer_phone">
+                                    <input type="text" id="customer_name" class="form-control" placeholder="Customer Name" name="customer_name">
                                 </div>
-                            </div>
-                        </div>
-                    </div>                    
+
+                                <div class="row">
+                                    <div class="col-7">
+                                        <div class="form-group mb-2">
+                                            <input type="email" id="customer_email" class="form-control" placeholder="Email" name="customer_email">
+                                        </div>
+                                    </div>
+                                    <div class="col-5">
+                                        <div class="form-group mb-2">
+                                            <input type="phone" id="customer_phone" class="form-control" placeholder="Phone" name="customer_phone">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div> 
+                        @endif
+                    @endforeach
 
                     <input type="hidden" name="order_type" id="order_type" value="dinein" class="form-control">
                     <input type="hidden" name="total_amount" value="{{ $total }}" class="form-control">

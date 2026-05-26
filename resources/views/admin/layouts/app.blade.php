@@ -177,7 +177,15 @@
 
 <div class="startbar d-print-none">
     <div class="brand">
-        <a href="" class="logo" title=""><span><img class="logo-sm" src="{{ asset('front-assets/images/logo.png') }}" alt="" /></span></a>
+        <a href="{{ route('dashboard') }}" class="logo">
+            <span>
+                <img src="{{ asset('front-assets/images/logo_small.jpg') }}" alt="logo-small" class="logo-sm">
+            </span>
+            {{-- <span class="">
+                <img src="{{ asset('front-assets/images/logo.jpg') }}" alt="logo-large" class="logo-lg logo-light">
+                <img src="{{ asset('front-assets/images/logo.jpg') }}" alt="logo-large" class="logo-lg logo-dark">
+            </span> --}}
+        </a>
     </div>
     <div class="startbar-menu">
         <div class="startbar-collapse simplebar-scrollable-y" id="startbarCollapse" data-simplebar="init">

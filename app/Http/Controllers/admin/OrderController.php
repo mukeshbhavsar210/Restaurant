@@ -4,6 +4,7 @@ namespace App\Http\Controllers\admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Order;
+use App\Models\Configuration;
 use App\Models\OrderItem;
 use App\Models\Product;
 use App\Models\Seat;
@@ -23,8 +24,11 @@ class OrderController extends Controller {
         $takeawayOrders = Order::where('order_type', 'Takeaway')->latest()->paginate(10, ['*'], 'takeaway_page');
         $deliveryOrders = Order::where('order_type', 'Delivery')->latest()->paginate(10, ['*'], 'delivery_page');
 
+        $config = Configuration::first();        
+
         $data = [
             'orders' => $orders,
+            'config' => $config,
             'totalOrders' => $totalOrders,  
             'dineinOrders' => $dineinOrders,
             'takeawayOrders' => $takeawayOrders,
@@ -32,19 +36,39 @@ class OrderController extends Controller {
         ];
 
         return view('admin.orders.list', $data);
-    }
-
-    
+    }    
 
     public function detail($orderId){
         $order = Order::with('seat')->findOrFail($orderId);
         $orderItems = OrderItem::where('order_id',$orderId)->get();  
-        $products = Product::latest('id');      
+        $products = Product::latest('id');
+        $config = Configuration::first();          
+
+        $subtotal = 0;
+        $gstAmount = 0;
+        $sgstAmount = 0;
+        $cgstAmount = 0;
+
+        foreach ($order->items as $item) {
+            $itemTotal = $item->price * $item->quantity;
+            $subtotal += $itemTotal;
+            $gstAmount += ($itemTotal * $config->gst) / 100;
+            $sgstAmount += ($itemTotal * $config->sgst) / 100;
+            $cgstAmount += ($itemTotal * $config->cgst) / 100;
+        }
+
+        $grandTotal = $subtotal + $gstAmount + $sgstAmount + $cgstAmount;
 
         return view('admin.orders.detail',[
             'order' => $order,
             'orderItems' => $orderItems,
+            'subtotal' => $subtotal,
+            'gstAmount' => $gstAmount,
+            'sgstAmount' => $sgstAmount,
+            'cgstAmount' => $cgstAmount,
+            'grandTotal' => $grandTotal,
             'products' => $products,
+            'config' => $config,
         ]);
     }
 
@@ -53,7 +77,7 @@ class OrderController extends Controller {
         $order = Order::find($id);
         $order->status = $request->status;
         $order->shipped_date = $request->shipped_date;
-        $order->save();
+        $order->save();        
 
         $message = 'Order status updated successfully';
 
