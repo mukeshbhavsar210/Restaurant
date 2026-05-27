@@ -14,23 +14,32 @@
         <div class="col-md-9">     
             <div class="card">
                 <div class="card-body">
-                    <div class="row invoice-info">
-                        <h4 class="mb-2">Order Details - {{ $order->id }}</h4>
-                        <div class="col-md-8 invoice-col">                                                         
-                            @if($type === 'dinein')
-                                <h5 class="mb-1">{{ $order->seat?->table_name }}</h5>
-                                <p class="mb-0">{{ $order->seat?->area?->area_name }}</p>
-                            @elseif($type === 'takeaway')   
-                                <b>{{ $order->customer_name }}</b><br />
-                                Phone: {{ $order->customer_phone }}<br />
-                                Email: {{ $order->customer_email }}
-                            @elseif($type === 'delivery')
-                                <address>{{ $order->delivery_name }},<br /> 
-                                        {{ $order->delivery_address }}<br />
-                                        M.: {{ $order->delivery_phone }}<br />
-                                        E.: {{ $order->delivery_email }}
-                                </address>
-                            @endif                                                       
+                    <div class="row">
+                        <div class="flex">
+                            <a href="{{ route('orders.index') }}" class="back-arrow">
+                                <span class="sprites"></span>
+                            </a>
+                            <h4 class="mb-2">Order Details - {{ $order->id }}</h4>                            
+                        </div>
+
+                        <div class="col-md-8">
+                            <div class="padd-invoice">
+                                @if($type === 'dinein')
+                                    <h5 class="mb-1">{{ $order->seat?->table_name }}</h5>
+                                    <p class="mb-0">{{ $order->seat?->area?->area_name }}</p>
+                                @elseif($type === 'takeaway')   
+                                    <b>{{ $order->customer_name }}</b><br />
+                                    Phone: {{ $order->customer_phone }}<br />
+                                    Email: {{ $order->customer_email }}
+                                @elseif($type === 'delivery')
+                                    <address>
+                                        <b>{{ $order->delivery_name }}</b><br /> 
+                                            {{ $order->delivery_address }}<br />
+                                            M.: {{ $order->delivery_phone }}<br />
+                                            E.: {{ $order->delivery_email }}
+                                    </address>
+                                @endif
+                            </div>
                         </div>
                         <div class="col-md-4">                            
                             <div class="row mb-1">
@@ -151,7 +160,7 @@
         <div class="col-md-3">            
             <div class="card">
                 <div class="card-body"> 
-                    <a href="{{ route('orders.index') }}" class="btn btn-primary ">Back</a><br /><br />
+                    
 
                     <form action="" method="post" name="changeOrderStatusForm" id="changeOrderStatusForm">
                         @if($type === 'dinein')

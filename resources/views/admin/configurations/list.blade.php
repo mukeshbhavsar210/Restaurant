@@ -73,7 +73,7 @@
                                                     Email: {{ $config->email }}<br /> 
                                                     Mobile: {{ $config->phone }}</p>
                                                      <a href="javascript:void(0)"
-                                                        class="editConfig btn btn-outline-primary"
+                                                        class="editConfig btn btn-outline-primary me-1"
                                                         data-bs-toggle="modal"
                                                         data-bs-target="#createConfigModal"
                                                         data-action="{{ route('configurations.update') }}"
@@ -93,8 +93,38 @@
                                                         data-sgst="{{ $config->sgst }}"
                                                         data-cgst="{{ $config->cgst }}"
                                                         >
-                                                        Edit
+                                                        Edit Details
+                                                    </a>
+
+                                                    <a href="javascript:void(0)"
+                                                        class="editProfile btn btn-outline-secondary me-1"
+                                                        data-bs-toggle="modal"
+                                                        data-bs-target="#updateProfileModal"
+                                                        data-action="{{ route('profile.update') }}"
+                                                        data-method="PUT"
+                                                        data-title="Edit Profile"
+                                                        data-button="Update Profile"
+                                                        data-name="{{ auth()->user()->name }}"
+                                                        data-email="{{ auth()->user()->email }}"
+                                                        data-mobile="{{ auth()->user()->mobile }}"                                                        
+                                                        >
+                                                        Profile
                                                     </a>  
+                                                    
+                                                    <a href="javascript:void(0)"
+                                                        class="editPassword btn btn-outline-secondary me-1"
+                                                        data-bs-toggle="modal"
+                                                        data-bs-target="#updatePasswordModal"
+                                                        data-action="{{ route('password.update') }}"
+                                                        data-method="PUT"
+                                                        data-title="Edit Password"
+                                                        data-button="Update Password"
+                                                        data-current_password="{{ $config->current_password }}"   
+                                                        data-password="{{ $config->password }}" 
+                                                        data-password_confirmation="{{ $config->password_confirmation }}"                                                      
+                                                        >
+                                                        Change Password
+                                                    </a>
                                                 </div>                                                
                                             </div>
                                         </div>
@@ -498,7 +528,7 @@
                                             <span class="badge bg-secondary-subtle text-secondary">Inactive</span>
                                         @endif                                    
                                     </td>                                
-                                    <td class="text-end">                                                                                        
+                                    <td>                                                                                        
                                         @if($value->name !== 'superadmin')                                    
                                             @can('edit users')
                                                 <a href="{{ route("users.edit", $value->id) }}">
@@ -527,6 +557,14 @@
 
 @include('components.common-modal', [
     'modal' => $configForm,
+])
+
+@include('components.common-modal', [
+    'modal' => $passwordForm,
+])
+
+@include('components.common-modal', [
+    'modal' => $profileForm,
 ])
 
 @include('components.common-modal', [
