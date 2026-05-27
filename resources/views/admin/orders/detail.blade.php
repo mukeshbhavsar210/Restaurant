@@ -15,33 +15,27 @@
             <div class="card">
                 <div class="card-body">
                     <div class="row invoice-info">
-                        <div class="col-md-8 invoice-col"> 
-                            <h4 class="mb-2">Order Details - {{ $order->id }}</h4>                             
-                            {{-- Dine-in specific --}}
-                            @if($type === 'dinein')                                
+                        <h4 class="mb-2">Order Details - {{ $order->id }}</h4>
+                        <div class="col-md-8 invoice-col">                                                         
+                            @if($type === 'dinein')
                                 <h5 class="mb-1">{{ $order->seat?->table_name }}</h5>
                                 <p class="mb-0">{{ $order->seat?->area?->area_name }}</p>
-                            @endif                            
-
-                            {{-- Customer info (Takeaway + Delivery) --}}
-                            @if(in_array($type, ['takeaway', 'delivery']))
-                                <address class="mb-0">
-                                    <p>
-                                        <b>{{ $order->customer_name }}</b><br />
-                                        @if($type === 'delivery')
-                                            {{ $order->address }}<br />
-                                        @endif
-
-                                        Phone: {{ $order->customer_phone }}<br />
-                                        Email: {{ $order->customer_email }}
-                                    </p>
+                            @elseif($type === 'takeaway')   
+                                <b>{{ $order->customer_name }}</b><br />
+                                Phone: {{ $order->customer_phone }}<br />
+                                Email: {{ $order->customer_email }}
+                            @elseif($type === 'delivery')
+                                <address>{{ $order->delivery_name }},<br /> 
+                                        {{ $order->delivery_address }}<br />
+                                        M.: {{ $order->delivery_phone }}<br />
+                                        E.: {{ $order->delivery_email }}
                                 </address>
-                            @endif
+                            @endif                                                       
                         </div>
                         <div class="col-md-4">                            
                             <div class="row mb-1">
                                 <div class="col-md-4 text-right">Order Type</div>
-                                <div class="col-md-8">: <p class="types-restaurant border border-primary text-primary">{{ ucfirst($type) }} Order</p></div>
+                                <div class="col-md-8">: <p class="types-restaurant border border-primary text-primary">{{ ucfirst($type) }}</p></div>
                             </div>
                             <div class="row mb-1">
                                 <div class="col-md-4 text-right">Status</div>
@@ -50,18 +44,16 @@
                                         <span class="badge {{ $order->status == 'running' ? 'bg-danger' : 'bg-success' }}">
                                             {{ $order->status == 'running' ? 'Running' : 'Available' }}
                                         </span>
-                                    @elseif ($type == 'takeaway' || $type == 'delivered')
-                                        @if ($order->status == 'running')
-                                            <span class="badge bg-danger">Running</span>
-                                        @elseif ($order->status == 'pending')
-                                            <span class="badge bg-danger">Pending</span>
+                                    @elseif ($type == 'takeaway' || $type == 'delivery')
+                                        @if ($order->status == 'placed')
+                                            <span class="badge bg-success">Placed Order</span>                                        
                                         @elseif ($order->status == 'shipped')
                                             <span class="badge bg-info">Shipped</span>
                                         @elseif ($order->status == 'delivered')
                                             <span class="badge bg-success">Delivered</span>
                                         @else
                                             <span class="badge bg-danger">Cancelled</span>
-                                        @endif
+                                        @endif                                    
                                     @endif
                                 </div>
                             </div>

@@ -352,7 +352,7 @@ class FrontController extends Controller {
 
     public function placeOrder(Request $request) {
         $validator = Validator::make($request->all(), [
-
+            'order_type' => 'required|in:dinein,takeaway,delivery',
         ]);
 
         if ($validator->fails()) {
@@ -363,7 +363,9 @@ class FrontController extends Controller {
         }
 
         $session_id = mt_rand(1000000000, 9999999999);
+
         Session::put('session_id', $session_id);
+
         $cart = Session::get('cart', []);
         $total = 0;
 
@@ -380,31 +382,30 @@ class FrontController extends Controller {
         $order->order_type = $request->order_type;
         $order->session_id = session('session_id');
         $order->notes = $request->notes;
-        $order->ready_time = $request->ready_time;        
+        $order->total_amount = $total;       
 
         // Dinein
-        if ($request->order_type === 'dinein') {
-            $order->seat_id = $request->seat_id;
-            $order->dinein_time = $request->dinein_time;
+        if ($request->order_type === 'dinein') {            
+            $order->seat_id = $request->seat_id;            
+            $order->status = 'running';
         }
 
-        // Takeaway & Delivery
-        if (
-            $request->order_type === 'takeaway' ||
-            $request->order_type === 'delivery'
-        ) {
-
-            $order->customer_name = $request->name;
-            $order->customer_email = $request->email;
-            $order->customer_phone = $request->phone;
+        // Takeaway
+        if ($request->order_type === 'takeaway') {        
+            $order->customer_name = $request->customer_name;
+            $order->customer_email = $request->customer_email;
+            $order->customer_phone = $request->customer_phone;
+            $order->status = 'placed';            
         }
 
         // Delivery only
         if ($request->order_type === 'delivery') {
-            $order->delivery_address = $request->address;
-        }
-
-        $order->total_amount = $total;
+            $order->delivery_name = $request->delivery_name;
+            $order->delivery_email = $request->delivery_email;
+            $order->delivery_phone = $request->delivery_phone;
+            $order->delivery_address = $request->delivery_address;
+            $order->status = 'placed';
+        }        
 
         $order->save();
 

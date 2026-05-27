@@ -193,9 +193,9 @@ button, select {
 }
 
 .custom-success-alert{
-    position: fixed;
-    top: 20px;
-    left: 35%;
+    position: relative;
+    bottom: 30px;    
+    left: 0; margin:10px;     
     background: green;
     color: #fff;
     padding: 14px 20px;
@@ -980,10 +980,8 @@ html {
   padding: 0;
 }
 
-.basket-page__content__products {
-  border-top: 3px dashed #eee;
-  border-bottom: 3px dashed #eee;
-  margin-top: 10px;
+.basket-page__content__products {  
+  border-bottom: 3px dashed #eee;  
   padding: 10px 0; justify-content: center;
 }
 
@@ -1099,9 +1097,10 @@ html {
 }
 
 /* open state */
-.scroll-order { overflow-y: scroll; padding: 20px 20px 0 20px; height: 430px;}
+.scroll-order { overflow-y: scroll; padding: 0 20px; height: 300px;}
 .bottom-sheet.active_bottom .sheet-content { transform: translateY(0); }
 .handle { width: 100%; cursor: pointer; display: flex; justify-content: space-between; color:#fff; background-color: #111111; padding:20px 20px 15px 20px; color:#fff; border-radius: 15px 15px 0 0; font-size: 15px; }
+.button-padd { padding: 0 20px 20px 20px;}
 
 .nav-justified .nav-item .nav-link { padding: 12px; text-transform: uppercase; color: var(--black); }
 .nav-tabs .nav-link.active, .nav-tabs .nav-item.show .nav-link { color: var(--green-dark); background-color: var(--gray-light); }
@@ -1114,6 +1113,6 @@ html {
     display: block;
 }
 
-.custom-tabs { list-style: none; display: flex; justify-content: space-between; padding: 0; }
+.custom-tabs { list-style: none; display: flex; justify-content: space-between;  margin: 20px 20px 10px 20px; padding-bottom: 10px; border-bottom: 3px dashed #eee; }
 .custom-tabs li { padding: 13px 30px; cursor: pointer; text-transform: uppercase; border-radius: 5px;  }
 .custom-tabs li.active { color: var(--green-dark); background-color: var(--gray-light); }

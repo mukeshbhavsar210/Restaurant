@@ -23,8 +23,7 @@ class OrderController extends Controller {
         $dineinOrders = Order::where('order_type', 'Dinein')->latest()->paginate(10, ['*'], 'dinein_page');
         $takeawayOrders = Order::where('order_type', 'Takeaway')->latest()->paginate(10, ['*'], 'takeaway_page');
         $deliveryOrders = Order::where('order_type', 'Delivery')->latest()->paginate(10, ['*'], 'delivery_page');
-
-        $config = Configuration::first();        
+        $config = Configuration::first();
 
         $data = [
             'orders' => $orders,

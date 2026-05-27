@@ -18,7 +18,7 @@
         </a>
     </li>     
     <li class="nav-item">
-        <a href="{{ route('orders.index') }}" class="nav-link {{ (\Request::route()->getName() == 'orders.index') ? 'active' : '' }}">
+        <a href="{{ route('orders.index') }}" class="nav-link {{ (\Request::route()->getName() == 'orders.index') || (\Request::route()->getName() == 'orders.detail') ? 'active' : '' }}">
             <i class="iconoir-journal-page menu-icon"></i>
             <span>Orders</span>
         </a>

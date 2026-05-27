@@ -2,8 +2,6 @@
 
 @section('content')
 
-<div id="customAlert"></div>
-
 <section class="menu-products-section menu-products-section--grid">
     @if($popularProducts->isNotEmpty())    
         <div class="menu-grid">
@@ -46,9 +44,5 @@
         setTimeout(function() { $(".alert").fadeOut(1500); }, 1500)
     })
 
-    $('button[data-bs-toggle="tab"]').on('shown.bs.tab', function (e) {
-        let type = $(e.target).data('type');
-        $('#order_type').val(type);
-    });        
 </script>
 @endsection

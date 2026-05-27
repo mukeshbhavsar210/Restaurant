@@ -42,10 +42,10 @@
     
         <ul class="nav nav-tabs" role="tablist">
             @php
-                $businessTypes = explode(',', $config->business_types);
+                $types = explode(',', $config->business_types);                                       
             @endphp
 
-            @foreach ($businessTypes as $type)
+            @foreach ($types as $type)
                 <li class="nav-item">
                     <a class="nav-link {{ $loop->first ? 'active' : '' }}"
                         data-bs-toggle="tab" href="#{{ strtolower($type) }}" role="tab" aria-selected="true">
@@ -59,7 +59,7 @@
         </ul>
 
         <div class="tab-content">
-            @foreach ($businessTypes as $type)
+            @foreach ($types as $type)
                 <div class="tab-pane fade {{ $loop->first ? 'show active' : '' }}" id="{{ strtolower($type) }}">
                     @php
                         $filteredOrders = $orders->where('order_type', $type);
@@ -68,22 +68,22 @@
                     <table class="table mb-0">
                         <thead class="table-light">
                             <tr>
-                                <th class="border-top-0">Order#</th>
-                                <th class="border-top-0" width="350">Items Notes</th>
-                                <th class="border-top-0" width="150">Table/Outlet</th>
-                                <th class="border-top-0 text-end" width="80">Total Qty</th>
-                                <th class="border-top-0 text-end" width="80">Price</th>
-                                <th class="border-top-0 text-end" width="80">Total</th>
-                                <th class="border-top-0 text-end" width="180">Order On</th>
-                                <th class="border-top-0 text-end" width="80">Status</th>
+                                <th class="border-top-0"><b>Order#</b></th>
+                                @if($type == 'Dinein')
+                                    <th class="border-top-0" width="150"><b>Table/Outlet</b></th>    
+                                @endif
+                                <th class="border-top-0 text-end" width="100"><b>Qty/Price</b></th>                                
+                                <th class="border-top-0 text-end" width="100"><b>Total</b></th>
+                                <th class="border-top-0 text-end" width="130"><b>Order On</b></th>
+                                <th class="border-top-0 text-end" width="80"><b>Status</b></th>
                             </tr>
                         </thead>                     
                         <tbody>
-                            @forelse ($filteredOrders as $value)
+                            @forelse ($filteredOrders as $value)                                
                                 <tr>
                                     <td>
                                         <div class="product-row">
-                                            <div class="img-group d-flex justify-content-end">
+                                            <div class="show-tooltip me-3">
                                                 @foreach($value->items as $item)
                                                     @php
                                                         $productImage = optional($item->product?->product_images->first());
@@ -99,38 +99,34 @@
                                                         <span class="order-product-qty">{{ $item->quantity }}</span>
                                                     </a>                                                    
                                                 @endforeach
-                                            </div>                                                                                                                                                                                    
+                                            </div> 
+                                            <div class="flex-grow-1 text-truncate">
+                                                @foreach($value->items as $item)
+                                                    <span class="product-title">{{ $item->product_name }},</span><br />
+                                                @endforeach    
+                                                <p>{{ $value->notes }}</p>
+                                            </div>
                                         </div>
-                                    </td>
-                                    <td>         
-                                        @foreach($value->items as $item)
-                                            <span class="product-title">{{ $item->product_name }},</span>
-                                        @endforeach    
-                                        <p>{{ $value->notes }}</p>                                        
-                                    </td>
-                                    <td>
-                                        <p class="text-muted"><b>{{ $value->seat?->table_name }}</b> ({{ $value->seat?->capacity }})</p>                                        
-                                        <p class="text-muted tiny-font">
-                                            {{ $value->seat?->area?->area_name }}<br />
-                                            Ready time:
-                                            @if($value->dinein_time)
-                                                {{ $value->dinein_time }}<br />    
-                                            @elseif($value->ready_time)
-                                                {{ $value->ready_time }}<br /> 
-                                            @endif  
-                                        </p>
-                                    </td>  
-                                    <td class="text-end">{{ $value->items->sum('quantity') }}</td>
-                                    <td class="text-end">₹{{ $value->items->sum('price') }}</td>
+                                    </td>                                    
+                                    @if($type == 'Dinein')
+                                        <td>
+                                            <p class="text-muted"><b>{{ $value->seat?->table_name }}</b> ({{ $value->seat?->capacity }})</p>                                        
+                                            <p class="text-muted tiny-font">{{ $value->seat?->area?->area_name }}</p>
+                                        </td>
+                                    @endif
+                                    <td class="text-end">{{ $value->items->sum('quantity') }} x ₹{{ $value->items->sum('price') }}</td>                                    
                                     <td class="text-end">₹{{ round($value->total_amount) }}</td>
-                                    <td class="text-end">{{ \Carbon\Carbon::parse($value->created_at)->format('d M, Y, h:i A') }}</td>
+                                    <td class="text-end">{{ \Carbon\Carbon::parse($value->created_at)->format('d M, Y') }}</td>
                                     <td class="text-end">
+                                        
                                         @if ($value->status == 'running')
-                                            <span class="badge bg-danger">Running</span>
+                                            <span class="badge bg-success">Running</span>
                                         @elseif ($value->status == 'pending')
                                             <svg class="text-danger h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true">
                                                 <path stroke-linecap="round" stroke-linejoin="round" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                                             </svg>
+                                        @elseif ($value->status == 'placed')
+                                            <span class="badge bg-info">Placed</span>
                                         @elseif ($value->status == 'shipped')
                                             <span class="badge bg-info">Shipped</span>
                                         @elseif ($value->status == 'delivered')
