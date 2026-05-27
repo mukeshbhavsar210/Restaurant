@@ -19,7 +19,7 @@ ul,li { padding: 0; margin: 0;}
 .green-tick-icon { background-position:-3px -30px; height:20px; width: 20px; }
 .red-tick-icon { background-position:-25px -30px; height:20px; width: 20px; }
 
-.veg-icon { background-position:-47px -1px; height:20px; width: 20px; }
+.veg-icon { background-position:-47px 0; height:20px; width: 20px; }
 .nonveg-icon { background-position:-46px -1px; height:20px; width: 20px; }
 .egg-icon { background-position:-25px -1px; height:20px; width: 20px; }
 
@@ -33,6 +33,9 @@ ul,li { padding: 0; margin: 0;}
 .add-icon:hover { background-color: #ccc; }
 .add-icon span { background-position: -108px -82px; height: 21px; width: 21px;}
 
+.back-arrow span { background-position: -170px -106px; height: 27px; width: 27px;}
+.back-arrow:hover span { background-position: -198px -106px;  }
+
 .refresh-icon span { background-position:-53px -27px; height:28px; width: 28px; margin-right: 10px; margin-top: 5px; }
 .refresh-icon:hover span { background-position:-81px -27px;  }
 
@@ -42,12 +45,14 @@ ul,li { padding: 0; margin: 0;}
 
 .content-header { padding:0px;}
 .content-header h1 { font-size: 1.6rem; }
-.btn { font-weight: bold; line-height: 15px; font-size: 13px; }
+.btn { font-weight: bold; font-size: 13px; }
 .flexContainer { display: flex;  justify-content: end;}
 
 .table td, .table th { padding:0.5rem;}
 .table td p { margin: 0;}
 
+.padd-invoice { padding-left: 33px;}
+.padd-invoice address { padding: 0; margin: 0;}
 .border-show { border:1px #ccc solid !important; position: relative;}
 .border-show .controls { position: absolute; top:0; display: flex; justify-content: space-between; padding: 8px; width: 100%; }
 .border-show .controls p { margin: 0;}
@@ -57,7 +62,7 @@ ul,li { padding: 0; margin: 0;}
 .page-title h4 { margin-bottom: 0; }
 .page-title .counts { background-color: #0d6efd; color: #fff; padding:3px 5px; border-radius: 100px; font-size: 11px; text-align: center; display: block; height:23px; width: 23px; position: relative; top:3px; font-weight: bold; }
 
-.counts_small { border-radius: 100px; padding: 1px; background-color: var(--gray); color: var(--white); margin-left: 5px; font-size: 12px; display: block; height: 21px; width: 21px; text-align: center;}
+.counts_small { border-radius: 100px; padding: 1px; background-color: var(--white); color: var(--black); margin-left: 5px; font-size: 11px; display: block; height: 22px; width: 22px; text-align: center; border:1px #ccc solid;}
 .product-title { margin-bottom: 2px; font-weight: bold;}
 .product-title a { font-size: 18px;}
 .product-title a:hover { color: var(--primary);}
@@ -79,8 +84,8 @@ ul,li { padding: 0; margin: 0;}
 #chartContainer .col { padding: 0; text-align: center; position: relative; z-index: 9;}
 #chartContainer .months { font-size: 11px; font-weight: bold; text-transform: uppercase; }
 
-.chip-extra { display: flex; column-gap: 10px; }
-.chip-extra .chip-unique { border: 1px #ccc solid; padding: 8px 8px 9px 13px; border-radius: 4px; display: flex; column-gap: 30px; justify-content: space-between;  }
+.chip-extra { display: flex; column-gap: 15px; flex-wrap: wrap; gap: 10px; }
+.chip-extra .chip-unique { border: 1px #ccc solid; padding: 8px 6px 9px 13px; border-radius: 4px; display: flex; column-gap: 30px; justify-content: space-between;  }
 .chip-extra .icons { display: flex; column-gap: 3px;}
 .chip-extra .icons p { margin: 0;}
 
@@ -88,12 +93,13 @@ ul,li { padding: 0; margin: 0;}
 
 .accordion-button { font-size: 14px; padding: 14px 20px 16px 20px; font-weight: bold; }
 .accordion-button.collapsed { font-weight: normal; }
-.accordion-button:not(.collapsed) { color: var(--black); background-color: var(--primary-light);}
+.accordion-button:not(.collapsed) { color: var(--black); background-color: var(--primary-light); }
 .label {
     width: 150px;
     font-size: 14px;
 }
-
+.thumb-category { position: relative;}
+.thumb-category .count-category { position:absolute; top: 0; left:0; background: #000; color: #fff; width: 18px; height: 18px; border-radius: 5px; font-size: 10px; display: flex; align-items: center; justify-content: center;  }
 .types-restaurant { font-size: 11px; text-transform: uppercase; border-radius: 5px; padding: 4px 10px 5px 10px; margin: 3px 0; font-weight: bold; display: inline;}
 
 .themeColor { display: block; height: 20px; width: 20px; border-radius: 100px;}
@@ -504,7 +510,7 @@ input:checked + .slider { box-shadow:0 0 0 2px #007bff,0 0 2px #007bff; }
 
 .img-group { display: flex; position: relative;}
 .img-group .counts { position: absolute; top:16px; left:-37px; display: block; height: 23px; width: 23px; text-align: center; background-color: var(--gray); color: var(--white); padding: 2px 5px; font-size: 11px; border-radius: 100px; border: 1px #fff solid; z-index: 9;}
-.thumb-md { height: 70px; width: 70px; }
+
 
 .branch-details { border:1px #ccc solid; border-radius: 5px; }
 .branch-details .branch-head { background-color: var(--gray-light); color: var(--black); padding: 10px 15px; border-radius: 5px 5px 0 0;}

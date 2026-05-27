@@ -13,7 +13,6 @@ use App\Http\Controllers\admin\SettingController;
 use App\Http\Controllers\admin\TempImagesController;
 use App\Http\Controllers\FrontController;
 use App\Http\Controllers\ArticleController;
-use App\Http\Controllers\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 
@@ -47,18 +46,9 @@ Route::controller(FrontController::class)->group(function() {
     Route::get('clear-wishlist', 'clearWishlist')->name('clear_wishlist');
 });
 
-//Route::get('/menu/{categorySlug?}',[ShopController::class,'category'])->name('front.category');
-
 Route::get('/dashboard', [HomeController::class, 'index'])->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::group(['prefix' => 'admin'], function(){
-    // Route::group(['middleware' => 'admin.guest'], function(){
-    //     Route::controller(AdminLoginController::class)->group(function() {
-    //         Route::get('/login', 'index')->name('admin.login');
-    //         Route::post('/authenticate', 'authenticate')->name('admin.authenticate');
-    //     });
-    // });
-    
     Route::middleware('auth')->group(function () {
         //Category Routes
         Route::controller(CategoryController::class)->group(function() {
@@ -105,23 +95,8 @@ Route::group(['prefix' => 'admin'], function(){
             Route::get('/orders/{id}', 'detail')->name('orders.detail');
             Route::post('/order/change-status/{id}', 'changeOrderStatus')->name('orders.changeOrderStatus');
             Route::post('/order/send-email/{id}', 'sendInvoiceEmail')->name('orders.sendInvoiceEmail');
-        });
-
-        //Settings Routes
-        Route::controller(SettingController::class)->group(function() {
-            Route::get('/settings', 'index')->name('settings.index');
-            //Route::post('/settings/website_information', 'websiteInformation')->name('settings.websiteInformation');                
-            Route::post('/settings/branch', 'branch')->name('settings.branch');                
-            //Route::post("/updateWebsiteLogo",'update_logo')->name('website.logo');
-        });
+        });       
        
-        //Profile
-        Route::controller(ProfileController::class)->group(function() {
-            Route::get('/profile', 'edit')->name('profile.edit');
-            Route::patch('/profile', 'update')->name('profile.update');
-            Route::delete('/profile', 'destroy')->name('profile.destroy');
-        });
-                    
         //Articles
         Route::get('/configurations/articles', [ArticleController::class, 'index'])->name('articles.index');
         Route::get('/configurations/articles/create', [ArticleController::class, 'create'])->name('articles.create');
@@ -130,9 +105,8 @@ Route::group(['prefix' => 'admin'], function(){
         Route::post('/configurations/articles/{id}', [ArticleController::class, 'update'])->name('articles.update');
         Route::delete('/configurations/articles', [ArticleController::class, 'destroy'])->name('articles.destroy');
 
-       
-        // Route::get('/logout', [UserController::class, 'logout'])->name('users.logout');
-        
+        // Route::get('/logout', [UserController::class, 'logout'])->name('users.logout');               
+
         //Permissions
         Route::controller(ConfigurationController::class)->group(function() { 
             Route::get('/configurations', 'index')->name('configurations.index');
@@ -183,6 +157,9 @@ Route::group(['prefix' => 'admin'], function(){
             Route::post('/configurations/users/{id}', 'users_update')->name('users.update');
             Route::get('/configurations/users/delete/{id}', 'users_destroy')->name('users.destroy');
             //Route::get('/logout', [UserController::class, 'logout'])->name('users.logout');
+
+            //Profile
+            Route::put('/configurations/profile', 'update_profile')->name('profile.update');
             
         });        
         

@@ -16,15 +16,9 @@
     @include('layouts.message')
         <div class="card">
             <div class="card-body">
-                @include('admin.profile.partials.update-profile-information-form')
+                
             </div>
-        </div>
-
-        <div class="card">
-            <div class="card-body">
-                @include('admin.profile.partials.update-password-form')
-            </div>
-        </div>
+        </div>       
 
         <div class="card">
             <div class="card-body">

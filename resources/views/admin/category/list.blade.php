@@ -40,15 +40,18 @@
                                     data-bs-target="#collapse_{{ $value->id }}" 
                                     aria-expanded="{{ $loop->first ? 'true' : 'false' }}" 
                                     aria-controls="collapse_{{ $value->id }}">
-
+                                    
                                     <div class="flex">
-                                        @if($value->image)
-                                            <img src="{{ asset('uploads/category/'.$value->image) }}" style="height: 50px; width:50px; margin-right:10px;" class="shadow-sm rounded" />
-                                        @endif
-
-                                        <h5 class="mb-0 mt-2">{{ $value->name }}</h5>                                                    
-                                        <span class="counts_small mt-2">{{ $value->menus_count }}</span>  
-                                    </div>
+                                        <div class="thumb-category">
+                                            @if($value->image)
+                                                <img src="{{ asset('uploads/category/'.$value->image) }}" style="height: 50px; width:50px; margin-right:10px;" class="shadow-sm rounded" />
+                                            @endif
+                                            <p class="count-category">
+                                                {{ $value->menus_count }}
+                                            </p>
+                                        </div>
+                                        <h5 class="mb-0 mt-2">{{ $value->name }}</h5>
+                                    </div>                                    
                             </button>
                         </div>
                         
@@ -59,7 +62,7 @@
 
                             <div class="accordion-body">                                 
                                 <div class="row">
-                                    <div class="col-9">
+                                    <div class="col-12">
                                         <div class="chip-extra">
                                             @if ($value->menus->count())                                    
                                                 @foreach ($value->menus as $menu)
@@ -84,16 +87,15 @@
                                                         </div>                                                    
                                                     </div>                                                
                                                 @endforeach                                                                      
-                                            @endif                                    
-                                        </div>                                               
-                                    </div>
-                                    <div class="col-3">                                                
-                                        <a href="javascript:void(0)" class="btn btn-outline-danger float-end commonDeleteBtn"
-                                            data-bs-toggle="modal" data-bs-target="#commonDeleteModal"
-                                            data-url="{{ route('category.delete', $value->id) }}" data-title="{{ $value->name }}">
-                                            Delete {{ $value->name }}
-                                        </a>
-                                    </div>
+                                            @endif        
+
+                                            <a href="javascript:void(0)" class="btn btn-outline-danger commonDeleteBtn"
+                                                data-bs-toggle="modal" data-bs-target="#commonDeleteModal"
+                                                data-url="{{ route('category.delete', $value->id) }}" data-title="{{ $value->name }}">
+                                                Delete {{ $value->name }}
+                                            </a>                               
+                                        </div>
+                                    </div>                                    
                                 </div>
                             </div>
                         </div>

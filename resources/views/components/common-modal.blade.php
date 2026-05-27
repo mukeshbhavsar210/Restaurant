@@ -280,6 +280,28 @@
             $('input[name="image_id"]').val($(this).data('image_id'));
         });       
 
+        $('.editPassword').click(function () {
+            $('.controlForm').attr('action', $(this).data('action'));           
+            $('.formMethod').val($(this).data('method'));
+            $('.modal-title').text($(this).data('title'));
+            $('.btn-primary').text($(this).data('button'));            
+
+            $('input[name="current_password"]').val($(this).data('current_password'));
+            $('input[name="password"]').val($(this).data('password'));
+            $('input[name="password_confirmation"]').val($(this).data('password_confirmation'));            
+        });
+
+        $('.editProfile').click(function () {
+            $('.controlForm').attr('action', $(this).data('action'));           
+            $('.formMethod').val($(this).data('method'));
+            $('.modal-title').text($(this).data('title'));
+            $('.btn-primary').text($(this).data('button'));            
+
+            $('input[name="name"]').val($(this).data('name'));
+            $('input[name="email"]').val($(this).data('email'));
+            $('input[name="mobile"]').val($(this).data('mobile'));
+        });
+
         $(document).on('click', '.commonDeleteBtn', function () {
             let url = $(this).data('url');
             let title = $(this).data('title');
