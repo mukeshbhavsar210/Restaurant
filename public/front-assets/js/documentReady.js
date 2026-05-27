@@ -146,66 +146,55 @@ $(document).ready(function(){
 		$('#bottomSheet').removeClass('active_bottom');
 	}); 
 
-	$('.tab-link').click(function () {
-		var tabID = $(this).data('tab');
-
-		// remove active from all tabs
-		$('.tab-link').removeClass('active');
-		$('.tab-content').removeClass('active');
-
-		// add active to clicked tab
-		$(this).addClass('active');
-		$('.' + tabID).addClass('active');			
-	});
-
 	function checkFields() {
-		let activeTab 			= $('.tab-link.active').data('tab');
+		let activeTab 			= $('.tab-link.active').data('type');
 		let notes      			= $.trim($('textarea[name="notes"]').val());
 		let dineinTime 			= $('select[name="dinein_time"]').val();
 		let seatId     			= $('select[name="seat_id"]').val();
 		let ready_time  	    = $('select[name="ready_time"]').val();
-		let delivery_address    = $.trim($('textarea[name="delivery_address"]').val());
 		let customer_name       = $.trim($('input[name="customer_name"]').val());
 		let customer_email      = $.trim($('input[name="customer_email"]').val());
-		let customer_phone      = $.trim($('input[name="customer_phone"]').val());			
+		let customer_phone      = $.trim($('input[name="customer_phone"]').val());
+
+		let delivery_name       = $.trim($('input[name="delivery_name"]').val());
+		let delivery_email      = $.trim($('input[name="delivery_email"]').val());
+		let delivery_phone      = $.trim($('input[name="delivery_phone"]').val());
+		let delivery_address    = $.trim($('textarea[name="delivery_address"]').val());
 		let valid = false;
 		let baseTotal = parseFloat($('#baseTotal').val()) || 0;
 		let deliveryCharge = 50;
 		let finalTotal = baseTotal;
 
 		// Dine in
-		if (activeTab == 'tab1') {
+		if (activeTab == 'dinein') {
 			if (
-				notes !== '' &&
-				dineinTime !== '' &&
-				seatId !== ''
+				notes.trim() !== '' &&
+				seatId.trim() !== ''
 			) {
 				valid = true;
 			}
 		}
 
 		// Takeaway
-		else if (activeTab == 'tab2') {
+		else if (activeTab == 'takeaway') {
 			if (
-				notes !== '' &&
-				ready_time !== '' &&
-				customer_name !== '' &&
-				customer_email !== '' &&
-				customer_phone !== ''
+				notes.trim() !== '' &&				
+				customer_name.trim() !== '' &&
+				customer_email.trim() !== '' &&
+				customer_phone.trim() !== ''
 			) {
 				valid = true;
 			}
 		}
 
 		// Delivery
-		else if (activeTab == 'tab3') {
+		else if (activeTab == 'delivery') {
 			if (
-				notes !== '' &&
-				ready_time !== '' &&
-				//delivery_address !== '' &&
-				customer_name !== '' &&
-				customer_email !== '' &&
-				customer_phone !== ''										
+				notes.trim() !== '' &&
+				delivery_name.trim() !== '' &&
+				delivery_address.trim() !== '' &&
+				delivery_email.trim() !== '' &&
+				delivery_phone.trim() !== ''
 			) {
 				valid = true;
 			}
@@ -214,22 +203,21 @@ $(document).ready(function(){
 			finalTotal += deliveryCharge;
 		}
 
+		if (valid) {
+			$('.orderBtn').removeClass('disabled');
+		} else {
+			$('.orderBtn').addClass('disabled');
+		}
+
 		// Update total
 		$('.grandTotal').text('₹' + Math.round(finalTotal));
 
 		// Optional delivery fee text
-		if(activeTab == 'tab3'){
+		if(activeTab == 'delivery'){
 			$('#deliveryFeeText').show();
 		}else{
 			$('#deliveryFeeText').hide();
-		}
-
-		// Button state
-		if (valid) {
-			$('.btn-primary').removeClass('disabled');
-		} else {
-			$('.btn-primary').addClass('disabled');
-		}
+		}		
 	}
 		
 	// Inputs / textarea / select
@@ -237,10 +225,21 @@ $(document).ready(function(){
 
 	// Custom tab click
 	$('.tab-link').on('click', function () {
+		let type = $(this).data('type');
+
 		$('.tab-link').removeClass('active');
 		$(this).addClass('active');
+
+		// Active content
+		$('.tab-content').removeClass('active');
+		$('.' + type).addClass('active');
+
+		// Update order type
+		$('#order_type').val(type);
+
 		checkFields();
 	});
+
 
 	// Initial check
 	checkFields();
@@ -400,10 +399,8 @@ $(document).on('click', '.qty-decrease', function () {
 });
 
 $(document).on('click', '.qty-remove', function () {
-
 	flyToCart(this);
 	flyToCartTrash(this);
-
     let productId = $(this).data('id');
 
     $.ajax({

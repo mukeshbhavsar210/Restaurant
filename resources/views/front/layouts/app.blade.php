@@ -62,6 +62,8 @@
 		</ul>
 	</section>
 	@yield('content')		
+
+	<div id="customAlert"></div>
 </div>
 
 <script src="{{ asset('front-assets/js/jquery-3.6.0.min.js') }}"></script>
