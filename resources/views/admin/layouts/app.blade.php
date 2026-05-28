@@ -149,39 +149,20 @@
 
                         <div class="dropdown-divider mt-0"></div>
                         <small class="text-muted px-2 pb-1 d-block">Account</small>
-
-                        <a href="javascript:void(0)"
-                            class="editProfile dropdown-item"
-                            data-bs-toggle="modal"
-                            data-bs-target="#updateProfileModal"
-                            data-action="{{ route('profile.update') }}"
-                            data-method="PUT"
-                            data-title="Edit Profile"
-                            data-button="Update Profile"       
-                            data-name="{{ auth()->user()->name }}"
-                            data-email="{{ auth()->user()->email }}"
-                            data-mobile="{{ auth()->user()->mobile }}"                                                                            
-                            >
+                        
+                        <a href="{{ route('profile.index') }}" class="dropdown-item">
                             <i class="las la-user fs-18 me-1 align-text-bottom"></i>
                             Profile
                         </a>
 
-                        <a class="dropdown-item" href="{{ route('configurations.index') }}">
+                        <a href="{{ route('configurations.index') }}" class="dropdown-item">
                             <i class="las la-cog fs-18 me-1 align-text-bottom"></i>
-                            Account Settings
+                            Settings
                         </a>
 
-                        <a href="javascript:void(0)"
-                            class="editPassword dropdown-item"
-                            data-bs-toggle="modal"
-                            data-bs-target="#updatePasswordModal"
-                            data-action="{{ route('password.update') }}"
-                            data-method="PUT"
-                            data-title="Edit Password"
-                            data-button="Update Password"                                                                                 
-                            >
+                        <a href="{{ route('profile.index') }}" class="dropdown-item">
                             <i class="las la-user fs-18 me-1 align-text-bottom"></i>
-                            Change Password
+                             Change Password
                         </a>
 
                         <div class="dropdown-divider mb-0"></div>

@@ -37,7 +37,7 @@
                     @endforeach
                 </ul>             
 
-                <form id="placeOrder" name="placeOrder" method="POST" action="{{ route('submit.order') }}">
+                <form method="POST" action="{{ route('submit.order') }}">
                     @csrf
                     <div class="scroll-order">
                         <div class="basket-page__content__products">
@@ -99,7 +99,7 @@
                                     <div class="basket-page__content__delivery-content mb-3">
                                         <select name="seat_id" id="seat_id" class="form-select mb-3">
                                             <option value="">Table</option>
-                                            @foreach ($seats as $value)
+                                            @foreach(seatData() as $value)
                                                 {{-- @if(empty($value->area_id))
                                                     <option value="{{ $value->id }}">
                                                         {{ $value->table_name }}
@@ -110,6 +110,14 @@
                                                 @elseif($value->area_id == '')
                                                     <option value="{{ $value->id }}">{{ $value->table_name }}</option>
                                                 @endif
+                                            @endforeach                                            
+                                        </select>
+                                    </div>
+                                    <div class="form-group mb-2">
+                                        <select name="area_id" id="area_id" class="form-select">
+                                            <option value="">Select Outlet</option>
+                                            @foreach(areaData() as $value)                                                
+                                                <option value="{{ $value->id }}">{{ $value->area_name }}</option>
                                             @endforeach
                                         </select>
                                     </div>
@@ -129,6 +137,14 @@
                                             <div class="form-group mb-2">
                                                 <input type="phone" class="form-control" placeholder="Phone" name="customer_phone">
                                             </div>
+                                        </div>                                        
+                                        <div class="form-group mb-2">                                            
+                                            <select name="area_id" id="area_id" class="form-select">
+                                                <option value="">Takeaway from Outlet</option>
+                                                @foreach(areaData() as $value)
+                                                    <option value="{{ $value->id }}">{{ $value->area_name }}</option>
+                                                @endforeach                                            
+                                            </select>
                                         </div>
                                     </div> 
                                 </div>
@@ -154,6 +170,14 @@
                                             </div>
                                         </div>
                                     </div>
+                                    <div class="form-group mb-2">
+                                        <select name="area_id" id="area_id" class="form-select">
+                                            <option value="">Select Outlet</option>
+                                            @foreach(areaData() as $value)                                                
+                                                <option value="{{ $value->id }}">{{ $value->area_name }}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
                                 </div> 
                             @endif
                         @endforeach
@@ -169,8 +193,8 @@
                         <p class="validation mt-2">Fill all required fields</p>
                         <div class="basket-page__content__terms">By clicking Order, you confirm your age is 18+ and you agree to the <a href="https://instalacarte.com/page/privacy-policy" target="_blank">terms</a></div>
 
-                        <input type="hidden" name="variant_name" id="variant_name" value="{{ $variants->first()->name ?? '' }}">
-                        <input type="hidden" name="variant_price" id="variant_price" value="{{ $variants->first()->price ?? $product->price }}">
+                        {{-- <input type="hidden" name="variant_name" id="variant_name" value="{{ $variants->first()->name ?? '' }}">
+                        <input type="hidden" name="variant_price" id="variant_price" value="{{ $variants->first()->price ?? $product->price }}"> --}}
                     </div>
 
                     <div class="button-padd">

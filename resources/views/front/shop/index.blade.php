@@ -27,7 +27,7 @@
                         $qty = getProductQty($product->id);
                     @endphp
 
-                    <x-products :product="$product" :seats="$seats" :variants="$variants" :qty="$qty" />
+                    <x-products :product="$product" :variants="$variants" :qty="$qty" />
                 @endforeach
             @endif
         

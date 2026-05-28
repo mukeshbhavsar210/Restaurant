@@ -193,9 +193,9 @@ button, select {
 }
 
 .custom-success-alert{
-    position: relative;
-    bottom: 30px;    
-    left: 0; margin:10px;     
+    position: fixed;
+    bottom: 50px; width: 427px;   
+    margin:10px; text-align: center;
     background: green;
     color: #fff;
     padding: 14px 20px;

@@ -25,9 +25,7 @@ class FrontController extends Controller {
             }])
             ->first();
 
-        $products = Product::with('category', 'variants')->latest()->get();
-        $areas = Area::with('seat')->latest()->get();
-        $seats = Seat::with('area')->latest()->get();
+        $products = Product::with('category', 'variants')->latest()->get();              
         $config = Configuration::first();
 
         // cart session
@@ -38,9 +36,7 @@ class FrontController extends Controller {
         return view('front.home.index', [
             'products' => $products,
             'popularProducts' => $popularCategory?->products ?? collect(),
-            'popularCategory' => $popularCategory,
-            'areas' => $areas,
-            'seats' => $seats,           
+            'popularCategory' => $popularCategory,            
             'config' => $config, 
             //'qty' => getCartQty(),
             'total' => getCartTotal(),
@@ -352,7 +348,7 @@ class FrontController extends Controller {
 
     public function placeOrder(Request $request) {
         $validator = Validator::make($request->all(), [
-            'order_type' => 'required|in:dinein,takeaway,delivery',
+            'order_type' => 'required|in:dinein,takeaway,delivery',            
         ]);
 
         if ($validator->fails()) {
@@ -386,25 +382,28 @@ class FrontController extends Controller {
 
         // Dinein
         if ($request->order_type === 'dinein') {            
-            $order->seat_id = $request->seat_id;            
+            $order->seat_id = $request->seat_id;
+            $order->area_id = $request->seat_id;
             $order->status = 'running';
         }
 
         // Takeaway
         if ($request->order_type === 'takeaway') {        
-            $order->customer_name = $request->customer_name;
-            $order->customer_email = $request->customer_email;
-            $order->customer_phone = $request->customer_phone;
-            $order->status = 'placed';            
+            $order->customer_name   = $request->customer_name;
+            $order->customer_email  = $request->customer_email;
+            $order->customer_phone  = $request->customer_phone;
+            $order->area_id         = $request->filled('area_id') ? $request->area_id : null;
+            $order->status          = 'placed';
         }
 
         // Delivery only
         if ($request->order_type === 'delivery') {
-            $order->delivery_name = $request->delivery_name;
-            $order->delivery_email = $request->delivery_email;
-            $order->delivery_phone = $request->delivery_phone;
+            $order->delivery_name   = $request->delivery_name;
+            $order->delivery_email  = $request->delivery_email;
+            $order->delivery_phone  = $request->delivery_phone;
             $order->delivery_address = $request->delivery_address;
-            $order->status = 'placed';
+            $order->area_id         = $request->filled('area_id') ? $request->area_id : null;
+            $order->status          = 'placed';
         }        
 
         $order->save();
@@ -424,13 +423,7 @@ class FrontController extends Controller {
         // Clear cart
         Session::forget('cart');
 
-        // Store flash message
-        session()->flash('success', 'Order placed successfully');
-
-        return response()->json([
-            'status' => true,
-            'message' => 'Order placed successfully'
-        ]);
+        return redirect()->route('front.home')->with('success','Order placed successfully.');       
     }
 
 

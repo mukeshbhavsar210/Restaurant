@@ -5,9 +5,10 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Area extends Model
-{
+class Area extends Model {
     use HasFactory;
+
+    protected $fillable = [ 'manager_name', 'area_name', 'area_slug', 'phone', 'mobile', 'address' ];
 
     public function seat(){
         return $this->hasMany(Seat::class);

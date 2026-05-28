@@ -66,7 +66,7 @@ class ConfigurationController extends Controller implements HasMiddleware {
                     ->select(DB::raw('count(*) as total_tables'))
                     ->get()[0]->total_tables;
 
-        $branchCounts = DB::table('areas')
+        $outletCounts = DB::table('areas')
                     ->select(DB::raw('count(*) as total_tables'))
                     ->get()[0]->total_tables;
 
@@ -98,7 +98,7 @@ class ConfigurationController extends Controller implements HasMiddleware {
         $payments = Payment::get();        
         $branches = Area::withCount('seat as total_seats')->with('seats')->get();
         $theme = Theme::get();
-        $users = User::get();        
+        $users = User::get();
         $pages = Page::get();
         $roles = Role::get();        
         $permissions = Permission::get();
@@ -125,7 +125,7 @@ class ConfigurationController extends Controller implements HasMiddleware {
             'permissionCount'       => $permissionCount,
             'pages'                 => $pages,
             'users'                 => $users,
-            'branchCounts'          => $branchCounts,
+            'outletCounts'          => $outletCounts,
             'pageCounts'            => $pageCounts,
             'userCounts'            => $userCounts,            
         ];        
@@ -257,92 +257,8 @@ class ConfigurationController extends Controller implements HasMiddleware {
             ]
         ]; 
 
-        $data['passwordForm'] = [
-            'title' => 'Change Password',
-            'modal_id' => 'updatePasswordModal',            
-
-            'formConfig' => [
-                'action' => route('password.update'),
-                'method' => 'PUT',
-                'button' => 'Change Password',
-                                
-                'fields' => [                                        
-                    [
-                        'type' => 'text',
-                        'name' => 'current_password',
-                        'label' => 'Current Password',
-                        'required' => true,
-                        'placeholder' => 'Current Password',
-                        'col' => 'col-12',                        
-                    ],
-                    [
-                        'type' => 'text',
-                        'name' => 'password',
-                        'label' => 'Password',
-                        'required' => true,
-                        'placeholder' => 'Password',
-                        'col' => 'col-12',                        
-                    ],
-                    [
-                        'type' => 'text',
-                        'name' => 'password_confirmation',
-                        'label' => 'Confirm Password',
-                        'required' => true,
-                        'placeholder' => 'Confirm Password',
-                        'col' => 'col-12',                        
-                    ],
-                ]
-            ]
-        ]; 
-
-        $data['profileForm'] = [
-            'title' => 'Profile',
-            'modal_id' => 'updateProfileModal',            
-
-            'formConfig' => [
-                'action' => route('profile.update'),
-                'method' => 'PUT',
-                'button' => 'Update Profile',
-                                
-                'fields' => [                                        
-                    [
-                        'type' => 'text',
-                        'name' => 'name',
-                        'label' => 'Name',
-                        'required' => true,
-                        'placeholder' => 'Name',
-                        'col' => 'col-12',                        
-                    ],
-                    [
-                        'type' => 'email',
-                        'name' => 'email',
-                        'label' => 'Email',
-                        'required' => true,
-                        'placeholder' => 'Email',
-                        'col' => 'col-12',                        
-                    ],
-                    [
-                        'type' => 'text',
-                        'name' => 'mobile',
-                        'label' => 'Mobile',
-                        'required' => true,
-                        'placeholder' => 'Mobile',
-                        'col' => 'col-12',                        
-                    ],
-                    [
-                        'type' => 'file',
-                        'name' => 'image',
-                        'label' => 'Photo',
-                        'required' => true,
-                        'placeholder' => 'Photo',
-                        'col' => 'col-12',                        
-                    ],
-                ]
-            ]
-        ]; 
-
         $data['branchForm'] = [
-            'title' => 'Create Branch',
+            'title' => 'Create Outlet',
             'modal_id' => 'createBranchModal',            
 
             'formConfig' => [
@@ -354,9 +270,9 @@ class ConfigurationController extends Controller implements HasMiddleware {
                     [
                         'type' => 'text',
                         'name' => 'area_name',
-                        'label' => 'Branch Name',
+                        'label' => 'Outlet Name',
                         'required' => true,
-                        'placeholder' => 'Enter Branch Name',
+                        'placeholder' => 'Outlet Name',
                         'class' => 'slug-source',
                         'data'  => [
                             'target' => '#area_slug'
@@ -370,6 +286,38 @@ class ConfigurationController extends Controller implements HasMiddleware {
                         'required' => true,
                         'id'    => 'area_slug',
                         'col' => 'd-none'
+                    ],
+                    [
+                        'type' => 'text',
+                        'name' => 'manager_name',
+                        'label' => 'Manager Name',
+                        'required' => true,       
+                        'placeholder' => 'Manager Name',                 
+                        'col' => 'col-md-12'
+                    ],
+                    [
+                        'type' => 'text',
+                        'name' => 'phone',
+                        'label' => 'Phone',
+                        'required' => true,       
+                        'placeholder' => 'Phone',
+                        'col' => 'col-md-12'
+                    ],
+                    [
+                        'type' => 'text',
+                        'name' => 'mobile',
+                        'label' => 'Mobile',
+                        'required' => true,       
+                        'placeholder' => 'Mobile',
+                        'col' => 'col-md-12'
+                    ],
+                    [
+                        'type' => 'textarea',
+                        'name' => 'address',
+                        'label' => 'Address',
+                        'required' => true,       
+                        'placeholder' => 'Address',
+                        'col' => 'col-md-12'
                     ],
                 ]
             ]
@@ -408,7 +356,7 @@ class ConfigurationController extends Controller implements HasMiddleware {
                     [
                         'type' => 'select',
                         'name' => 'area_id',
-                        'label' => 'Branch',
+                        'label' => 'Outlet',
                         'required' => true,
                         'options' => $branches,
                         'option_value' => 'id',
@@ -589,6 +537,8 @@ class ConfigurationController extends Controller implements HasMiddleware {
     }
     
 
+    
+
     public function configurations_store(Request $request) {
         $validator = Validator::make($request->all(), [
             'name' => 'required',
@@ -690,8 +640,12 @@ class ConfigurationController extends Controller implements HasMiddleware {
 
     public function branch_store(Request $request){
         $area = new Area();
+        $area->manager_name = $request->manager_name;
         $area->area_name = $request->area_name;
         $area->area_slug = $request->area_slug;
+        $area->phone = $request->phone;
+        $area->mobile = $request->mobile;
+        $area->address = $request->address;
         $area->save();
 
         return redirect()->route('configurations.index')->with('success','Branch added successfully.'); 
@@ -1136,43 +1090,4 @@ class ConfigurationController extends Controller implements HasMiddleware {
         $request->session()->flash('success','User deleted successfully');
         return redirect()->route('configurations.index')->with('success','User deleted successfully.');
     }
-
-
-    public function update_profile(ProfileUpdateRequest $request): RedirectResponse {
-        $user = $request->user();
-
-        // Fill validated fields
-        $user->fill($request->validated());
-
-        // Mobile
-        $user->mobile = $request->mobile;
-
-        // Image Upload        
-        if ($request->hasFile('image')) {
-            // Delete old image
-            if ($user->image && file_exists(public_path('uploads/users/' . $user->image))) {
-                unlink(public_path('uploads/users/' . $user->image));
-            }
-
-            $file = $request->file('image');
-            $extension = $file->getClientOriginalExtension();
-            // Create filename from user name
-            $fileName = strtolower(str_replace(' ', '-', $user->name)) . '.' . $extension;
-            $path = public_path('uploads/users/' . $fileName);
-            $manager = new ImageManager(new Driver());
-            $logo = $manager->read($file);
-            $logo->cover(200, 200)->save($path);
-            $user->image = $fileName;
-        }
-
-        $user->save();
-
-        return redirect()
-            ->route('configurations.index')
-            ->with('success', 'Profile updated successfully.');
-    }
-
-    
-   
-    
 }
