@@ -110,6 +110,7 @@ Route::group(['prefix' => 'admin'], function(){
         //Permissions
         Route::controller(ConfigurationController::class)->group(function() { 
             Route::get('/configurations', 'index')->name('configurations.index');
+            
             Route::get('/configurations/create', 'configurations_create')->name('configurations.create');
             Route::post('/configurations', 'configurations_store')->name('configurations.store');
             Route::put('/configurations/restaurant', 'configurations_update')->name('configurations.update');            
@@ -157,11 +158,12 @@ Route::group(['prefix' => 'admin'], function(){
             Route::post('/configurations/users/{id}', 'users_update')->name('users.update');
             Route::get('/configurations/users/delete/{id}', 'users_destroy')->name('users.destroy');
             //Route::get('/logout', [UserController::class, 'logout'])->name('users.logout');
+        }); 
 
-            //Profile
-            Route::put('/configurations/profile', 'update_profile')->name('profile.update');
-            
-        });        
+        Route::controller(ProfileController::class)->group(function() { 
+            Route::get('/profile', 'index')->name('profile.index');
+            Route::put('/profile/update', 'update_profile')->name('profile.update');        
+        }); 
         
         //Temp image controller
         Route::post('/upload-temp-image', [TempImagesController::class, 'create'])->name('temp-images.create');

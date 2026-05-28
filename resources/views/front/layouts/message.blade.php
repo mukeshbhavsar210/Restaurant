@@ -1,17 +1,11 @@
-@if (Session::has('success'))
-    <div class="col-md-12">
-        <div class="alert alert-success alert-dismissible fade show" role="alert">
-            {!! Session::get('success') !!}
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-        </div>
+@if (Session::has('success'))    
+    <div class="custom-success-alert" role="alert">
+        {!! Session::get('success') !!}            
     </div>
 @endif
 
 @if (Session::has('error'))
-<div class="col-md-12">
-    <div class="alert alert-danger alert-dismissible fade show" role="alert">
-        {{ Session::get('error') }}
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    <div class="custom-success-alert" role="alert">
+        {{ Session::get('error') }}        
     </div>
-</div>
 @endif

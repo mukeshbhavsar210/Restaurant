@@ -28,10 +28,17 @@
         <li class="nav-item">
             <a href="{{ route('configurations.index') }}" class="nav-link {{ (\Request::route()->getName() == 'configurations.index') || (\Request::route()->getName() == 'roles.edit') || (\Request::route()->getName() == 'permissions.edit') || (\Request::route()->getName() == 'users.edit') || (\Request::route()->getName() == 'articles.edit') ? 'active' : '' }}">
                 <i class="iconoir-fingerprint-lock-circle menu-icon"></i>
-                <span>Configuration</span>
+                <span>Settings</span>
             </a>
         </li>
     @endcan    
+
+    <li class="nav-item">
+        <a href="{{ route('profile.index') }}" class="nav-link {{ (\Request::route()->getName() == 'profile.index') || (\Request::route()->getName() == 'profile.update') ? 'active' : '' }}">
+            <i class="iconoir-fingerprint-lock-circle menu-icon"></i>
+            <span>Profile</span>
+        </a>
+    </li>
 
     {{-- <li class="nav-item">
         <a class="nav-link" href="#extra" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="sidebarApplications">

@@ -148,18 +148,17 @@ $(document).ready(function(){
 
 	function checkFields() {
 		let activeTab 			= $('.tab-link.active').data('type');
-		let notes      			= $.trim($('textarea[name="notes"]').val());
-		let dineinTime 			= $('select[name="dinein_time"]').val();
-		let seatId     			= $('select[name="seat_id"]').val();
-		let ready_time  	    = $('select[name="ready_time"]').val();
+		let notes      			= $.trim($('textarea[name="notes"]').val());		
+		let seatId     			= $('select[name="seat_id"]').val();		
+		let area_id 			= $('select[name="area_id"]').val() || '';
 		let customer_name       = $.trim($('input[name="customer_name"]').val());
 		let customer_email      = $.trim($('input[name="customer_email"]').val());
 		let customer_phone      = $.trim($('input[name="customer_phone"]').val());
-
 		let delivery_name       = $.trim($('input[name="delivery_name"]').val());
 		let delivery_email      = $.trim($('input[name="delivery_email"]').val());
 		let delivery_phone      = $.trim($('input[name="delivery_phone"]').val());
 		let delivery_address    = $.trim($('textarea[name="delivery_address"]').val());
+
 		let valid = false;
 		let baseTotal = parseFloat($('#baseTotal').val()) || 0;
 		let deliveryCharge = 50;
@@ -178,7 +177,8 @@ $(document).ready(function(){
 		// Takeaway
 		else if (activeTab == 'takeaway') {
 			if (
-				notes.trim() !== '' &&				
+				notes.trim() !== '' &&
+				//area_id.trim() !== '' &&		
 				customer_name.trim() !== '' &&
 				customer_email.trim() !== '' &&
 				customer_phone.trim() !== ''
@@ -191,6 +191,7 @@ $(document).ready(function(){
 		else if (activeTab == 'delivery') {
 			if (
 				notes.trim() !== '' &&
+				area_id.trim() !== '' &&
 				delivery_name.trim() !== '' &&
 				delivery_address.trim() !== '' &&
 				delivery_email.trim() !== '' &&

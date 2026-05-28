@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: May 18, 2026 at 05:31 PM
+-- Generation Time: May 28, 2026 at 09:51 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -29,8 +29,12 @@ SET time_zone = "+00:00";
 
 CREATE TABLE `areas` (
   `id` bigint(20) UNSIGNED NOT NULL,
-  `area_name` varchar(255) NOT NULL,
-  `area_slug` varchar(255) NOT NULL,
+  `manager_name` varchar(50) DEFAULT NULL,
+  `area_name` varchar(50) NOT NULL,
+  `area_slug` varchar(50) NOT NULL,
+  `phone` varchar(10) DEFAULT NULL,
+  `mobile` varchar(10) DEFAULT NULL,
+  `address` text DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -39,11 +43,11 @@ CREATE TABLE `areas` (
 -- Dumping data for table `areas`
 --
 
-INSERT INTO `areas` (`id`, `area_name`, `area_slug`, `created_at`, `updated_at`) VALUES
-(4, 'Ahmedabad', 'ahmedabad', '2025-01-08 05:16:45', '2025-01-08 05:16:45'),
-(5, 'Chandkheda', 'chandkheda', '2025-01-09 06:51:01', '2025-01-09 06:51:01'),
-(6, 'Prahladnagar', 'prahladnagar', '2025-01-10 23:50:03', '2025-01-10 23:50:03'),
-(7, 'Shahibaug', 'shahibaug', '2025-01-16 08:47:47', '2025-01-16 08:47:47');
+INSERT INTO `areas` (`id`, `manager_name`, `area_name`, `area_slug`, `phone`, `mobile`, `address`, `created_at`, `updated_at`) VALUES
+(5, 'Sona', 'Chandkheda', 'chandkheda', '9538135005', '9978812345', 'Chandkheda', '2025-01-09 06:51:01', '2025-01-09 06:51:01'),
+(6, 'Dhruv', 'Prahladnagar', 'prahladnagar', '9538135005', '9978812345', 'Prahladnagar', '2025-01-10 23:50:03', '2025-01-10 23:50:03'),
+(7, 'Priyanka', 'Shahibaug', 'shahibaug', '9538135005', '9978812345', 'Shahibaug', '2025-01-16 08:47:47', '2025-01-16 08:47:47'),
+(27, 'Mukesh Bhavsar', 'Zundal', 'zundal', '9978835005', '9916235005', 'Swastik Harmony, Zundal', '2026-05-28 01:26:23', '2026-05-28 01:26:23');
 
 -- --------------------------------------------------------
 
@@ -65,7 +69,7 @@ CREATE TABLE `articles` (
 --
 
 INSERT INTO `articles` (`id`, `title`, `text`, `author`, `created_at`, `updated_at`) VALUES
-(3, 'Article test', 'Test content', 'John Doe', '2025-01-27 04:06:58', '2025-01-27 04:06:58'),
+(3, 'Article test', 'Test content', 'John Doe', '2025-01-27 04:06:58', '2026-05-22 08:47:50'),
 (4, 'Hello World', 'hello world', 'Mukesh Bhavsar', '2025-01-27 04:07:15', '2025-01-27 04:07:15');
 
 -- --------------------------------------------------------
@@ -106,7 +110,7 @@ CREATE TABLE `cache` (
 --
 
 INSERT INTO `cache` (`key`, `value`, `expiration`) VALUES
-('laravel_cache_spatie.permission.cache', 'a:3:{s:5:\"alias\";a:4:{s:1:\"a\";s:2:\"id\";s:1:\"b\";s:4:\"name\";s:1:\"c\";s:10:\"guard_name\";s:1:\"r\";s:5:\"roles\";}s:11:\"permissions\";a:5:{i:0;a:4:{s:1:\"a\";i:1;s:1:\"b\";s:15:\"Create category\";s:1:\"c\";s:5:\"admin\";s:1:\"r\";a:1:{i:0;i:1;}}i:1;a:4:{s:1:\"a\";i:2;s:1:\"b\";s:13:\"Edit Category\";s:1:\"c\";s:5:\"admin\";s:1:\"r\";a:1:{i:0;i:1;}}i:2;a:4:{s:1:\"a\";i:3;s:1:\"b\";s:11:\"Create Menu\";s:1:\"c\";s:5:\"admin\";s:1:\"r\";a:2:{i:0;i:1;i:1;i:2;}}i:3;a:4:{s:1:\"a\";i:4;s:1:\"b\";s:9:\"Edit Menu\";s:1:\"c\";s:5:\"admin\";s:1:\"r\";a:1:{i:0;i:2;}}i:4;a:3:{s:1:\"a\";i:5;s:1:\"b\";s:10:\"Edit Roles\";s:1:\"c\";s:5:\"admin\";}}s:5:\"roles\";a:2:{i:0;a:3:{s:1:\"a\";i:1;s:1:\"b\";s:5:\"Admin\";s:1:\"c\";s:5:\"admin\";}i:1;a:3:{s:1:\"a\";i:2;s:1:\"b\";s:6:\"Waiter\";s:1:\"c\";s:5:\"admin\";}}}', 1779195875);
+('laravel_cache_spatie.permission.cache', 'a:3:{s:5:\"alias\";a:4:{s:1:\"a\";s:2:\"id\";s:1:\"b\";s:4:\"name\";s:1:\"c\";s:10:\"guard_name\";s:1:\"r\";s:5:\"roles\";}s:11:\"permissions\";a:13:{i:0;a:4:{s:1:\"a\";i:8;s:1:\"b\";s:18:\"delete permissions\";s:1:\"c\";s:3:\"web\";s:1:\"r\";a:1:{i:0;i:8;}}i:1;a:4:{s:1:\"a\";i:9;s:1:\"b\";s:18:\"create permissions\";s:1:\"c\";s:3:\"web\";s:1:\"r\";a:2:{i:0;i:2;i:1;i:8;}}i:2;a:4:{s:1:\"a\";i:10;s:1:\"b\";s:16:\"edit permissions\";s:1:\"c\";s:3:\"web\";s:1:\"r\";a:1:{i:0;i:8;}}i:3;a:4:{s:1:\"a\";i:11;s:1:\"b\";s:16:\"view permissions\";s:1:\"c\";s:3:\"web\";s:1:\"r\";a:1:{i:0;i:8;}}i:4;a:4:{s:1:\"a\";i:12;s:1:\"b\";s:10:\"view users\";s:1:\"c\";s:3:\"web\";s:1:\"r\";a:2:{i:0;i:8;i:1;i:13;}}i:5;a:4:{s:1:\"a\";i:13;s:1:\"b\";s:10:\"edit users\";s:1:\"c\";s:3:\"web\";s:1:\"r\";a:1:{i:0;i:8;}}i:6;a:4:{s:1:\"a\";i:14;s:1:\"b\";s:12:\"create users\";s:1:\"c\";s:3:\"web\";s:1:\"r\";a:2:{i:0;i:2;i:1;i:8;}}i:7;a:4:{s:1:\"a\";i:15;s:1:\"b\";s:12:\"delete users\";s:1:\"c\";s:3:\"web\";s:1:\"r\";a:1:{i:0;i:8;}}i:8;a:4:{s:1:\"a\";i:16;s:1:\"b\";s:10:\"view roles\";s:1:\"c\";s:3:\"web\";s:1:\"r\";a:1:{i:0;i:8;}}i:9;a:4:{s:1:\"a\";i:18;s:1:\"b\";s:12:\"delete roles\";s:1:\"c\";s:3:\"web\";s:1:\"r\";a:1:{i:0;i:8;}}i:10;a:4:{s:1:\"a\";i:20;s:1:\"b\";s:12:\"create roles\";s:1:\"c\";s:3:\"web\";s:1:\"r\";a:1:{i:0;i:8;}}i:11;a:4:{s:1:\"a\";i:21;s:1:\"b\";s:13:\"view articles\";s:1:\"c\";s:3:\"web\";s:1:\"r\";a:2:{i:0;i:2;i:1;i:8;}}i:12;a:4:{s:1:\"a\";i:22;s:1:\"b\";s:13:\"edit articles\";s:1:\"c\";s:3:\"web\";s:1:\"r\";a:2:{i:0;i:2;i:1;i:8;}}}s:5:\"roles\";a:3:{i:0;a:3:{s:1:\"a\";i:8;s:1:\"b\";s:7:\"manager\";s:1:\"c\";s:3:\"web\";}i:1;a:3:{s:1:\"a\";i:2;s:1:\"b\";s:6:\"waiter\";s:1:\"c\";s:3:\"web\";}i:2;a:3:{s:1:\"a\";i:13;s:1:\"b\";s:8:\"engineer\";s:1:\"c\";s:3:\"web\";}}}', 1779968376);
 
 -- --------------------------------------------------------
 
@@ -146,7 +150,6 @@ INSERT INTO `categories` (`id`, `name`, `slug`, `image`, `order_list`, `created_
 (189, 'Desserts', 'desserts', 'dessert.jpg', 5, '2025-01-11 05:06:42', '2025-01-11 05:06:43'),
 (197, 'Popular', 'popular', 'popular.png', 1, '2025-01-11 05:06:42', '2025-01-11 05:06:43'),
 (198, 'Roti', 'roti', 'roti.jpg', 2, '2026-05-08 00:55:40', '2026-05-08 00:55:40'),
-(199, 'Poha', 'poha', 'breakfast_1778221540.jpg', 2, '2026-05-08 00:55:40', '2026-05-08 00:55:40'),
 (200, 'Tea', 'tea', 'tea.jpg', 2, '2026-05-08 00:55:40', '2026-05-08 00:55:40');
 
 -- --------------------------------------------------------
@@ -186,11 +189,18 @@ INSERT INTO `category_menu` (`id`, `menu_id`, `category_id`) VALUES
 CREATE TABLE `configurations` (
   `id` bigint(20) UNSIGNED NOT NULL,
   `name` varchar(255) NOT NULL,
-  `logo` varchar(255) NOT NULL,
+  `logo` varchar(255) DEFAULT NULL,
   `email` varchar(255) NOT NULL,
   `phone` varchar(255) NOT NULL,
   `address` varchar(255) NOT NULL,
-  `theme` varchar(255) DEFAULT NULL,
+  `business_types` varchar(50) DEFAULT NULL,
+  `primary_color` varchar(10) DEFAULT NULL,
+  `secondary_color` varchar(10) DEFAULT NULL,
+  `payment_key_id` varchar(50) DEFAULT NULL,
+  `payment_key_secret` varchar(50) DEFAULT NULL,
+  `gst` int(5) DEFAULT NULL,
+  `sgst` int(5) DEFAULT NULL,
+  `cgst` int(5) DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -199,8 +209,8 @@ CREATE TABLE `configurations` (
 -- Dumping data for table `configurations`
 --
 
-INSERT INTO `configurations` (`id`, `name`, `logo`, `email`, `phone`, `address`, `theme`, `created_at`, `updated_at`) VALUES
-(2, 'South Diaries', 'South Diaries.png', 'southdiaries@gmail.com', '09538135005', '7, Surayansh Vedura, TP 44, Chandkheda, Chandkheda', NULL, '2026-05-18 08:05:26', '2026-05-18 08:05:26');
+INSERT INTO `configurations` (`id`, `name`, `logo`, `email`, `phone`, `address`, `business_types`, `primary_color`, `secondary_color`, `payment_key_id`, `payment_key_secret`, `gst`, `sgst`, `cgst`, `created_at`, `updated_at`) VALUES
+(5, 'South Diaries', 'South Diaries.png', 'south@gmail.com', '09978812345', 'B-1003, Shlok Heights, Mansarovar Road, New Chandkheda', 'Dinein,Takeaway,Delivery', '#ff8000', '#000000', '1', '2', 15, 5, 5, '2026-05-25 06:47:33', '2026-05-28 00:41:12');
 
 -- --------------------------------------------------------
 
@@ -735,7 +745,8 @@ INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES
 (56, '2026_04_29_122843_add_product_id_to_order_items_table', 48),
 (57, '2026_05_07_120813_create_variants_table', 49),
 (58, '2026_05_08_055754_create_category_menu_table', 50),
-(59, '2026_05_18_132433_create_configurations_table', 51);
+(59, '2026_05_18_132433_create_configurations_table', 51),
+(60, '2026_05_28_070513_add_area_id_to_orders_table', 52);
 
 -- --------------------------------------------------------
 
@@ -761,6 +772,17 @@ CREATE TABLE `model_has_roles` (
   `model_id` bigint(20) UNSIGNED NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+--
+-- Dumping data for table `model_has_roles`
+--
+
+INSERT INTO `model_has_roles` (`role_id`, `model_type`, `model_id`) VALUES
+(2, 'App\\Models\\User', 3),
+(2, 'App\\Models\\User', 18),
+(8, 'App\\Models\\User', 1),
+(9, 'App\\Models\\User', 7),
+(9, 'App\\Models\\User', 16);
+
 -- --------------------------------------------------------
 
 --
@@ -772,19 +794,19 @@ CREATE TABLE `orders` (
   `order_type` enum('Dinein','Takeaway','Delivery') NOT NULL DEFAULT 'Dinein',
   `session_id` varchar(255) DEFAULT NULL,
   `seat_id` bigint(20) UNSIGNED DEFAULT NULL,
-  `dinein_time` varchar(10) DEFAULT NULL,
+  `area_id` bigint(20) UNSIGNED DEFAULT NULL,
   `customer_name` varchar(50) DEFAULT NULL,
   `customer_phone` varchar(10) DEFAULT NULL,
   `customer_email` varchar(50) DEFAULT NULL,
-  `ready_time` varchar(255) DEFAULT NULL,
+  `delivery_name` varchar(20) DEFAULT NULL,
+  `delivery_email` varchar(50) DEFAULT NULL,
+  `delivery_phone` varchar(10) DEFAULT NULL,
   `delivery_address` text DEFAULT NULL,
   `notes` text DEFAULT NULL,
-  `gst` int(5) NOT NULL DEFAULT 18,
-  `sgst` int(5) NOT NULL DEFAULT 9,
-  `cgst` int(5) NOT NULL DEFAULT 9,
   `total_amount` double(10,2) DEFAULT NULL,
   `payment` enum('paid','not paid') NOT NULL DEFAULT 'not paid',
-  `status` enum('running','pending','shipped','delivered') NOT NULL DEFAULT 'running',
+  `shipped_date` date DEFAULT NULL,
+  `status` enum('placed','available','running','pending','shipped','delivered') NOT NULL DEFAULT 'available',
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -793,8 +815,11 @@ CREATE TABLE `orders` (
 -- Dumping data for table `orders`
 --
 
-INSERT INTO `orders` (`id`, `order_type`, `session_id`, `seat_id`, `dinein_time`, `customer_name`, `customer_phone`, `customer_email`, `ready_time`, `delivery_address`, `notes`, `gst`, `sgst`, `cgst`, `total_amount`, `payment`, `status`, `created_at`, `updated_at`) VALUES
-(56, 'Dinein', '4657319048', 42, '10', NULL, NULL, NULL, 'When Ready', NULL, 'test', 18, 9, 9, 610.00, 'not paid', 'running', '2026-05-16 07:11:24', '2026-05-16 07:11:24');
+INSERT INTO `orders` (`id`, `order_type`, `session_id`, `seat_id`, `area_id`, `customer_name`, `customer_phone`, `customer_email`, `delivery_name`, `delivery_email`, `delivery_phone`, `delivery_address`, `notes`, `total_amount`, `payment`, `shipped_date`, `status`, `created_at`, `updated_at`) VALUES
+(69, 'Dinein', '9254138381', 49, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'test', 500.00, 'not paid', NULL, 'running', '2026-05-27 01:40:11', '2026-05-27 01:40:11'),
+(71, 'Takeaway', '7932341717', NULL, NULL, 'Mukesh', '9978835005', 'test@gmail.com', NULL, NULL, NULL, NULL, 'test', 500.00, 'not paid', NULL, 'placed', '2026-05-27 01:42:09', '2026-05-27 01:42:09'),
+(73, 'Delivery', '6773485786', NULL, NULL, NULL, NULL, NULL, 'Mukesh', 'mukesh@gmail.com', '9978835005', 'B-1003, Shlok Heights', 'Need', 1207.00, 'not paid', NULL, 'placed', '2026-05-27 01:45:21', '2026-05-27 01:45:21'),
+(107, 'Dinein', '1134297453', 48, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'test', 500.00, 'not paid', NULL, 'running', '2026-05-28 02:18:48', '2026-05-28 02:18:48');
 
 -- --------------------------------------------------------
 
@@ -819,8 +844,11 @@ CREATE TABLE `order_items` (
 --
 
 INSERT INTO `order_items` (`id`, `order_id`, `product_id`, `product_name`, `quantity`, `price`, `total`, `created_at`, `updated_at`) VALUES
-(102, 56, 28, 'Poha', 2, 55.00, 110.00, '2026-05-16 07:11:24', '2026-05-16 07:11:24'),
-(103, 56, 12, 'Veg Biriyani', 1, 500.00, 500.00, '2026-05-16 07:11:24', '2026-05-16 07:11:24');
+(120, 69, 12, 'Veg Biriyani', 1, 500.00, 500.00, '2026-05-27 01:40:11', '2026-05-27 01:40:11'),
+(122, 71, 12, 'Veg Biriyani', 1, 500.00, 500.00, '2026-05-27 01:42:09', '2026-05-27 01:42:09'),
+(124, 73, 16, 'Masala Dosa', 2, 190.00, 380.00, '2026-05-27 01:45:21', '2026-05-27 01:45:21'),
+(125, 73, 29, 'Mysore Masala Dosa 777', 1, 777.00, 777.00, '2026-05-27 01:45:21', '2026-05-27 01:45:21'),
+(155, 107, 12, 'Veg Biriyani', 1, 500.00, 500.00, '2026-05-28 02:18:48', '2026-05-28 02:18:48');
 
 -- --------------------------------------------------------
 
@@ -830,8 +858,8 @@ INSERT INTO `order_items` (`id`, `order_id`, `product_id`, `product_name`, `quan
 
 CREATE TABLE `pages` (
   `id` bigint(20) UNSIGNED NOT NULL,
-  `name` varchar(255) NOT NULL,
-  `slug` varchar(255) NOT NULL,
+  `page_name` varchar(255) NOT NULL,
+  `page_slug` varchar(255) NOT NULL,
   `content` text DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
@@ -841,10 +869,9 @@ CREATE TABLE `pages` (
 -- Dumping data for table `pages`
 --
 
-INSERT INTO `pages` (`id`, `name`, `slug`, `content`, `created_at`, `updated_at`) VALUES
-(2, 'About us', 'about-us', '<p><strong style=\"margin: 0px; padding: 0px; color: rgb(0, 0, 0); font-family: &quot;Open Sans&quot;, Arial, sans-serif; font-size: 14px; text-align: justify;\">Lorem Ipsum</strong><span style=\"color: rgb(0, 0, 0); font-family: &quot;Open Sans&quot;, Arial, sans-serif; font-size: 14px; text-align: justify;\">&nbsp;is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry\'s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.</span></p><p><strong style=\"margin: 0px; padding: 0px; color: rgb(0, 0, 0); font-family: &quot;Open Sans&quot;, Arial, sans-serif; font-size: 14px; text-align: justify;\">Lorem Ipsum</strong><span style=\"color: rgb(0, 0, 0); font-family: &quot;Open Sans&quot;, Arial, sans-serif; font-size: 14px; text-align: justify;\">&nbsp;is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry\'s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.</span><span style=\"color: rgb(0, 0, 0); font-family: &quot;Open Sans&quot;, Arial, sans-serif; font-size: 14px; text-align: justify;\"><br></span><br></p>', '2023-12-01 03:33:50', '2023-12-01 03:33:50'),
-(3, 'Contact', 'contact-us', '<p>It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using Content.</p>\r\n                    <address>\r\n                    Mukesh Bhavsar<br>\r\n                    711-2880 Nulla St.<br>\r\n                    Mankato Mississippi 96522<br>\r\n                    <a href=\"tel:+xxxxxxxx\">(XXX) 555-2368</a><br>\r\n                    <a href=\"mailto:jim@rock.com\">jim@rock.com</a>\r\n                    </address>', '2023-12-01 03:44:47', '2024-11-20 23:54:11'),
-(4, 'Terms', 'terms', '<p>terms</p>', '2023-12-27 08:59:35', '2023-12-27 08:59:35');
+INSERT INTO `pages` (`id`, `page_name`, `page_slug`, `content`, `created_at`, `updated_at`) VALUES
+(2, 'About us', 'about-us', '<p>ok</p>', '2023-12-01 03:33:50', '2026-05-22 02:37:53'),
+(3, 'Contact', 'contact-us', '<p>It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using Content.</p>\r\n                    <address>\r\n                    Mukesh Bhavsar<br>\r\n                    711-2880 Nulla St.<br>\r\n                    Mankato Mississippi 96522<br>\r\n                    <a href=\"tel:+xxxxxxxx\">(XXX) 555-2368</a><br>\r\n                    <a href=\"mailto:jim@rock.com\">jim@rock.com</a>\r\n                    </address>', '2023-12-01 03:44:47', '2024-11-20 23:54:11');
 
 -- --------------------------------------------------------
 
@@ -902,8 +929,8 @@ INSERT INTO `payments` (`id`, `payment_id`, `product_name`, `quantity`, `amount`
 
 CREATE TABLE `permissions` (
   `id` bigint(20) UNSIGNED NOT NULL,
-  `name` varchar(100) NOT NULL,
-  `guard_name` varchar(100) NOT NULL,
+  `name` varchar(50) NOT NULL,
+  `guard_name` varchar(20) NOT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -913,11 +940,19 @@ CREATE TABLE `permissions` (
 --
 
 INSERT INTO `permissions` (`id`, `name`, `guard_name`, `created_at`, `updated_at`) VALUES
-(1, 'Create category', 'admin', '2025-02-01 02:20:28', '2025-02-01 02:20:28'),
-(2, 'Edit Category', 'admin', '2025-02-01 02:20:48', '2025-02-01 02:20:48'),
-(3, 'Create Menu', 'admin', '2025-02-01 02:24:34', '2025-02-01 02:24:34'),
-(4, 'Edit Menu', 'admin', '2025-02-01 03:30:41', '2025-02-01 03:30:41'),
-(5, 'Edit Roles', 'admin', '2025-02-01 03:30:41', '2025-02-01 03:30:41');
+(8, 'delete permissions', 'web', '2026-05-22 08:04:03', '2026-05-22 08:04:03'),
+(9, 'create permissions', 'web', '2026-05-22 08:04:10', '2026-05-22 08:04:10'),
+(10, 'edit permissions', 'web', '2026-05-22 08:04:18', '2026-05-22 08:04:18'),
+(11, 'view permissions', 'web', '2026-05-22 08:04:28', '2026-05-22 08:04:28'),
+(12, 'view users', 'web', '2026-05-22 08:04:28', '2026-05-22 08:04:28'),
+(13, 'edit users', 'web', '2026-05-22 08:04:18', '2026-05-22 08:04:18'),
+(14, 'create users', 'web', '2026-05-22 08:04:10', '2026-05-22 08:04:10'),
+(15, 'delete users', 'web', '2026-05-22 08:04:03', '2026-05-22 08:04:03'),
+(16, 'view roles', 'web', '2026-05-22 08:04:28', '2026-05-22 08:04:28'),
+(18, 'delete roles', 'web', '2026-05-22 08:04:03', '2026-05-22 08:04:03'),
+(20, 'create roles', 'web', '2026-05-22 08:04:10', '2026-05-22 08:04:10'),
+(21, 'view articles', 'web', '2026-05-22 08:04:28', '2026-05-22 08:04:28'),
+(22, 'edit articles', 'web', '2026-05-22 08:04:18', '2026-05-22 08:04:18');
 
 -- --------------------------------------------------------
 
@@ -972,7 +1007,7 @@ INSERT INTO `products` (`id`, `name`, `slug`, `category_id`, `menu_id`, `product
 (25, 'Masala Tea', 'masala-tea', 200, NULL, NULL, 'awesome', 30.00, 1, '2026-05-09 00:35:35', '2026-05-09 00:35:35'),
 (26, 'Butter Roti', 'butter-roti', 198, 42, NULL, 'butter roti', 45.00, 1, '2026-05-09 00:45:08', '2026-05-09 00:45:08'),
 (28, 'Poha', 'poha', 197, NULL, NULL, 'Awesome Poha', 55.00, 1, '2026-05-09 08:38:41', '2026-05-09 08:38:41'),
-(29, 'Mysore Masala Dosa', 'mysore-masala-dosa', 187, 45, NULL, 'Awesome Mysore Masala Dosa', 380.00, 1, '2026-05-09 08:40:41', '2026-05-09 08:40:41');
+(29, 'Mysore Masala Dosa 777', 'mysore-masala-dosa-777', 187, 45, NULL, 'Awesome', 777.00, 1, '2026-05-09 08:40:41', '2026-05-22 02:38:21');
 
 -- --------------------------------------------------------
 
@@ -1047,7 +1082,8 @@ CREATE TABLE `product_views` (
 --
 
 INSERT INTO `product_views` (`id`, `name`, `created_at`, `updated_at`) VALUES
-(1, 'grid_view', '2025-01-26 06:54:44', '2025-01-26 06:54:44');
+(1, 'grid_view', '2025-01-26 06:54:44', '2025-01-26 06:54:44'),
+(2, 'table_view', '2026-05-21 01:13:26', '2026-05-21 01:13:26');
 
 -- --------------------------------------------------------
 
@@ -1057,8 +1093,8 @@ INSERT INTO `product_views` (`id`, `name`, `created_at`, `updated_at`) VALUES
 
 CREATE TABLE `roles` (
   `id` bigint(20) UNSIGNED NOT NULL,
-  `name` varchar(255) NOT NULL,
-  `guard_name` varchar(255) NOT NULL,
+  `name` varchar(50) NOT NULL,
+  `guard_name` varchar(50) NOT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -1068,9 +1104,11 @@ CREATE TABLE `roles` (
 --
 
 INSERT INTO `roles` (`id`, `name`, `guard_name`, `created_at`, `updated_at`) VALUES
-(1, 'Admin', 'admin', '2025-02-01 02:37:43', '2025-02-01 03:11:20'),
-(2, 'Waiter', 'admin', '2025-02-01 03:37:47', '2025-02-01 03:37:47'),
-(3, 'Waiter 3', 'web', '2026-05-18 07:34:34', '2026-05-18 07:34:34');
+(1, 'admin', 'admin', '2025-02-01 02:37:43', '2026-05-22 08:26:57'),
+(2, 'waiter', 'web', '2025-02-01 03:37:47', '2026-05-22 08:27:03'),
+(8, 'manager', 'web', '2026-05-22 07:31:04', '2026-05-22 08:27:09'),
+(9, 'superadmin', 'web', '2026-05-22 08:26:31', '2026-05-22 08:26:31'),
+(13, 'engineer', 'web', '2026-05-24 23:36:00', '2026-05-24 23:36:00');
 
 -- --------------------------------------------------------
 
@@ -1088,11 +1126,24 @@ CREATE TABLE `role_has_permissions` (
 --
 
 INSERT INTO `role_has_permissions` (`permission_id`, `role_id`) VALUES
-(1, 1),
-(2, 1),
-(3, 1),
-(3, 2),
-(4, 2);
+(8, 8),
+(9, 2),
+(9, 8),
+(10, 8),
+(11, 8),
+(12, 8),
+(12, 13),
+(13, 8),
+(14, 2),
+(14, 8),
+(15, 8),
+(16, 8),
+(18, 8),
+(20, 8),
+(21, 2),
+(21, 8),
+(22, 2),
+(22, 8);
 
 -- --------------------------------------------------------
 
@@ -1102,10 +1153,10 @@ INSERT INTO `role_has_permissions` (`permission_id`, `role_id`) VALUES
 
 CREATE TABLE `seats` (
   `id` bigint(20) UNSIGNED NOT NULL,
-  `table_name` varchar(255) NOT NULL,
-  `table_slug` varchar(100) NOT NULL,
-  `area_id` bigint(20) UNSIGNED DEFAULT NULL,
-  `status` enum('available','running','pending','shipped','delivered') NOT NULL DEFAULT 'available',
+  `table_name` varchar(50) NOT NULL,
+  `table_slug` varchar(50) NOT NULL,
+  `area_id` bigint(10) UNSIGNED DEFAULT NULL,
+  `status` enum('available','running') NOT NULL DEFAULT 'available',
   `capacity` int(11) DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
@@ -1116,18 +1167,15 @@ CREATE TABLE `seats` (
 --
 
 INSERT INTO `seats` (`id`, `table_name`, `table_slug`, `area_id`, `status`, `capacity`, `created_at`, `updated_at`) VALUES
-(3, 'Table_03', 'table_03', 5, 'running', NULL, NULL, NULL),
-(25, 'Table 02', 'table-02', 6, 'shipped', 2, '2025-01-20 23:03:37', '2025-01-20 23:03:37'),
-(42, 'Table 1', 'table-1', 5, 'running', 2, '2025-01-28 05:39:44', '2025-01-28 05:39:44'),
+(5, 'Table_03', 'table_03', 5, 'running', NULL, NULL, NULL),
+(25, 'Table 02', 'table-02', 6, 'running', 2, '2025-01-20 23:03:37', '2025-01-20 23:03:37'),
 (43, 'Table 2', 'table-2', 6, 'running', 2, '2025-01-28 05:41:47', '2025-01-28 05:41:47'),
-(44, 'Table 3', 'table-3', 5, 'pending', 6, '2025-01-28 05:44:55', '2025-01-28 05:44:55'),
-(45, 'Table 4', 'table-4', NULL, 'delivered', 2, '2025-01-28 06:02:48', '2025-01-28 06:02:48'),
+(44, 'Table 3', 'table-3', 5, 'available', 6, '2025-01-28 05:44:55', '2025-01-28 05:44:55'),
+(45, 'Table 4', 'table-4', NULL, 'available', 2, '2025-01-28 06:02:48', '2025-01-28 06:02:48'),
 (46, 'Table 5', 'table-5', NULL, 'running', 10, '2025-01-29 08:53:56', '2025-01-29 08:53:56'),
-(47, 'Table 9999Mukesh', 'table-9999mukesh', 7, 'available', 2, '2025-01-30 05:44:11', '2025-01-30 05:44:11'),
 (48, 'Table 6', 'table-6', NULL, 'available', 8, '2025-01-30 05:48:20', '2025-01-30 05:48:20'),
-(49, 'Table 1', 'table-1', NULL, 'available', NULL, '2026-05-18 09:50:18', '2026-05-18 09:50:18'),
-(50, 'Table 1', 'table-1', 4, 'available', NULL, '2026-05-18 09:53:35', '2026-05-18 09:53:35'),
-(51, 'Table 2', 'table-2', 4, 'available', NULL, '2026-05-18 09:55:04', '2026-05-18 09:55:04');
+(49, 'Table 1', 'table-1', 27, 'available', NULL, '2026-05-18 09:50:18', '2026-05-18 09:50:18'),
+(57, 'Table 2', 'table-2', 5, 'available', 2, '2026-05-20 08:17:33', '2026-05-20 08:17:33');
 
 -- --------------------------------------------------------
 
@@ -1143,32 +1191,6 @@ CREATE TABLE `sessions` (
   `payload` longtext NOT NULL,
   `last_activity` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
--- --------------------------------------------------------
-
---
--- Table structure for table `settings`
---
-
-CREATE TABLE `settings` (
-  `id` bigint(20) UNSIGNED NOT NULL,
-  `restaurant_name` varchar(255) NOT NULL,
-  `restaurant_email` varchar(255) NOT NULL,
-  `restaurant_phone` varchar(255) NOT NULL,
-  `restaurant_logo` varchar(255) NOT NULL,
-  `restaurant_theme` varchar(255) NOT NULL,
-  `restaurant_address` text NOT NULL,
-  `branch_id` bigint(20) UNSIGNED NOT NULL,
-  `created_at` timestamp NULL DEFAULT NULL,
-  `updated_at` timestamp NULL DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
---
--- Dumping data for table `settings`
---
-
-INSERT INTO `settings` (`id`, `restaurant_name`, `restaurant_email`, `restaurant_phone`, `restaurant_logo`, `restaurant_theme`, `restaurant_address`, `branch_id`, `created_at`, `updated_at`) VALUES
-(1, 'Lemon Tree', 'info@lemontree.com', '089-26546576', 'logo', '#ff0000', 'Navrangpura', 1, NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -1194,28 +1216,6 @@ INSERT INTO `shipping_charges` (`id`, `country_id`, `amount`, `created_at`, `upd
 (16, '2', 50.00, '2023-11-28 02:47:32', '2023-11-28 02:47:32'),
 (17, 'rest_of_world', 100.00, '2023-11-28 03:11:04', '2023-11-28 03:11:04'),
 (18, '8', 80.00, '2024-12-28 01:38:55', '2024-12-28 01:38:55');
-
--- --------------------------------------------------------
-
---
--- Table structure for table `taxes`
---
-
-CREATE TABLE `taxes` (
-  `id` bigint(20) UNSIGNED NOT NULL,
-  `gst` int(11) NOT NULL,
-  `sgst` int(11) NOT NULL,
-  `cgst` int(11) NOT NULL,
-  `created_at` timestamp NULL DEFAULT NULL,
-  `updated_at` timestamp NULL DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
---
--- Dumping data for table `taxes`
---
-
-INSERT INTO `taxes` (`id`, `gst`, `sgst`, `cgst`, `created_at`, `updated_at`) VALUES
-(1, 18, 9, 9, '2025-01-29 12:36:59', '2025-01-29 12:36:59');
 
 -- --------------------------------------------------------
 
@@ -1422,7 +1422,25 @@ INSERT INTO `temp_images` (`id`, `name`, `created_at`, `updated_at`) VALUES
 (360, '1778306729.jpg', '2026-05-09 00:35:29', '2026-05-09 00:35:29'),
 (361, '1778307306.jpg', '2026-05-09 00:45:06', '2026-05-09 00:45:06'),
 (362, '1778335719.jpg', '2026-05-09 08:38:39', '2026-05-09 08:38:39'),
-(363, '1778335838.jpg', '2026-05-09 08:40:38', '2026-05-09 08:40:38');
+(363, '1778335838.jpg', '2026-05-09 08:40:38', '2026-05-09 08:40:38'),
+(364, '1779345444.JPG', '2026-05-21 01:07:24', '2026-05-21 01:07:24'),
+(365, '1779345561.JPG', '2026-05-21 01:09:21', '2026-05-21 01:09:21'),
+(366, '1779345562.JPG', '2026-05-21 01:09:22', '2026-05-21 01:09:22'),
+(367, '1779345562.JPG', '2026-05-21 01:09:22', '2026-05-21 01:09:22'),
+(368, '1779345601.JPG', '2026-05-21 01:10:01', '2026-05-21 01:10:01'),
+(369, '1779345789.JPG', '2026-05-21 01:13:09', '2026-05-21 01:13:09'),
+(370, '1779346044.JPG', '2026-05-21 01:17:24', '2026-05-21 01:17:24'),
+(371, '1779346256.JPG', '2026-05-21 01:20:56', '2026-05-21 01:20:56'),
+(372, '1779346258.JPG', '2026-05-21 01:20:58', '2026-05-21 01:20:58'),
+(373, '1779346311.JPG', '2026-05-21 01:21:51', '2026-05-21 01:21:51'),
+(374, '1779347857.JPG', '2026-05-21 01:47:37', '2026-05-21 01:47:37'),
+(375, '1779347880.JPG', '2026-05-21 01:48:00', '2026-05-21 01:48:00'),
+(376, '1779347908.JPG', '2026-05-21 01:48:28', '2026-05-21 01:48:28'),
+(377, '1779347912.JPG', '2026-05-21 01:48:32', '2026-05-21 01:48:32'),
+(378, '1779347948.JPG', '2026-05-21 01:49:08', '2026-05-21 01:49:08'),
+(379, '1779349098.JPG', '2026-05-21 02:08:18', '2026-05-21 02:08:18'),
+(380, '1779349130.png', '2026-05-21 02:08:50', '2026-05-21 02:08:50'),
+(381, '1779350161.png', '2026-05-21 02:26:01', '2026-05-21 02:26:01');
 
 -- --------------------------------------------------------
 
@@ -1443,20 +1461,14 @@ CREATE TABLE `themes` (
 
 CREATE TABLE `users` (
   `id` bigint(20) UNSIGNED NOT NULL,
-  `name` varchar(255) DEFAULT NULL,
-  `email` varchar(255) DEFAULT NULL,
+  `name` varchar(75) DEFAULT NULL,
+  `mobile` varchar(10) DEFAULT NULL,
+  `email` varchar(100) DEFAULT NULL,
+  `image` varchar(50) DEFAULT NULL,
   `role` int(11) DEFAULT 1,
   `status` int(11) NOT NULL DEFAULT 1,
   `email_verified_at` timestamp NULL DEFAULT NULL,
-  `password` varchar(255) DEFAULT NULL,
-  `restaurant_name` varchar(255) DEFAULT NULL,
-  `restaurant_email` varchar(255) DEFAULT NULL,
-  `restaurant_phone` varchar(255) DEFAULT NULL,
-  `restaurant_logo` varchar(255) DEFAULT NULL,
-  `restaurant_theme` varchar(255) DEFAULT NULL,
-  `restaurant_address` varchar(255) DEFAULT NULL,
-  `branch_name` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL,
-  `branch_address` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL CHECK (json_valid(`branch_address`)),
+  `password` varchar(100) DEFAULT NULL,
   `remember_token` varchar(100) DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
@@ -1466,10 +1478,12 @@ CREATE TABLE `users` (
 -- Dumping data for table `users`
 --
 
-INSERT INTO `users` (`id`, `name`, `email`, `role`, `status`, `email_verified_at`, `password`, `restaurant_name`, `restaurant_email`, `restaurant_phone`, `restaurant_logo`, `restaurant_theme`, `restaurant_address`, `branch_name`, `branch_address`, `remember_token`, `created_at`, `updated_at`) VALUES
-(1, 'admin', 'admin@gmail.com', 2, 1, NULL, 'admin123', 'kanjipuram', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
-(3, 'Priyanka', 'p.bhavsar2610@gmail.com', 2, 1, NULL, '$2y$10$0mtiGc/VLwgP6N/pAcy1geZ6WX4S/X1fojexw8cif.OTxOgux9Uma', 'Lemon Tree', 'mukeshbhavsar210@gmail.com', '09978835005', '3-.png', NULL, 'Keerthi Royal Palms,', NULL, NULL, NULL, '2023-11-25 00:32:42', '2025-01-10 23:55:26'),
-(7, 'Mukesh Bhavsar', 'mukeshbhavsar210@gmail.com', 2, 1, NULL, '$2y$12$Iy5Wh1TVAkCYAvaefrR71OEKD4QDjhnnWBxknqjwnioSSM6sAJMnO', 'Lemon Tree', 'dhruvbhavsar210@gmail.com', '121', '7-Lemon Tree444.png', NULL, 'Navrangpura Praga', NULL, NULL, NULL, '2023-12-19 07:11:37', '2025-01-10 07:27:46');
+INSERT INTO `users` (`id`, `name`, `mobile`, `email`, `image`, `role`, `status`, `email_verified_at`, `password`, `remember_token`, `created_at`, `updated_at`) VALUES
+(1, 'admin', NULL, 'admin@gmail.com', NULL, 2, 1, NULL, 'admin123', NULL, NULL, NULL),
+(3, 'Priyanka Bhavsar', '9538135005', 'p.bhavsar2610@gmail.com', NULL, 2, 1, NULL, '$2y$12$NwV1.yyYZPIkbrKa0ksq2uIKkgWRS1zEtJJK7WnM0Yo9X.PL9uiW6', NULL, '2023-11-25 00:32:42', '2026-05-25 00:37:01'),
+(7, 'Mukesh Bhavsar', '9978835005', 'mukeshbhavsar210@gmail.com', 'mukesh-bhavsar.png', 2, 1, NULL, '$2y$12$/nh.Dhz6czeqlRlIy.YOU.lXgk6851m4pPBaM2gTwaWdsixalPnMu', NULL, '2023-12-19 07:11:37', '2026-05-28 00:32:49'),
+(16, 'superadmin', NULL, 'superadmin@gmail.com', NULL, 1, 1, NULL, '$2y$12$M80M9LEps37doFNM8HC1O.KSViFTKd2mmzVeIambMhwFpjwSIjCna', NULL, '2026-05-22 08:28:31', '2026-05-22 08:28:31'),
+(18, 'Dhruv', NULL, 'dhruvbhavsar210@gmail.com', 'Dhruv.webp', 1, 1, NULL, '$2y$12$qu/XHbVD.hIH7Da8MD0qVefhAnDTO16DaQwkS3xSvf//uNXrtvtHe', NULL, '2026-05-25 07:51:12', '2026-05-25 07:51:12');
 
 -- --------------------------------------------------------
 
@@ -1669,7 +1683,8 @@ ALTER TABLE `model_has_roles`
 --
 ALTER TABLE `orders`
   ADD PRIMARY KEY (`id`),
-  ADD KEY `orders_seat_id_foreign` (`seat_id`);
+  ADD KEY `orders_seat_id_foreign` (`seat_id`),
+  ADD KEY `orders_area_id_foreign` (`area_id`);
 
 --
 -- Indexes for table `order_items`
@@ -1771,22 +1786,9 @@ ALTER TABLE `sessions`
   ADD KEY `sessions_last_activity_index` (`last_activity`);
 
 --
--- Indexes for table `settings`
---
-ALTER TABLE `settings`
-  ADD PRIMARY KEY (`id`),
-  ADD KEY `settings_branch_id_foreign` (`branch_id`);
-
---
 -- Indexes for table `shipping_charges`
 --
 ALTER TABLE `shipping_charges`
-  ADD PRIMARY KEY (`id`);
-
---
--- Indexes for table `taxes`
---
-ALTER TABLE `taxes`
   ADD PRIMARY KEY (`id`);
 
 --
@@ -1831,7 +1833,7 @@ ALTER TABLE `wishlists`
 -- AUTO_INCREMENT for table `areas`
 --
 ALTER TABLE `areas`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=28;
 
 --
 -- AUTO_INCREMENT for table `articles`
@@ -1849,19 +1851,19 @@ ALTER TABLE `branches`
 -- AUTO_INCREMENT for table `categories`
 --
 ALTER TABLE `categories`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=201;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=203;
 
 --
 -- AUTO_INCREMENT for table `category_menu`
 --
 ALTER TABLE `category_menu`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=23;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=32;
 
 --
 -- AUTO_INCREMENT for table `configurations`
 --
 ALTER TABLE `configurations`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT for table `countries`
@@ -1909,7 +1911,7 @@ ALTER TABLE `jobs`
 -- AUTO_INCREMENT for table `menus`
 --
 ALTER TABLE `menus`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=47;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=49;
 
 --
 -- AUTO_INCREMENT for table `menu_categories`
@@ -1921,25 +1923,25 @@ ALTER TABLE `menu_categories`
 -- AUTO_INCREMENT for table `migrations`
 --
 ALTER TABLE `migrations`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=60;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=61;
 
 --
 -- AUTO_INCREMENT for table `orders`
 --
 ALTER TABLE `orders`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=58;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=109;
 
 --
 -- AUTO_INCREMENT for table `order_items`
 --
 ALTER TABLE `order_items`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=105;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=156;
 
 --
 -- AUTO_INCREMENT for table `pages`
 --
 ALTER TABLE `pages`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=30;
 
 --
 -- AUTO_INCREMENT for table `payments`
@@ -1951,7 +1953,7 @@ ALTER TABLE `payments`
 -- AUTO_INCREMENT for table `permissions`
 --
 ALTER TABLE `permissions`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=29;
 
 --
 -- AUTO_INCREMENT for table `personal_access_tokens`
@@ -1963,13 +1965,13 @@ ALTER TABLE `personal_access_tokens`
 -- AUTO_INCREMENT for table `products`
 --
 ALTER TABLE `products`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=30;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=38;
 
 --
 -- AUTO_INCREMENT for table `product_images`
 --
 ALTER TABLE `product_images`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=43;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=52;
 
 --
 -- AUTO_INCREMENT for table `product_ratings`
@@ -1981,25 +1983,19 @@ ALTER TABLE `product_ratings`
 -- AUTO_INCREMENT for table `product_views`
 --
 ALTER TABLE `product_views`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `roles`
 --
 ALTER TABLE `roles`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
 
 --
 -- AUTO_INCREMENT for table `seats`
 --
 ALTER TABLE `seats`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=52;
-
---
--- AUTO_INCREMENT for table `settings`
---
-ALTER TABLE `settings`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=58;
 
 --
 -- AUTO_INCREMENT for table `shipping_charges`
@@ -2008,22 +2004,16 @@ ALTER TABLE `shipping_charges`
   MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
 
 --
--- AUTO_INCREMENT for table `taxes`
---
-ALTER TABLE `taxes`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
-
---
 -- AUTO_INCREMENT for table `temp_images`
 --
 ALTER TABLE `temp_images`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=364;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=382;
 
 --
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
 
 --
 -- AUTO_INCREMENT for table `user_roles`
@@ -2035,7 +2025,7 @@ ALTER TABLE `user_roles`
 -- AUTO_INCREMENT for table `variants`
 --
 ALTER TABLE `variants`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
 
 --
 -- AUTO_INCREMENT for table `wishlists`
@@ -2077,6 +2067,7 @@ ALTER TABLE `model_has_roles`
 -- Constraints for table `orders`
 --
 ALTER TABLE `orders`
+  ADD CONSTRAINT `orders_area_id_foreign` FOREIGN KEY (`area_id`) REFERENCES `areas` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
   ADD CONSTRAINT `orders_seat_id_foreign` FOREIGN KEY (`seat_id`) REFERENCES `seats` (`id`) ON DELETE CASCADE;
 
 --
@@ -2118,12 +2109,6 @@ ALTER TABLE `role_has_permissions`
 --
 ALTER TABLE `seats`
   ADD CONSTRAINT `tables_area_id_foreign` FOREIGN KEY (`area_id`) REFERENCES `areas` (`id`) ON DELETE CASCADE;
-
---
--- Constraints for table `settings`
---
-ALTER TABLE `settings`
-  ADD CONSTRAINT `settings_branch_id_foreign` FOREIGN KEY (`branch_id`) REFERENCES `branches` (`id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `variants`

@@ -70,46 +70,15 @@
 <script src="{{ asset('front-assets/js/slick.min.js') }}"></script>
 <script src="{{ asset('front-assets/js/documentReady.js') }}"></script>
 <script>
-    $("#placeOrder").submit(function(event){
-        event.preventDefault();
-
-        var element = $(this);
-
-        element.find("button[type=submit]").prop('disabled', true);
-
-        $.ajax({
-            url: '{{ route("submit.order") }}',
-            type: 'POST',
-            data: element.serialize(),
-            dataType: 'json',
-            success: function(response){
-                element.find("button[type=submit]").prop('disabled', false);
-                if(response.status){
-                    // store alert message
-                    sessionStorage.setItem(
-                        'successMessage',
-                        response.message
-                    );
-
-                    // redirect
-                    window.location.href = "{{ route('front.home') }}";
-                }else{
-                    console.log(response.errors);
-                }
-            },
-
-            error: function(){
-                element.find("button[type=submit]").prop('disabled', false);
-                console.log("Something went wrong");
-            }
-        });
-    });	
-
 	$.ajaxSetup({
         headers: {
             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
         }
     });
+
+	setTimeout(function(){
+		$('.custom-success-alert').fadeOut();
+	}, 3000);
 
 	function addToWishlist(id){
         $.ajax({

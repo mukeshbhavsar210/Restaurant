@@ -8,9 +8,13 @@ use Illuminate\Database\Eloquent\Model;
 class Order extends Model {
     use HasFactory;
 
-    protected $fillable = ['order_type', 'session_id', 'seat_id', 'customer_name', 'customer_phone', 'customer_email',
+    protected $fillable = ['order_type', 'session_id', 'seat_id', 'area_id', 'customer_name', 'customer_phone', 'customer_email',
         'delivery_name', 'delivery_phone', 'delivery_email', 'delivery_address', 'notes', 'total_amount', 'payment', 'status'
     ];
+
+    public function area() {
+        return $this->belongsTo(Area::class);
+    }
 
     public function items(){
         return $this->hasMany(OrderItem::class);

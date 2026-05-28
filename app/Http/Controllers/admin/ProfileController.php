@@ -8,54 +8,131 @@ use App\Http\Requests\ProfileUpdateRequest;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
+use Intervention\Image\ImageManager;
+use Intervention\Image\Drivers\Gd\Driver;
 use Illuminate\View\View;
 
-class ProfileController extends Controller
-{
-     /**
-     * Display the user's profile form.
-     */
-    // public function edit(Request $request): View
-    // {
-    //     return view('admin.profile.edit', [
-    //         'user' => $request->user(),
-    //     ]);
-    // }
+class ProfileController extends Controller {
 
-    /**
-     * Update the user's profile information.
-     */
-    // public function update(ProfileUpdateRequest $request): RedirectResponse
-    // {
-    //     $request->user()->fill($request->validated());
+    public function index(Request $request){
+        $data['profileForm'] = [
+                'title' => 'Profile',
+                'modal_id' => 'updateProfileModal',            
 
-    //     if ($request->user()->isDirty('email')) {
-    //         $request->user()->email_verified_at = null;
-    //     }
+                'formConfig' => [
+                    'action' => route('profile.update'),
+                    'method' => 'PUT',
+                    'button' => 'Update Profile',
+                                    
+                    'fields' => [                                        
+                        [
+                            'type' => 'text',
+                            'name' => 'name',
+                            'label' => 'Name',
+                            'required' => true,
+                            'placeholder' => 'Name',
+                            'col' => 'col-12',                        
+                        ],
+                        [
+                            'type' => 'email',
+                            'name' => 'email',
+                            'label' => 'Email',
+                            'required' => true,
+                            'placeholder' => 'Email',
+                            'col' => 'col-12',                        
+                        ],
+                        [
+                            'type' => 'text',
+                            'name' => 'mobile',
+                            'label' => 'Mobile',
+                            'required' => true,
+                            'placeholder' => 'Mobile',
+                            'col' => 'col-12',                        
+                        ],
+                        [
+                            'type' => 'file',
+                            'name' => 'image',
+                            'label' => 'Photo',
+                            'required' => true,
+                            'placeholder' => 'Photo',
+                            'col' => 'col-12',                        
+                        ],
+                    ]
+                ]
+            ]; 
 
-    //     $request->user()->save();
+            $data['passwordForm'] = [
+                'title' => 'Change Password',
+                'modal_id' => 'updatePasswordModal',            
 
-    //     return Redirect::route('admin.profile.edit')->with('status', 'profile-updated');
-    // }
+                'formConfig' => [
+                    'action' => route('password.update'),
+                    'method' => 'PUT',
+                    'button' => 'Change Password',
+                                    
+                    'fields' => [                                        
+                        [
+                            'type' => 'text',
+                            'name' => 'current_password',
+                            'label' => 'Current Password',
+                            'required' => true,
+                            'placeholder' => 'Current Password',
+                            'col' => 'col-12',                        
+                        ],
+                        [
+                            'type' => 'text',
+                            'name' => 'password',
+                            'label' => 'Password',
+                            'required' => true,
+                            'placeholder' => 'Password',
+                            'col' => 'col-12',                        
+                        ],
+                        [
+                            'type' => 'text',
+                            'name' => 'password_confirmation',
+                            'label' => 'Confirm Password',
+                            'required' => true,
+                            'placeholder' => 'Confirm Password',
+                            'col' => 'col-12',                        
+                        ],
+                    ]
+                ]
+            ]; 
+                        
+            return view('admin.profile.index', $data);        
+        }
 
-    /**
-     * Delete the user's account.
-     */
-    // public function destroy(Request $request): RedirectResponse
-    // {
-    //     $request->validateWithBag('userDeletion', [
-    //         'password' => ['required', 'current_password'],
-    //     ]);
+    public function update_profile(ProfileUpdateRequest $request): RedirectResponse {
+        $user = $request->user();
 
-    //     $user = $request->user();
+        // Fill validated fields
+        $user->fill($request->validated());
 
-    //     Auth::logout();
+        // Mobile
+        $user->mobile = $request->mobile;
 
-    //     $user->delete();
+        // Image Upload        
+        if ($request->hasFile('image')) {
+            // Delete old image
+            if ($user->image && file_exists(public_path('uploads/users/' . $user->image))) {
+                unlink(public_path('uploads/users/' . $user->image));
+            }
 
-    //     $request->session()->invalidate();
-    //     $request->session()->regenerateToken();
+            $file = $request->file('image');
+            $extension = $file->getClientOriginalExtension();
+            // Create filename from user name
+            $fileName = strtolower(str_replace(' ', '-', $user->name)) . '.' . $extension;
+            $path = public_path('uploads/users/' . $fileName);
+            $manager = new ImageManager(new Driver());
+            $logo = $manager->read($file);
+            $logo->cover(200, 200)->save($path);
+            $user->image = $fileName;
+        }
 
-    //     return Redirect::to('/');
-    // }
+        $user->save();
+
+        return redirect()
+            ->route('profile.index')
+            ->with('success', 'Profile updated successfully.');
+    }
 }

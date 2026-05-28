@@ -10,13 +10,14 @@
                     $qty = getProductQty($product->id);
                 @endphp               
 
-                <x-products :product="$product" :variants="$product->variants" :seats="$seats" :qty="$qty" />
+                <x-products :product="$product" :variants="$product->variants" :qty="$qty" />
             @endforeach
         </div>
     @endif
 </section> 
 
 @include('front/layouts/cart', ['product' => $product])
+@include('front/layouts/message')
 
 @endsection
 
