@@ -10,7 +10,7 @@ class Product extends Model {
 
     public function seat(){
         return $this->hasMany(Seat::class);
-    }
+    }   
 
     public function product_images(){
         return $this->hasMany(ProductImage::class);

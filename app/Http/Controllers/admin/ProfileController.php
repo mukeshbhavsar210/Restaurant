@@ -11,6 +11,8 @@ use Illuminate\Support\Facades\Redirect;
 use Intervention\Image\ImageManager;
 use Intervention\Image\Drivers\Gd\Driver;
 use Illuminate\View\View;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Validation\Rules\Password;
 
 class ProfileController extends Controller {
 
@@ -57,25 +59,11 @@ class ProfileController extends Controller {
                             'placeholder' => 'Photo',
                             'col' => 'col-12',                        
                         ],
-                    ]
-                ]
-            ]; 
-
-            $data['passwordForm'] = [
-                'title' => 'Change Password',
-                'modal_id' => 'updatePasswordModal',            
-
-                'formConfig' => [
-                    'action' => route('password.update'),
-                    'method' => 'PUT',
-                    'button' => 'Change Password',
-                                    
-                    'fields' => [                                        
                         [
                             'type' => 'text',
                             'name' => 'current_password',
                             'label' => 'Current Password',
-                            'required' => true,
+                            'required' => false,
                             'placeholder' => 'Current Password',
                             'col' => 'col-12',                        
                         ],
@@ -83,24 +71,26 @@ class ProfileController extends Controller {
                             'type' => 'text',
                             'name' => 'password',
                             'label' => 'Password',
-                            'required' => true,
+                            'required' => false,
                             'placeholder' => 'Password',
-                            'col' => 'col-12',                        
+                            'col' => 'col-6',
                         ],
                         [
                             'type' => 'text',
                             'name' => 'password_confirmation',
                             'label' => 'Confirm Password',
-                            'required' => true,
+                            'required' => false,
                             'placeholder' => 'Confirm Password',
-                            'col' => 'col-12',                        
+                            'col' => 'col-6',                        
                         ],
                     ]
                 ]
-            ]; 
+            ];            
                         
             return view('admin.profile.index', $data);        
         }
+
+
 
     public function update_profile(ProfileUpdateRequest $request): RedirectResponse {
         $user = $request->user();
@@ -128,6 +118,15 @@ class ProfileController extends Controller {
             $logo->cover(200, 200)->save($path);
             $user->image = $fileName;
         }
+
+        $validated = $request->validateWithBag('updatePassword', [
+            'current_password' => ['required', 'current_password'],
+            'password' => ['required', Password::defaults(), 'confirmed'],
+        ]);
+
+        $request->user()->update([
+            'password' => Hash::make($validated['password']),
+        ]);
 
         $user->save();
 

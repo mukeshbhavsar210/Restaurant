@@ -140,7 +140,7 @@ class FrontController extends Controller {
             return response()->json([
                 'message' => 'Product added to cart successfully!'
             ]);
-        }        
+        }               
 
         return response()->json([
             'status' => true,
@@ -150,6 +150,7 @@ class FrontController extends Controller {
             'message' => 'Added to cart'
         ]);
     }
+
 
     public function increaseCart($id) {
         $cart = session()->get('cart', []);
@@ -348,7 +349,7 @@ class FrontController extends Controller {
 
     public function placeOrder(Request $request) {
         $validator = Validator::make($request->all(), [
-            'order_type' => 'required|in:dinein,takeaway,delivery',            
+            'order_type' => 'required|in:Dinein,Takeaway,Delivery',
         ]);
 
         if ($validator->fails()) {
@@ -370,41 +371,40 @@ class FrontController extends Controller {
         }
 
         // Add delivery charge
-        if ($request->order_type == 'delivery') {
-            $total += 50;
-        }
+        // if ($request->order_type == 'Delivery') {
+        //     $total += 50;
+        // }
 
         $order = new Order();
         $order->order_type = $request->order_type;
         $order->session_id = session('session_id');
         $order->notes = $request->notes;
-        $order->total_amount = $total;       
-
+        $order->total = $total;
+        
         // Dinein
-        if ($request->order_type === 'dinein') {            
-            $order->seat_id = $request->seat_id;
-            $order->area_id = $request->seat_id;
-            $order->status = 'running';
+        if ($request->order_type === 'Dinein') {            
+            $order->seat_id     = $request->seat_id;
+            $order->status      = 'running';
+            $total += 50;
         }
 
-        // Takeaway
-        if ($request->order_type === 'takeaway') {        
-            $order->customer_name   = $request->customer_name;
-            $order->customer_email  = $request->customer_email;
-            $order->customer_phone  = $request->customer_phone;
-            $order->area_id         = $request->filled('area_id') ? $request->area_id : null;
-            $order->status          = 'placed';
+        // Takeaway & Delivery
+        if (
+            $request->order_type === 'Takeaway' || $request->order_type === 'Delivery'
+        ) {
+            $order->area_id  = $request->active_outlet_id;
+            $order->name     = $request->active_name;
+            $order->email    = $request->active_email;
+            $order->phone    = $request->active_phone;
+            $order->status   = 'placed';
         }
 
         // Delivery only
-        if ($request->order_type === 'delivery') {
-            $order->delivery_name   = $request->delivery_name;
-            $order->delivery_email  = $request->delivery_email;
-            $order->delivery_phone  = $request->delivery_phone;
-            $order->delivery_address = $request->delivery_address;
-            $order->area_id         = $request->filled('area_id') ? $request->area_id : null;
-            $order->status          = 'placed';
-        }        
+        if ($request->order_type === 'Delivery') {
+            $order->address = $request->address;
+        }           
+
+        //dd($request->all());
 
         $order->save();
 

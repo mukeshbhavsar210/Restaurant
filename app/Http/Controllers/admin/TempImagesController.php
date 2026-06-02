@@ -9,7 +9,7 @@ use Intervention\Image\ImageManager;
 use Intervention\Image\Drivers\Gd\Driver;
 
 class TempImagesController extends Controller {
-    public function create(Request $request){
+    public function store(Request $request){
         $image = $request->image;
 
         if(!empty($image)) {

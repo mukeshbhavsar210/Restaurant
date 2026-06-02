@@ -14,54 +14,57 @@
 
 	<link rel="preconnect" href="https://fonts.googleapis.com">
 	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=Roboto+Condensed:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+	
 	<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@200;500&family=Raleway:ital,wght@0,400;0,600;0,800;1,200&family=Roboto+Condensed:wght@400;700&family=Roboto:wght@300;400;700;900&display=swap" rel="stylesheet">
     <meta name="csrf-token" content="{{ csrf_token() }}">
 </head>
 
 <body>
-<div class="app-wrapper">	
+<div id="menu-page" class="page" style="display:flex;flex-direction:column;">	
 	<header id="sticky-header">
 		<div class="header">
-			<div class="header__restaurant-name">
-				<a href="{{ route('front.home') }}" class="logo" >
-					<img style="width: 120px" src="{{ asset('front-assets/images/logo.jpg') }} " alt="" />
-				</a>
+			<a href="{{ route('front.home') }}">
+				<img src="{{ asset('uploads/logo/'.configData()->logo) }}" alt="{{ configData()->name }}" class="logo"  />
+			</a>
+		</div>
+
+		<section class="categories-section categories-section--medium-photo">
+			<div class="categories-section__container">										
+				@if(session('wishlist'))				
+					<div class="menu-category {{ request()->routeIs('front.wishlist') ? 'menu-category--active' : '' }}">
+						<a href="{{ route('front.wishlist') }}" class="favourite-icon">
+							<span class="sprites"></span>
+						</a>
+						<p>Favourites</p>
+					</div>
+				@endif
+
+				@if (getCategories()->isNotEmpty())
+					@foreach (getCategories() as $value )	
+						<div class="menu-category
+								{{
+									(request()->routeIs('front.menu') && request()->segment(2) == $value->slug) ||
+									(request()->routeIs('front.home') && $loop->first)
+									? 'menu-category--active'
+									: ''
+								}}">
+							<a href="{{ route('front.menu',[$value->slug])}}">
+								@if ($value->image != "")
+									<img src="{{ asset('uploads/category/'.$value->image) }} " alt="">								
+								@endif									
+							</a>								
+							<p>{{ $value->name }}</p>						
+						</div>
+					@endforeach				
+				@endif
 			</div>
-		</div>	
+		</section>
 	</header>
 
-	<section class="categories-section categories-section--medium-photo">
-		<ul class="categories-section__container">										
-			@if(session('wishlist'))				
-				<li class="{{ request()->routeIs('front.wishlist') ? 'menu_active' : '' }}">
-					<a href="{{ route('front.wishlist') }}" class="favourite-icon">
-						<span class="sprites"></span>
-					</a>
-					<p>Favourites</p>
-				</li>
-			@endif
-
-			@if (getCategories()->isNotEmpty())
-				@foreach (getCategories() as $value )	
-					<li class="
-							{{
-								(request()->routeIs('front.menu') && request()->segment(2) == $value->slug) ||
-								(request()->routeIs('front.home') && $loop->first)
-								? 'menu_active'
-								: ''
-							}}">
-						<a href="{{ route('front.menu',[$value->slug])}}">
-							@if ($value->image != "")
-								<img src="{{ asset('uploads/category/'.$value->image) }} " alt="">								
-							@endif									
-						</a>								
-						<p>{{ $value->name }}</p>						
-					</li>
-				@endforeach				
-			@endif
-		</ul>
-	</section>
-	@yield('content')		
+	<div class="menu-content--categories-medium-photo menu-content">
+		@yield('content')
+	</div>
 
 	<div id="customAlert"></div>
 </div>
@@ -109,7 +112,7 @@
 		// Update hidden fields
 		$('#variant_name').val(name);
 		$('#variant_price').val(price);
-	});	  
+	});
 </script>
 
 @yield('customJs')

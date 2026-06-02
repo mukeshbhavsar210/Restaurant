@@ -158,12 +158,7 @@
                         <a href="{{ route('configurations.index') }}" class="dropdown-item">
                             <i class="las la-cog fs-18 me-1 align-text-bottom"></i>
                             Settings
-                        </a>
-
-                        <a href="{{ route('profile.index') }}" class="dropdown-item">
-                            <i class="las la-user fs-18 me-1 align-text-bottom"></i>
-                             Change Password
-                        </a>
+                        </a>                        
 
                         <div class="dropdown-divider mb-0"></div>
 
@@ -248,16 +243,55 @@
 
 <script src="{{ asset('admin-assets/js/jquery-3.6.0.min.js') }}"></script>
 <script src="{{ asset('admin-assets/js/bootstrap.bundle.min.js') }}"></script>
-<script src="{{ asset('admin-assets/js/simplebar.min.js') }}"></script>
+<script src="{{ asset('admin-assets/plugins/dropzone/min/dropzone.min.js') }}"></script> 
 <script src="{{ asset('admin-assets/js/app.js') }}"></script>
 <script src="{{ asset('admin-assets/js/admin_documentReady.js') }}"></script>
-<script src="{{ asset('admin-assets/plugins/dropzone/min/dropzone.min.js') }}"></script>
 <script src="{{ asset('admin-assets/plugins/summernote/summernote-bs4.min.js') }}"></script>
+{{-- <script src="{{ asset('admin-assets/js/simplebar.min.js') }}"></script>
+
 <script src="{{ asset('admin-assets/plugins/select2/js/select2.min.js') }}"></script>
 <script src="{{ asset('admin-assets/js/datetimepicker.js') }}"></script>
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script> --}}
 
 <script type="text/javascript">
+    // $(document).ready(function () {        
+    //     $('#image').on('change', function () {
+    //         const files = this.files;
+
+    //         if (files.length > 5) {
+    //             alert('You can upload a maximum of 5 images.');
+
+    //             $(this).val('');
+    //             $('#image-preview').html('');
+
+    //             return false;
+    //         }
+
+    //         $('#image-preview').html('');
+
+    //         $.each(files, function (index, file) {
+
+    //             if (!file.type.match('image.*')) {
+    //                 return true;
+    //             }
+
+    //             const reader = new FileReader();
+
+    //             reader.onload = function (e) {
+
+    //                 $('#image-preview').append(`
+    //                     <div class="col-md-3 col-6 mb-2">
+    //                         <img src="${e.target.result}"
+    //                             class="img-fluid rounded border">
+    //                     </div>
+    //                 `);
+
+    //             };
+    //             reader.readAsDataURL(file);
+    //         });
+    //     });
+    // });
+
 $(document).ready(function(){
         $("#variant_checkbox").change(function(){
             if($(this).is(":checked")){
@@ -360,7 +394,6 @@ $(document).ready(function(){
         });
     });
 
-
     function deletePage(id){        
         var url = '{{ route("pages.delete","ID") }}'
         var newUrl = url.replace("ID",id)
@@ -419,7 +452,7 @@ $(document).ready(function(){
                 }
             }
         });
-    });
+    });    
 </script>
 
 @yield('customJs')

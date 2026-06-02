@@ -75,6 +75,14 @@
             <span class="sprites"></span>                                                            
         </a>
 
+        {{-- @if($type == 'Non-veg')
+            <span class="sprites nonveg-icon"></span>
+        @elseif($type == 'Egg')
+            <span class="sprites egg-icon"></span>
+        @elseif($type == 'Veg')
+            <span class="sprites veg-icon"></span> 
+        @endif  --}}
+
         @if(isset($wishlist[$product->id]))
             <a href="{{ route('clear_wishlist', $product->id) }}" class="wishlist-icon-big-active">
                 <span class="sprites"></span>
@@ -134,7 +142,7 @@
                     <input type="hidden" name="variant_price" value="{{ $product->price }}">
                 @endif
 
-                <button type="submit" class="add-to-cart-button product-add add-icon-big">
+                <button type="submit" class="add-to-cart add-icon-big">
                     <span class="sprites"></span>
                 </button>
             </form>                

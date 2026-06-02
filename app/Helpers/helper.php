@@ -38,7 +38,12 @@ use Illuminate\Support\Facades\Mail;
     if (!function_exists('seatData')) {
         function seatData()
         {
-            return Seat::with('area')->latest()->get();
+            return \App\Models\Seat::with('area')
+                ->whereHas('area', function ($query) {
+                    $query->where('area_name', 'Default');
+                })
+                ->orderByRaw('CAST(REGEXP_SUBSTR(table_name, "[0-9]+") AS UNSIGNED)')
+                ->get();
         }
     }
 

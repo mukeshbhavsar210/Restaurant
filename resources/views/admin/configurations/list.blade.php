@@ -60,59 +60,36 @@
                                 </button>
                             </h5>
                             <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#accordionExample" style="">
-                                <div class="accordion-body">                                                                    
-                                    <div class="row pt-2">
-                                        <div class="col-md-11">
-                                            <div class="row">
-                                                <div class="col-md-2">
-                                                    <img src="{{ asset('uploads/logo/'.$config->logo) }}" alt="{{ $config->name }}" class="rounded img-fluid" />
-                                                </div>
-                                                <div class="col-md-8">
-                                                    <h2 class="mb-2">{{ $config->name }}</h2>
-                                                     @php
-                                                        $classes = ['border-primary text-primary', 'border-warning text-warning', 'border-purple text-purple'];
-                                                    @endphp
-                                                    
-                                                    <div class="flex">
-                                                        @foreach(explode(',', $config->business_types) as $type)
-                                                            <p class="types-restaurant border {{ $classes[$loop->index] ?? 'text-dark' }} me-1">
-                                                                {{ trim($type) }}
-                                                            </p>
-                                                        @endforeach
-                                                    </div>  
-
-                                                    <p class="mb-2 mt-2">{{ $config->address }}<br />
-                                                    Email: {{ $config->email }}<br /> 
-                                                    Mobile: {{ $config->phone }}</p> 
-                                                </div>
-                                                <div class="col-md-2">
-                                                    <a href="javascript:void(0)"
-                                                        class="editConfig btn btn-primary"
-                                                        data-bs-toggle="modal"
-                                                        data-bs-target="#createConfigModal"
-                                                        data-action="{{ route('configurations.update') }}"
-                                                        data-method="PUT"
-                                                        data-title="Edit Restaurant"
-                                                        data-button="Update Restaurant"
-                                                        data-business_types="{{ configData()->business_types }}"
-                                                        data-name="{{ configData()->name }}"
-                                                        data-email="{{ configData()->email }}"
-                                                        data-phone="{{ configData()->phone }}"                                                        
-                                                        data-address="{{ configData()->address }}"
-                                                        data-primary_color="{{ configData()->primary_color }}"
-                                                        data-secondary_color="{{ configData()->secondary_color }}"
-                                                        data-payment_key_id="{{ configData()->payment_key_id }}"
-                                                        data-payment_key_secret="{{ configData()->payment_key_secret }}"
-                                                        data-gst="{{ configData()->gst }}"
-                                                        data-sgst="{{ configData()->sgst }}"
-                                                        data-cgst="{{ configData()->cgst }}"
-                                                        >                                                        
-                                                        Edit
-                                                    </a>
-                                                </div>
-                                            </div>
-                                        </div>
+                                <div class="accordion-body">
+                                    <div class="flex-2">
+                                        <img src="{{ asset('uploads/logo/'.configData()->logo) }}" alt="{{ configData()->name }}" class="rounded" style="width: 150px" />
+                                        <a href="javascript:void(0)"
+                                            class="editConfig edit-icon mt-4"
+                                            data-bs-toggle="modal"
+                                            data-bs-target="#createConfigModal"
+                                            data-action="{{ route('configurations.update') }}"
+                                            data-method="PUT"
+                                            data-title="Edit Restaurant"
+                                            data-button="Update Restaurant"
+                                            data-business_types="{{ configData()->business_types }}"
+                                            data-name="{{ configData()->name }}"
+                                            data-email="{{ configData()->email }}"
+                                            data-phone="{{ configData()->phone }}"                                                        
+                                            data-address="{{ configData()->address }}"
+                                            data-primary_color="{{ configData()->primary_color }}"
+                                            data-secondary_color="{{ configData()->secondary_color }}"
+                                            data-payment_key_id="{{ configData()->payment_key_id }}"
+                                            data-payment_key_secret="{{ configData()->payment_key_secret }}"
+                                            data-gst="{{ configData()->gst }}"
+                                            data-sgst="{{ configData()->sgst }}"
+                                            data-cgst="{{ configData()->cgst }}"
+                                            >     
+                                            <span class="sprites"></span>
+                                        </a>
                                     </div>
+
+                                    <h2 class="mb-0 mt-2">{{ $config->name }}</h2>
+                                    <p class="mb-2 mt-1">{{ $config->address }}<br />Email: {{ $config->email }}, Mobile: {{ $config->phone }}</p>                                                     
                                 </div>
                             </div>                                    
                         </div>
@@ -124,8 +101,26 @@
                             </h5>
                             <div id="collapseThree" class="accordion-collapse collapse" aria-labelledby="headingThree" data-bs-parent="#accordionExample">
                                 <div class="accordion-body"> 
-                                    <div class="row">                                       
-                                        <div class="col-md-4 col-12">
+                                    <div class="row">    
+                                        <div class="col-auto">
+                                            <div class="card border-1">
+                                                <div class="card-header">
+                                                    <h4 class="card-title">Types</h4>
+                                                </div>
+                                                <div class="card-body pt-0">                                        
+                                                    @php
+                                                        $classes = ['border-primary text-primary', 'border-warning text-warning', 'border-purple text-purple'];
+                                                    @endphp
+                                                                                                    
+                                                    @foreach(explode(',', $config->business_types) as $type)
+                                                        <div class="types-restaurant border {{ $classes[$loop->index] ?? 'text-dark' }} me-1">
+                                                            {{ trim($type) }}
+                                                        </div>
+                                                    @endforeach                                                    
+                                                </div>
+                                            </div>
+                                        </div>                                   
+                                        <div class="col-auto">
                                             <div class="card border-1">
                                                 <div class="card-header">
                                                     <h4 class="card-title">Payment Gateway</h4>
@@ -135,19 +130,18 @@
                                                     <p class="card-text text-muted">Payment Key Secret: {{ $config->payment_key_secret }}</p>
                                                 </div>
                                             </div>                                                                           
-                                        </div>
-                                        <div class="col-md-4 col-12">
+                                        </div>                                        
+                                        <div class="col-auto">
                                             <div class="card border-1">
                                                 <div class="card-header">
                                                     <h4 class="card-title">Taxes</h4>
                                                 </div>
                                                 <div class="card-body pt-0">
-                                                    <p class="card-text text-muted mb-1">GST: {{ $config->gst }}</p>
-                                                    <p class="card-text text-muted">SGST:{{ $config->sgst }}, CGST: {{ $config->cgst }}</p>
+                                                    <p class="card-text text-muted mb-1">GST: {{ $config->gst }}, SGST:{{ $config->sgst }}, CGST: {{ $config->cgst }}</p>                                                    
                                                 </div>
                                             </div>                                                                           
-                                        </div>                                        
-                                        <div class="col-md-4 col-12">
+                                        </div>
+                                        <div class="col-auto">
                                             <div class="card border-1">
                                                 <div class="card-header">
                                                     <h4 class="card-title">Theme Color</h4>
@@ -163,7 +157,7 @@
                                                             <p class="themeColor mb-0" style="background-color:{{ $config->secondary_color }}"></p>
                                                         </div>
                                                     </div>
-                                                </div>
+                                                </div>                                                
                                             </div>                                                                           
                                         </div>
                                     </div>
@@ -194,8 +188,8 @@
                 </div>                        
 
                 <div class="accordion mt-1" id="accordionExample">
-                    @if($branches->isNotEmpty())
-                        @foreach ($branches as $key => $value)
+                    @if($outlets->isNotEmpty())
+                        @foreach ($outlets as $key => $value)
                             <div class="accordion-item">                                    
                                 <div class="accordion-header" id="heading{{ $value->id }}">
                                     <button class="accordion-button {{ $key != 0 ? 'collapsed' : '' }}"
@@ -210,71 +204,55 @@
 
                                 <div id="collapse{{ $value->id }}" class="accordion-collapse collapse {{ $key == 0 ? 'show' : '' }}" aria-labelledby="heading{{ $value->id }}" data-bs-parent="#accordionExample">
                                     <div class="accordion-body">
-                                        <div class="flex-justify">
+                                        <div class="flex-justify mb-2">
                                             <div>
-                                                <p class="mb-0">{{ $value->manager_name }} - {{ $value->mobile }}</p>
+                                                <p class="mb-0">{{ $value->manager_name }} M.: {{ $value->mobile }}</p>
                                                 <p>{{ $value->address }}, Phone: {{ $value->phone }}</p>
                                             </div>
                                             <div>
-                                                 <a href="javascript:void(0)" class="btn btn-outline-danger float-end commonDeleteBtn"
-                                                    data-bs-toggle="modal" data-bs-target="#commonDeleteModal"
-                                                    data-url="{{ route('delete.branch', $value->id) }}" data-title="{{ $value->area_name }}">
-                                                    Delete {{ $value->area_name }} Outlet
-                                                </a>
+                                                @if($value->area_name !== 'Default')
+                                                    <a href="javascript:void(0)" class="btn btn-outline-danger commonDeleteBtn"
+                                                        data-bs-toggle="modal" data-bs-target="#commonDeleteModal"
+                                                        data-url="{{ route('delete.branch', $value->id) }}" data-title="{{ $value->area_name }} outlet">
+                                                        Delete Outlet
+                                                    </a>
+                                                @endif                                                
                                             </div>
                                         </div>
-                                        
-                                        <div class="flex-justify py-2">                                            
-                                            <div class="flex-2">     
-                                                @foreach ($value->seats as $seat)
-                                                    <button type="button" class="btn btn-outline-secondary position-relative" data-bs-toggle="modal" data-bs-target="#QRModal_{{ $seat->id }}">
-                                                        <div class="flex-2">
-                                                            <p class="mb-0 mr-2">{{ $seat->table_name }}</p>
-                                                            @if($seat->status == 'running')
-                                                                <div class="dot-status green"></div>
-                                                            @elseif($seat->status == 'available')
-                                                                <div class="dot-status red"></div>
-                                                            @endif
-                                                        </div> 
-                                                        
-                                                        @if($seat->capacity)
-                                                            <span class="position-absolute top-0 start-100 translate-middle bg-white border border-grey rounded-circle">
-                                                                <small class="thumb-xs black">{{ $seat->capacity }}</small>
-                                                            </span>                                                                                                                                
-                                                        @endif                                                            
-                                                    </button>                                                        
-                                                    
-                                                    <div class="modal fade drawer right-align" id="QRModal_{{ $seat->id }}" tabindex="-1" aria-labelledby="QRModalLabel" aria-hidden="true" style="display: none;">
-                                                        <div class="modal-dialog" role="document">
-                                                            <div class="modal-content">
-                                                                <div class="modal-header">                                                                        
-                                                                    <h5 class="modal-title" id="exampleModalLabel">Table Details</h5>
-                                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                                                </div>
-                                                                <div class="modal-body">
-                                                                    <div class="flex-justify">
-                                                                        <h4 class="mb-1">{{ $value->area_name }}</h4>
-                                                                        @if($seat->status == 'running')
-                                                                            <p class="mb-0">Running Table</p>
-                                                                        @elseif($seat->status == 'available')
-                                                                            <p class="mb-0">Available</p>
-                                                                        @endif
-                                                                    </div>                                                                        
-                                                                    <h5 class="mb-2">{{ $seat->table_name }} (Seats: {{ $seat->capacity }})</h5>
-                                                                    <hr />
-                                                                    <p>{!! DNS2D::getBarcodeHTML('http://127.0.0.1:8000/'.$value->area_slug.'/'.$seat->table_slug, 'QRCODE',11.5,11.5) !!}</p>                                                                    
-                                                                </div>
-                                                                <div class="modal-footer">
-                                                                    <a href="{{ route('delete.table', $seat->id) }}" class="btn btn-outline-danger w-100">Delete {{ $seat->table_name }}</a>
-                                                                </div>
+
+                                        <div class="row">     
+                                            @foreach ($value->seats as $seat)
+                                                <div class="col-md-2 col-6">
+                                                    <div class="card border-1">
+                                                        <div class="card-body">        
+                                                            <div class="flex-justify">                                                
+                                                                <h5 class="mb-0">{{ $seat->table_name }}</h5>
+                                                                @if($seat->status == 'running')                                                                    
+                                                                    <div class="dot-status green blink"></div>
+                                                                @elseif($seat->status == 'available')
+                                                                    <div class="dot-status red"></div>                                                                            
+                                                                @endif 
+                                                            </div>
+                                                            <div class="qr-code">
+                                                                {!! DNS2D::getBarcodeHTML('http://127.0.0.1:8000/'.$value->area_slug.'/'.$seat->table_slug, 'QRCODE',4.2,4.2) !!}
+                                                            </div>                                                            
+                                                            <div class="flex-justify">
+                                                                <p class="mb-0">
+                                                                    @if($seat->capacity)
+                                                                        {{ $seat->capacity }}
+                                                                    @endif
+                                                                </p>
+                                                                <a href="javascript:void(0)" class="card-link text-danger commonDeleteBtn"
+                                                                    data-bs-toggle="modal" data-bs-target="#commonDeleteModal"
+                                                                    data-url="{{ route('delete.table', $seat->id) }}" data-title="{{ $seat->table_name }} ({{ $value->area_name }})">
+                                                                    Delete Table
+                                                                </a>                                                                        
                                                             </div>
                                                         </div>
                                                     </div>
-                                                @endforeach
-                                            </div>                                            
-                                        </div>                                                
-                                    
-                                       
+                                                </div>
+                                            @endforeach
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -399,7 +377,7 @@
                 </div>
             </div>
 
-            <div class="accordion mt-2" id="accordionExample">            
+            <div class="accordion mt-2" id="accordionExample">
                 @if($roles->isNotEmpty())
                     @foreach ($roles as $key => $value)
                         <div class="accordion-item">                                    
@@ -477,7 +455,7 @@
                     </thead>                  
                     <tbody>                    
                         @if($users->isNotEmpty())
-                            @foreach ($users as $value)
+                            @foreach ($users->sortByDesc(fn($user) => $user->id == auth()->id()) as $value)
                                 <tr>                               
                                     <td>
                                         <div class="product-row">
