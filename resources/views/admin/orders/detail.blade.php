@@ -27,17 +27,13 @@
                                 @if($type === 'dinein')
                                     <h5 class="mb-1">{{ $order->seat?->table_name }}</h5>
                                     <p class="mb-0">{{ $order->seat?->area?->area_name }}</p>
-                                @elseif($type === 'takeaway')   
-                                    <b>{{ $order->customer_name }}</b><br />
-                                    Phone: {{ $order->customer_phone }}<br />
-                                    Email: {{ $order->customer_email }}
-                                @elseif($type === 'delivery')
+                                @elseif($type === 'takeaway' || $type === 'delivery')   
                                     <address>
-                                        <b>{{ $order->delivery_name }}</b><br /> 
-                                            {{ $order->delivery_address }}<br />
-                                            M.: {{ $order->delivery_phone }}<br />
-                                            E.: {{ $order->delivery_email }}
-                                    </address>
+                                        <b>{{ $order->name }}</b><br />
+                                        {{ $order->address }}<br />
+                                        Phone: {{ $order->phone }}<br />
+                                        Email: {{ $order->email }}                                      
+                                    </address>                                
                                 @endif
                             </div>
                         </div>
@@ -160,8 +156,6 @@
         <div class="col-md-3">            
             <div class="card">
                 <div class="card-body"> 
-                    
-
                     <form action="" method="post" name="changeOrderStatusForm" id="changeOrderStatusForm">
                         @if($type === 'dinein')
                             <div class="form-group">
@@ -171,7 +165,7 @@
                                     <option value="running" {{ ($order->status == 'running') ? 'selected' : ''}}>Running</option>                                    
                                 </select>
                             </div>
-                        @elseif ($type == 'takeawat' || $type == 'delivered')
+                        @elseif ($type == 'takeaway' || $type == 'delivery')
                             <div class="form-group">
                                 <label for="shipped_date">Status</label>
                                 <select name="status" id="status" class="form-select">                                    

@@ -65,11 +65,15 @@
                     </thead>                  
                     <tbody>                    
                         @if($users->isNotEmpty())
-                            @foreach ($users as $value)
+                            @foreach ($users->sortByDesc(fn($user) => $user->id == auth()->id()) as $value)
                                 <tr>                               
                                     <td>
                                         <div class="product-row">
-                                            <img src="assets/images/users/avatar-2.jpg" alt="" class="thumb-md d-inline rounded-circle me-3">
+                                            @if($value->image)
+                                                <img src="{{ asset('uploads/users/'.$value->image) }}" alt="{{ $value->name }}" class="thumb-md d-inline rounded-circle me-3" />
+                                            @else
+                                                <img src="{{ asset('admin-assets/images/avatar5.png') }}" class="thumb-md d-inline rounded-circle me-3" />
+                                            @endif                                               
                                             <div class="flex-grow-2 text-truncate">
                                                 <h5 class="mb-0">{{ ucfirst($value->name) }}</h5>
                                                 <p class="text-muted tiny-font">{{ ucfirst($value->roles->pluck('name')->implode(', ')) }}</p>

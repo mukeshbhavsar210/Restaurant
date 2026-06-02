@@ -1,37 +1,34 @@
-<div id="bottomSheet" class="bottom-sheet" data-product="">
-    <div class="sheet-content">
-        <div class="handle">                       
+<div class="modal-cart">
+    <div class="bottom-sheet">
+        <div class="sheet-handle">
+            @php
+                $businessTypes = explode(',', $config->business_types);                    
+                $tab1 = $businessTypes[0] ?? null;
+                $tab2 = $businessTypes[1] ?? null;
+                $tab3 = $businessTypes[2] ?? null;
+                $icons = [ 'tab1_icon', 'tab2_icon', 'tab3_icon'];
+            @endphp
+
             @if($qty > 0)                
                 <div>
                     <span class="cart-count">{{ getCartCount() }}</span> for 
                     <span class="cart-total grandTotal"></span>
-                </div>
-                <div class="tab-content dinein active">
-                    <span class="sprites tab1_icon"></span>
-                </div>
-                <div class="tab-content takeaway">
-                    <span class="sprites tab2_icon"></span>
-                </div>
-                <div class="tab-content delivery">
-                    <span class="sprites tab3_icon"></span>
-                </div>
+                </div>                
+                @foreach($businessTypes as $index => $type)
+                    <div class="tab-content {{ $type }} {{ $index == 0 ? 'active' : '' }}">
+                        <span class="sprites {{ $icons[$index] ?? '' }}"></span>
+                    </div>
+                @endforeach
             @else
                 <span class="manage-qty">Order</span> 
-            @endif   
+            @endif
         </div>
-                               
+
+        <div class="sheet-content">
             @if($qty > 0)
                 <ul class="custom-tabs">
-                    @php
-                        $businessTypes = explode(',', $config->business_types);
-                    @endphp
-
                     @foreach ($businessTypes as $type)
-                        @php
-                            $typeValue = strtolower(trim($type));
-                        @endphp
-
-                        <li class="tab-link {{ $loop->first ? 'active' : '' }}" data-tab="tab{{ $loop->iteration }}" data-type="{{ strtolower(trim($type)) }}">
+                        <li class="tab-link {{ $loop->first ? 'active' : '' }}" data-tab="tab{{ $loop->iteration }}" data-type="{{ $type }}">
                             {{ trim($type) }}
                         </li>
                     @endforeach
@@ -88,117 +85,89 @@
                         <div class="basket-page__content__delivery">
                             <p id="deliveryFeeText" style="display:none;">+ Delivery fee ₹50</p>                        
                         </div>
-
-                        <div class="basket-page__content__notes mb-2">
+                        
+                        <div class="basket-page__content__notes mb-2 mt-4">
                             <textarea name="notes" placeholder="Add note 🙏🏻..." ></textarea>
-                        </div>
+                        </div>                    
 
-                        @foreach ($businessTypes as $type)                        
-                            @if($type == 'Dinein')
-                                <div class="tab-content dinein active">
-                                    <div class="basket-page__content__delivery-content mb-3">
-                                        <select name="seat_id" id="seat_id" class="form-select mb-3">
-                                            <option value="">Table</option>
-                                            @foreach(seatData() as $value)
-                                                {{-- @if(empty($value->area_id))
-                                                    <option value="{{ $value->id }}">
-                                                        {{ $value->table_name }}
-                                                    </option>
-                                                @endif --}}
-                                                @if($value->area_id == NULL)
-                                                    <option value="{{ $value->id }}">{{ $value->table_name }}</option>
-                                                @elseif($value->area_id == '')
-                                                    <option value="{{ $value->id }}">{{ $value->table_name }}</option>
-                                                @endif
-                                            @endforeach                                            
-                                        </select>
-                                    </div>
-                                    <div class="form-group mb-2">
-                                        <select name="area_id" id="area_id" class="form-select">
-                                            <option value="">Select Outlet</option>
-                                            @foreach(areaData() as $value)                                                
-                                                <option value="{{ $value->id }}">{{ $value->area_name }}</option>
-                                            @endforeach
-                                        </select>
-                                    </div>
+                        @if($tab1)
+                            <div class="tab-content {{ $tab1 }} {{ $tab1 }} {{ $tab1 ? 'active' : '' }}">
+                                <div class="form-group mb-2">
+                                    <select name="seat_id" id="seat_id" class="form-select">
+                                        <option value="">Table...</option>
+                                        @foreach(seatData() as $value)                                            
+                                            <option value="{{ $value->id }}">{{ $value->table_name }}</option>                                            
+                                            
+                                        @endforeach                                            
+                                    </select>
                                 </div>
-                            @elseif($type == 'Takeaway')
-                                <div class="tab-content takeaway">                                    
-                                    <div class="form-group mb-2">
-                                        <input type="text" class="form-control" placeholder="Name" name="customer_name">
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-7">
-                                            <div class="form-group mb-2">
-                                                <input type="email" class="form-control" placeholder="Email" name="customer_email">
-                                            </div>
-                                        </div>
-                                        <div class="col-5">
-                                            <div class="form-group mb-2">
-                                                <input type="phone" class="form-control" placeholder="Phone" name="customer_phone">
-                                            </div>
-                                        </div>                                        
-                                        <div class="form-group mb-2">                                            
-                                            <select name="area_id" id="area_id" class="form-select">
-                                                <option value="">Takeaway from Outlet</option>
-                                                @foreach(areaData() as $value)
-                                                    <option value="{{ $value->id }}">{{ $value->area_name }}</option>
-                                                @endforeach                                            
-                                            </select>
-                                        </div>
-                                    </div> 
+                            </div>
+                        @endif
+                        
+                        @if($tab2)
+                            <div class="tab-content {{ $tab2 }} {{ !$tab1 && $tab2 ? 'active' : '' }}">
+                                <div class="form-group mb-2">                                                                    
+                                    <input type="text" class="form-control active_field" data-name="name" placeholder="Name..." name="name">
                                 </div>
-                            @elseif($type == 'Delivery')
-                                <div class="tab-content delivery">
-                                    <div class="basket-page__content__delivery-content mb-2" >
-                                        <textarea class="form-control" name="delivery_address" placeholder="Enter address"></textarea>
-                                    </div>
-
-                                    <div class="form-group mb-2">
-                                        <input type="text" class="form-control" placeholder="Customer Name" name="delivery_name">
-                                    </div>
-
-                                    <div class="row">
-                                        <div class="col-7">
-                                            <div class="form-group mb-2">
-                                                <input type="email" class="form-control" placeholder="Email" name="delivery_email">
-                                            </div>
-                                        </div>
-                                        <div class="col-5">
-                                            <div class="form-group mb-2">
-                                                <input type="phone" class="form-control" placeholder="Phone" name="delivery_phone">
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="form-group mb-2">
-                                        <select name="area_id" id="area_id" class="form-select">
-                                            <option value="">Select Outlet</option>
-                                            @foreach(areaData() as $value)                                                
-                                                <option value="{{ $value->id }}">{{ $value->area_name }}</option>
-                                            @endforeach
-                                        </select>
-                                    </div>
+                                <div class="form-group mb-2">
+                                    <input type="email" class="form-control active_field" data-name="email" placeholder="Email..." name="email">
+                                </div>
+                                <div class="form-group mb-2">
+                                    <input type="phone" class="form-control active_field" data-name="phone" placeholder="Phone..." name="phone">
+                                </div>
+                                <div class="form-group mb-2">
+                                    <select class="form-select active_field" data-name="outlet_id" name="outlet_id" >
+                                        <option value="">Select Outlet</option>
+                                        @foreach(areaData() as $value)                                            
+                                            <option value="{{ $value->id }}">{{ $value->area_name }}</option>
+                                        @endforeach                                            
+                                    </select>
                                 </div> 
-                            @endif
-                        @endforeach
-
-                        @php
-                            $businessTypes = explode(',', $config->business_types);
-                            $defaultType = strtolower(trim($businessTypes[0]));
-                        @endphp
-
-                        <input type="hidden" name="order_type" id="order_type" value="{{ $defaultType }}" class="form-control">
-                        <input type="hidden" name="total_amount" value="{{ $total }}" class="form-control">
+                            </div>
+                        @endif                    
                     
-                        <p class="validation mt-2">Fill all required fields</p>
-                        <div class="basket-page__content__terms">By clicking Order, you confirm your age is 18+ and you agree to the <a href="https://instalacarte.com/page/privacy-policy" target="_blank">terms</a></div>
+                        @if($tab3)
+                            <div class="tab-content {{ $tab3 }} {{ !$tab1 && !$tab2 && $tab3 ? 'active' : '' }}">
+                                <div class="form-group mb-2">
+                                    <textarea class="form-control" name="address" placeholder="Address..."></textarea>
+                                </div>
 
+                                <div class="form-group mb-2">
+                                    <input type="text" class="form-control active_field" placeholder="Name..." name="name">
+                                </div>
+
+                                <div class="form-group mb-2">
+                                    <input type="phone" class="form-control active_field" placeholder="Phone..." name="phone">
+                                </div>
+
+                                <div class="form-group mb-2">
+                                    <input type="email" class="form-control active_field" placeholder="Email..." name="email">
+                                </div>
+
+                                <div class="form-group mb-2">
+                                    <select class="form-select active_field" data-name="outlet_id" name="outlet_id" >
+                                        <option value="">Takeaway from Outlet</option>
+                                        @foreach(areaData() as $value)                                            
+                                            <option value="{{ $value->id }}">{{ $value->area_name }}</option>
+                                        @endforeach                                            
+                                    </select>
+                                </div> 
+                            </div>    
+                        @endif
+                    
+                        <input type="hidden" name="order_type" id="order_type" value="{{ $tab1 }}" class="form-control">
+                        <input type="hidden" name="total" value="{{ $total }}" class="form-control">
                         {{-- <input type="hidden" name="variant_name" id="variant_name" value="{{ $variants->first()->name ?? '' }}">
                         <input type="hidden" name="variant_price" id="variant_price" value="{{ $variants->first()->price ?? $product->price }}"> --}}
+                                                                
+                        <div class="basket-page__content__terms">
+                            <p class="validation">Fill all required fields</p>
+                            <p>By clicking Order, you confirm your age is 18+ and you agree to the <a href="https://instalacarte.com/page/privacy-policy" target="_blank">terms</a></p>
+                        </div>
                     </div>
 
-                    <div class="button-padd">
-                        <button class="btn btn-primary w-100 mt-3 orderBtn">Order</button>
+                    <div class="basket-order-button-container">                    
+                        <button class="btn btn--brand basket-page__content__order-btn basket-page__content__order-btn--disabled">Order</button>
                     </div>
                 </form>                
             @else                    
@@ -206,8 +175,8 @@
                     <img src="{{ asset('front-assets/images/empty_bag.png') }}" alt="empty bag" />
                     <p>Nothing to order</p>
                 </div>
-            @endif        
+            @endif  
         </div>
-
+    </div>
     <div class="sheet-overlay"></div>
 </div>

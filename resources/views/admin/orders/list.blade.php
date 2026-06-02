@@ -71,6 +71,8 @@
                                 <th class="border-top-0"><b>Order#</b></th>
                                 @if($type == 'Dinein')
                                     <th class="border-top-0" width="150"><b>Table/Outlet</b></th>    
+                                @elseif($type == 'Takeaway' || $type == 'Delivery')
+                                    <th class="border-top-0" width="150"><b>Table/Outlet</b></th>    
                                 @endif
                                 <th class="border-top-0 text-end" width="100"><b>Qty/Price</b></th>                                
                                 <th class="border-top-0 text-end" width="100"><b>Total</b></th>
@@ -110,12 +112,16 @@
                                     </td>                                    
                                     @if($type == 'Dinein')
                                         <td>
-                                            <p class="text-muted"><b>{{ $value->seat?->table_name }}</b> ({{ $value->seat?->capacity }})</p>                                        
+                                            <p class="text-muted"><b>{{ $value->seat?->table_name }}</b> ({{ $value->seat?->capacity }})</p>
                                             <p class="text-muted tiny-font">{{ $value->seat?->area?->area_name }}</p>
+                                        </td>
+                                    @elseif($type == 'Takeaway' || $type == 'Delivery')
+                                        <td>
+                                            <p class="text-muted"><b>{{ $value->area?->area_name }}</b></p>                                            
                                         </td>
                                     @endif
                                     <td class="text-end">{{ $value->items->sum('quantity') }} x ₹{{ $value->items->sum('price') }}</td>                                    
-                                    <td class="text-end">₹{{ round($value->total_amount) }}</td>
+                                    <td class="text-end">₹{{ round($value->total) }}</td>
                                     <td class="text-end">{{ \Carbon\Carbon::parse($value->created_at)->format('d M, Y') }}</td>
                                     <td class="text-end">
                                         

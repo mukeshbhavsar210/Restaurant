@@ -94,13 +94,19 @@ class ConfigurationController extends Controller implements HasMiddleware {
         $permissionCount = DB::table('permissions')
                     ->select(DB::raw('count(*) as total'))
                     ->get()[0]->total;
-        
+                
+        $outlets = Area::withCount('seat as total_seats')->with('seats')
+                ->orderByRaw("CASE WHEN area_name = 'Default' THEN 0 ELSE 1 END")
+                ->get();
+
+        $roles = Role::with('permissions')->get()
+            ->sortByDesc(function ($role) {
+                return $role->name === 'superadmin';
+            });
+
         $payments = Payment::get();        
-        $branches = Area::withCount('seat as total_seats')->with('seats')->get();
-        $theme = Theme::get();
         $users = User::get();
         $pages = Page::get();
-        $roles = Role::get();        
         $permissions = Permission::get();
         $config = Configuration::first();        
 
@@ -110,9 +116,8 @@ class ConfigurationController extends Controller implements HasMiddleware {
 
         $data = [
             'config'                => $config,
-            'branches'              => $branches,
-            'payments'              => $payments,
-            'theme'                 => $theme,
+            'outlets'              => $outlets,
+            'payments'              => $payments,            
             'areas'                 => $areas,
             'seats'                 => $seats,
             'tableIndividual'       => $tableIndividual,
@@ -146,15 +151,7 @@ class ConfigurationController extends Controller implements HasMiddleware {
                 'method' => 'POST',
                 'button' => 'Add Restaurant',
                                 
-                'fields' => [                                        
-                    [
-                        'type' => 'text',
-                        'name' => 'name',
-                        'label' => 'Name',
-                        'required' => true,
-                        'placeholder' => 'Name',
-                        'col' => 'col-12',                        
-                    ],
+                'fields' => [   
                     [
                         'type' => 'file',
                         'name' => 'logo',
@@ -162,7 +159,15 @@ class ConfigurationController extends Controller implements HasMiddleware {
                         'required' => true,
                         'placeholder' => '',
                         'col' => 'col-12'
-                    ],
+                    ],                                     
+                    [
+                        'type' => 'text',
+                        'name' => 'name',
+                        'label' => 'Name',
+                        'required' => true,
+                        'placeholder' => 'Name',
+                        'col' => 'col-12',                        
+                    ],                    
                     [
                         'type' => 'email',
                         'name' => 'email',
@@ -196,39 +201,7 @@ class ConfigurationController extends Controller implements HasMiddleware {
                         'required' => true,
                         'placeholder' => 'Address',
                         'col' => 'col-12'
-                    ],       
-                    [
-                        'type' => 'text',
-                        'name' => 'payment_key_id',
-                        'label' => 'Payment key id',
-                        'required' => false,
-                        'placeholder' => 'Payment key id',
-                        'col' => 'col-6'
-                    ],
-                    [
-                        'type' => 'text',
-                        'name' => 'payment_key_secret',
-                        'label' => 'Payment key secret',
-                        'required' => false,
-                        'placeholder' => 'Payment key secret',
-                        'col' => 'col-6'
-                    ],             
-                    [
-                        'type' => 'color',
-                        'name' => 'primary_color',
-                        'label' => 'Primary Color',
-                        'required' => false,
-                        'placeholder' => 'Primary Color',
-                        'col' => 'col-6'
-                    ],
-                    [
-                        'type' => 'color',
-                        'name' => 'secondary_color',
-                        'label' => 'Secondary Color',
-                        'required' => false,
-                        'placeholder' => 'Secondary Color',
-                        'col' => 'col-6'
-                    ],
+                    ],     
                     [
                         'type' => 'text',
                         'name' => 'gst',
@@ -252,7 +225,40 @@ class ConfigurationController extends Controller implements HasMiddleware {
                         'required' => true,
                         'placeholder' => 'CGST',
                         'col' => 'col-4'
-                    ],   
+                    ],  
+                    [
+                        'type' => 'text',
+                        'name' => 'payment_key_id',
+                        'label' => 'Payment key id',
+                        'required' => false,
+                        'placeholder' => 'Payment key id',
+                        'col' => 'col-12'
+                    ],
+                    [
+                        'type' => 'text',
+                        'name' => 'payment_key_secret',
+                        'label' => 'Payment key secret',
+                        'required' => false,
+                        'placeholder' => 'Payment key secret',
+                        'col' => 'col-12'
+                    ],             
+                    [
+                        'type' => 'color',
+                        'name' => 'primary_color',
+                        'label' => 'Primary Color',
+                        'required' => false,
+                        'placeholder' => 'Primary Color',
+                        'col' => 'col-6'
+                    ],
+                    [
+                        'type' => 'color',
+                        'name' => 'secondary_color',
+                        'label' => 'Secondary Color',
+                        'required' => false,
+                        'placeholder' => 'Secondary Color',
+                        'col' => 'col-6'
+                    ],
+                       
                 ]
             ]
         ]; 
@@ -358,7 +364,7 @@ class ConfigurationController extends Controller implements HasMiddleware {
                         'name' => 'area_id',
                         'label' => 'Outlet',
                         'required' => true,
-                        'options' => $branches,
+                        'options' => $outlets,
                         'option_value' => 'id',
                         'option_text' => 'area_name',
                         'option_label' => 'area_name',
@@ -537,8 +543,6 @@ class ConfigurationController extends Controller implements HasMiddleware {
     }
     
 
-    
-
     public function configurations_store(Request $request) {
         $validator = Validator::make($request->all(), [
             'name' => 'required',
@@ -575,7 +579,7 @@ class ConfigurationController extends Controller implements HasMiddleware {
             $path = public_path('/uploads/logo/' . $fileName);
             $manager = new ImageManager(new Driver());
             $logo = $manager->read($file);
-            $logo->cover(300, 300)->save($path);
+            //$logo->cover(300, 300)->save($path);
             $data->logo = $fileName;
         }
 
@@ -583,7 +587,6 @@ class ConfigurationController extends Controller implements HasMiddleware {
 
         return back()->with('success', 'Configurations added successfully.');
     }
-
 
     public function configurations_update(Request $request) {
         $validator = Validator::make($request->all(), [
@@ -620,14 +623,26 @@ class ConfigurationController extends Controller implements HasMiddleware {
         
         //Image upload
         if ($request->hasFile('logo')) { 
+
+            // Delete old logo
+            if (!empty($data->logo)) {
+                $oldPath = public_path('uploads/logo/' . $data->logo);
+
+                if (file_exists($oldPath)) {
+                    unlink($oldPath);
+                }
+            }
+
             $file = $request->file('logo');
             $extenstion = $file->getClientOriginalExtension();
             $fileName = $data->name.'.'.$extenstion;
+
             $path = public_path().'/uploads/logo/'.$fileName;
+
             $manager = new ImageManager(new Driver());
             $logo = $manager->read($file);
-            $logo->toJpeg(80)->save($path);
-            $logo->cover(300,300)->save($path);
+            
+            $logo->toJpeg(100)->save($path);            
             $data->logo = $fileName;
         }
         
@@ -636,7 +651,6 @@ class ConfigurationController extends Controller implements HasMiddleware {
         return redirect()->back()
             ->with('success', 'Restaurant details updated successfully.');
     }
-
 
     public function branch_store(Request $request){
         $area = new Area();
@@ -650,7 +664,6 @@ class ConfigurationController extends Controller implements HasMiddleware {
 
         return redirect()->route('configurations.index')->with('success','Branch added successfully.'); 
     }   
-
 
     public function store_payment(Request $request){
         $validator = Validator::make($request->all(), [
@@ -678,7 +691,6 @@ class ConfigurationController extends Controller implements HasMiddleware {
 
         return view('admin.areas.edit', compact('area'));
     }
-
 
     public function branch_update($areaId, Request $request){
         $area = Area::find($areaId);
@@ -720,8 +732,6 @@ class ConfigurationController extends Controller implements HasMiddleware {
 
         return redirect()->route('configurations.index')->with('success','Branch deleted successfully.');
     }
-
-
 
     public function table_store(Request $request){
         //QR CODE
@@ -769,7 +779,6 @@ class ConfigurationController extends Controller implements HasMiddleware {
             ->with('success', 'Seat deleted successfully.');
     }
     
-
     public function table_destroy($id, Request $request){
         $subCategory = Menu::find($id);
 
@@ -790,10 +799,6 @@ class ConfigurationController extends Controller implements HasMiddleware {
             'message' => 'Sub Category deleted successfully',
         ]);
     }
-
-
-
-
 
     //Pages
     public function page_store(Request $request){
@@ -862,8 +867,7 @@ class ConfigurationController extends Controller implements HasMiddleware {
 
         return redirect()->route('configurations.index')->with('success','Page updated successfully.');
     }   
-
-    //Page Delete
+    
     public function page_delete($id, Request $request){
         $page = Page::find($id);
         $page->delete();
@@ -872,8 +876,6 @@ class ConfigurationController extends Controller implements HasMiddleware {
         return redirect()->route('configurations.index')->with('success','Page deleted successfully.');
     }
     
-
-
     //Permissions
     public function permission_store(Request $request){
         $validator = Validator::make($request->all(), [ 
@@ -927,8 +929,6 @@ class ConfigurationController extends Controller implements HasMiddleware {
         $request->session()->flash('success','Permission deleted successfully');
         return redirect()->route('configurations.index')->with('success','Permission deleted successfully.');
     }
-
-
 
     //Roles
      public function roles_store(Request $request){

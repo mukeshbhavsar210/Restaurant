@@ -22,14 +22,10 @@ use Illuminate\Support\Facades\Storage;
 class ProductController extends Controller {
 
     public function index(Request $request){
-        $products = Product::with('menu')->latest('id');
+        $products = Product::with(['category', 'menu', 'product_images', 'variants'])->get()->groupBy('category.name');
         $categories = Category::orderBy('name','ASC')->get();  
-        
-        $menuCount = DB::table('products')
-                    ->select(DB::raw('count(*) as total_products'))
-                    ->get()[0]->total_products;
-
-        $products = $products->paginate();
+        $menuCount = DB::table('products')->select(DB::raw('count(*) as total_products'))->get()[0]->total_products;
+        //$products = $products->paginate();
 
         $data['products'] = $products;
         $data['categories'] = $categories;  
@@ -108,25 +104,17 @@ class ProductController extends Controller {
                         'col' => 'col-md-12 col-12'
                     ],
                     [
-                        'type' => 'dropzone',
-                        'name' => 'image', 
+                        'type' => 'multiple',
+                        'name' => 'images[]', 
                         'label' => 'Images',
                         'required' => true,                       
                         'col' => 'col-md-12 col-12'
-                    ],
+                    ]
                 ]
             ]
         ]; 
-        
+
         return view ('admin.products.list', $data);
-    }
-
-    public function product_create(){
-        $data = [];
-        $categories = Category::orderBy('name','ASC')->get();        
-        $data['categories'] = $categories;
-
-        return view('admin.products.create', $data);
     }
 
 
@@ -162,7 +150,7 @@ class ProductController extends Controller {
                     $productVariant->price = $variant['price'];
                     $productVariant->save();
                 }
-            }
+            }                    
 
             if (!empty($request->image_array)) {                
                 foreach ($request->image_array as $temp_image_id) {  
@@ -207,7 +195,6 @@ class ProductController extends Controller {
         }
     }
 
-
     public function view_store(Request $request){
         $rules = [
                                     
@@ -236,8 +223,33 @@ class ProductController extends Controller {
         }
     }
 
+     public function edit($id, Request $request){
+        $products = Product::with(['category', 'menu', 'product_images', 'variants'])->get()->groupBy('category.name');
+        $product = Product::with('categories')->findOrFail($id);
+        $selectedCategoryIds = $product->categories->pluck('id')->toArray();
 
-    
+        $subCategories = Menu::whereHas('categories', function($query) use ($selectedCategoryIds) {
+            $query->whereIn('categories.id', $selectedCategoryIds);
+        })
+        ->orderBy('name', 'ASC')
+        ->get();
+
+        if (empty($product)) {
+            return redirect()->route('products.index')->with('error','Product not found');
+        }
+
+        //Fetch Product Images
+        //$subCategories = Menu::where('category_id',$product->category_id)->get();        
+        $categories = Category::orderBy('name','ASC')->get();
+
+        $data = [];
+        $data['product'] = $product;
+        $data['products'] = $products;
+        $data['categories'] = $categories;
+        $data['subCategories'] = $subCategories;  
+             
+        return view('admin.products.edit',$data);
+    }
 
 
     public function product_update($id, Request $request){
@@ -371,5 +383,38 @@ class ProductController extends Controller {
         ]);
 
 
+    }
+
+    public function deleteImage($id) {
+        $image = ProductImage::find($id);
+
+        if (!$image) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Image not found'
+            ], 404);
+        }
+
+        // Delete large image
+        $largePath = public_path('uploads/product/large/' . $image->image);
+
+        if (File::exists($largePath)) {
+            File::delete($largePath);
+        }
+
+        // Delete thumbnail
+        $smallPath = public_path('uploads/product/small/' . $image->image);
+
+        if (File::exists($smallPath)) {
+            File::delete($smallPath);
+        }
+
+        // Delete DB record
+        $image->delete();
+
+        return response()->json([
+            'status' => true,
+            'message' => 'Image deleted successfully'
+        ]);
     }
 }

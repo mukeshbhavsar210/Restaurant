@@ -160,11 +160,36 @@
                                             </div>
                                         </div>
 
-                                    @elseif($field['type'] == 'dropzone')
-                                        <input type="hidden" id="{{ $field['name'] }}_id" name="{{ $field['name'] }}_id" value=" ">
+                                    @elseif($field['type'] == 'multiple')
+                                        <div class="form-group">                                           
+                                            <input type="file" id="image" name="images[]" class="form-control" accept="image/*" multiple>
+                                            <small class="text-muted">Maximum 5 images allowed.</small>
+                                            <div id="image-preview" ></div>
+                                        </div>
 
+                                        <div class="row">
+                                            @if(isset($product) && $product->images->isNotEmpty())                        
+                                                <div id="product-gallery" >                                    
+                                                    @foreach ($product->images as $index => $image)
+                                                        <div class="col-2 uploaded-images" id="image-row-{{ $image->id }}">                                        
+                                                            <input type="hidden" name="image_array[{{ $index }}][image_id]" value="{{ $image->id }}">
+                                                            <img src="{{ asset('uploads/product/small/'.$image->image) }}" class="rounded" />
+
+                                                            <a href="javascript:void(0)" class="deleteProductImg delete-icon-edit" data-id="{{ $image->id }}">
+                                                                <span class="sprites"></span>
+                                                            </a>
+                                                        </div>
+                                                    @endforeach                                                            
+                                                </div>                               
+                                            @endif                                                                                                    
+                                        </div>
+                                        <div class="row" id="product-gallery"></div>
+
+                                    {{-- @elseif($field['type'] == 'dropzone')
+                                        <input type="hidden" id="{{ $field['name'] }}_id" name="{{ $field['name'] }}_id" value=" ">
+                                        
                                         <div id="{{ $field['name'] }}" data-input="{{ $field['name'] }}_id" class="dropzone custom-dropzone dz-clickable">
-                                            <div id="image" class="dz-message needsclick">
+                                            <div class="dz-message needsclick">
                                                 Drop files here or click to upload
                                             </div>
                                         </div>   
@@ -185,7 +210,7 @@
                                                 </div>                               
                                             @endif                                                        
                                             <div class="row" id="product-gallery"></div>         
-                                        </div>
+                                        </div> --}}
                                     @endif
                                 </div>
                             </div>
@@ -346,5 +371,40 @@
             }
         });
     });
+
+    const dropzone = new Dropzone("#image", {
+        url:  "{{ route('temp-images.create') }}",
+        maxFiles: 5,
+        paramName: 'image',
+        addRemoveLinks: true,
+        acceptedFiles: "image/jpeg,image/png",
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        }, 
+
+        success: function(file, response){
+            $("#image_id").val(response.image_id);
+            console.log(response)
+
+            var html = `<div class="col-4 mb-3" id="image-row-${response.image_id}">
+                <div class="uploaded-img">
+                    <input type="hidden" name="image_array[]" value="${response.image_id}" >
+                    <img src="${response.ImagePath}" class="img-fluid rounded" />
+                    <a href="javascript:void(0)" onclick="deleteImage(${response.image_id})" class="deleteCardImg delete-icon">
+                        <span class="sprites"></span>
+                    </a>
+                </div>
+            </div>`;
+
+            $("#product-gallery").append(html);
+        },
+        complete: function(file){
+            this.removeFile(file);
+        }
+    });
+
+    function deleteImage(id){
+        $("#image-row-"+id).remove();
+    }
 </script>
 @endsection

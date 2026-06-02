@@ -9,7 +9,6 @@ use App\Http\Controllers\admin\OrderController;
 use App\Http\Controllers\admin\ProductController;
 use App\Http\Controllers\admin\ProductSubCategoryController;
 use App\Http\Controllers\admin\SeatController;
-use App\Http\Controllers\admin\SettingController;
 use App\Http\Controllers\admin\TempImagesController;
 use App\Http\Controllers\FrontController;
 use App\Http\Controllers\ArticleController;
@@ -70,9 +69,11 @@ Route::group(['prefix' => 'admin'], function(){
         Route::controller(ProductController::class)->group(function() {
             Route::get('/products', 'index')->name('products.index');
             Route::get('/products/create', 'product_create')->name('products.create');
-            Route::post('/products', 'product_store')->name('products.store');            
-            Route::put('/products/{product}',  'product_update')->name('products.update');                 
+            Route::post('/products', 'product_store')->name('products.store');   
+            Route::get('/products/{id}/edit', 'edit')->name('products.edit');         
+            Route::post('/products/{product}',  'product_update')->name('products.update');                 
             Route::get('/products/delete/{id}', 'product_delete')->name('products.delete');
+            Route::delete('/products/image/delete/{id}', 'deleteImage')->name('products.image.delete');
             Route::get('/get-products', 'getProducts')->name('products.getProducts');
             //Route::post('/product_view', 'view_store')->name('products.store');
         });
@@ -164,10 +165,10 @@ Route::group(['prefix' => 'admin'], function(){
             Route::get('/profile', 'index')->name('profile.index');
             Route::put('/profile/update', 'update_profile')->name('profile.update');        
         }); 
-        
-        //Temp image controller
-        Route::post('/upload-temp-image', [TempImagesController::class, 'create'])->name('temp-images.create');
     });
+
+    //Temp image controller
+    Route::post('/temp-image', [TempImagesController::class, 'store'])->name('temp-images.create');
 
     Route::get('/getSlug', function(Request $request){
         $slug = '';

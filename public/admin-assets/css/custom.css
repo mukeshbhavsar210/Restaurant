@@ -20,7 +20,7 @@ ul,li { padding: 0; margin: 0;}
 .red-tick-icon { background-position:-25px -30px; height:20px; width: 20px; }
 
 .veg-icon { background-position:-47px 0; height:20px; width: 20px; }
-.nonveg-icon { background-position:-46px -1px; height:20px; width: 20px; }
+.nonveg-icon { background-position:-66px -1px; height:20px; width: 20px; }
 .egg-icon { background-position:-25px -1px; height:20px; width: 20px; }
 
 .edit-icon span { background-position:-108px -30px; height:20px; width: 20px; }
@@ -91,13 +91,10 @@ ul,li { padding: 0; margin: 0;}
 
 .category-row { display: flex; align-items: center; margin-bottom: 10px; }
 
-.accordion-button { font-size: 14px; padding: 14px 20px 16px 20px; font-weight: bold; }
+.accordion-button { font-size: 15px; padding: 14px 20px 16px 20px; font-weight: bold; }
 .accordion-button.collapsed { font-weight: normal; }
 .accordion-button:not(.collapsed) { color: var(--black); background-color: var(--primary-light); }
-.label {
-    width: 150px;
-    font-size: 14px;
-}
+.label { width: 150px; font-size: 14px; }
 .thumb-category { position: relative;}
 .thumb-category .count-category { position:absolute; top: 0; left:0; background: #000; color: #fff; width: 18px; height: 18px; border-radius: 5px; font-size: 10px; display: flex; align-items: center; justify-content: center;  }
 .types-restaurant { font-size: 11px; text-transform: uppercase; border-radius: 5px; padding: 4px 10px 5px 10px; margin: 3px 0; font-weight: bold; display: inline;}
@@ -518,7 +515,11 @@ input:checked + .slider { box-shadow:0 0 0 2px #007bff,0 0 2px #007bff; }
 .branch-details .branch-body { padding: 15px; }
 .branch-details .branch-body p { margin: 0;}
 
-.dot-status { width: 8px; height: 8px; border-radius: 50%; position: relative; margin-top: 5px; } 
+.qr-code { margin: 15px 0;}
+.qr-code div div { background-color: #ccc !important;}
+.qr-code:hover div div { background-color: #000 !important; cursor: pointer;}
+
+.dot-status { width: 12px; height:12px; border-radius: 50%; position: relative; margin-top: 5px; } 
 .green {background: var(--green-dark);  }
 .red { background: red; }
 
@@ -568,12 +569,14 @@ input:checked + .slider { box-shadow:0 0 0 2px #007bff,0 0 2px #007bff; }
 .product-row { -webkit-box-align: center; -ms-flex-align: center; align-items: center; display: flex; position: relative; }
 .product-row .show-tooltip { position: relative;}
 .product-row .show-tooltip .veg-float { position: absolute; top:5px; right:28px; }
+.product-row .show-tooltip .uploaded { position: absolute; top:-2px; left:0;}
+.product-row .show-tooltip .uploaded .badge { border-radius: 5px 0 5px 0;}
 .product-row .show-tooltip .variant-counts { position: absolute; top:3px; left:3px; width: 18px; height:18px; text-align: center; background-color: var(--black); color: var(--white); font-size: 11px; border-radius: 5px;}
 
 .dropbox-flex { display: flex; column-gap: 15px; justify-content: space-between;}
 
-.uploaded-img { position: relative; border:1px #ccc solid; padding:7px; border-radius: 5px;}
-.uploaded-img .deleteCardImg { position: absolute; right:3px; top:3px; }
+.uploaded-img { position: relative; border-radius: 3px;}
+.uploaded-img .deleteCardImg, .deleteProductImg { position: absolute; right:3px; top:3px; }
 
 .flex { display: flex; column-gap: 5px;}
 .flex .img-group { width: 100px;}

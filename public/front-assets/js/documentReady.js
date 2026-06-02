@@ -1,4 +1,32 @@
 $(document).ready(function(){   
+
+	// $(window).on('scroll', function () {
+    // 	console.log('scrolling', $(window).scrollTop());
+	// });
+
+    // Open modal
+    $('.sheet-handle').on('click', function () {
+		$('.modal-cart').toggleClass('active_bottom');		
+    });
+	
+    // Close modal on overlay click
+    $('.sheet-overlay').on('click', function () {
+        closeSheet();
+    });   
+
+	$('.scroll-order').on('wheel', function (e) {
+		if (e.originalEvent.deltaY < 0) {
+			// Already at the top
+			if ($(this).scrollTop() === 0) {
+				closeSheet();
+			}
+		}
+	});
+
+    function closeSheet() {
+		$('.modal-cart').removeClass('active_bottom');
+    }
+
 	let message = sessionStorage.getItem('successMessage');
 	if(message){
 		$('#customAlert').html(
@@ -62,7 +90,6 @@ $(document).ready(function(){
         localStorage.removeItem('activeModal');
     }
 
-
 	$(document).on('submit', '.cart-form', function (e) {
 		e.preventDefault();
 
@@ -77,8 +104,6 @@ $(document).ready(function(){
 
 			success: function (response) {
 				$('.cart-count').text(response.cartCount);
-
-				 // cart total
     			$('.cart-total').text('₹' + response.cartTotal);				
 
 				// show/hide cart count
@@ -90,17 +115,13 @@ $(document).ready(function(){
 					//$('.control-count').addClass('d-none');
 				}
 
-				$('.bottom-sheet').addClass('refresh');
+				$('.modal-cart').addClass('refresh');
 			
 				setTimeout(function () {
-					$('.bottom-sheet').removeClass('refresh');
-				}, 1000);
+					$('.modal-cart').removeClass('refresh');
+				}, 700);
 
-				// refresh page after 1 second
-				// setTimeout(function () {
-				// 	location.reload();
-				// }, 900);
-						
+			
 				// KEEP MODAL OPEN
 				let modalId = form.data('modal');
 
@@ -138,26 +159,15 @@ $(document).ready(function(){
         }
     });
 
-    $('.handle').on('click', function () {
-		$('#bottomSheet').toggleClass('active_bottom');
-	});  
-
-	$('.sheet-overlay').on('click', function () {
-		$('#bottomSheet').removeClass('active_bottom');
-	}); 
-
 	function checkFields() {
-		let activeTab 			= $('.tab-link.active').data('type');
-		let notes      			= $.trim($('textarea[name="notes"]').val());		
-		let seatId     			= $('select[name="seat_id"]').val();		
-		let area_id 			= $('select[name="area_id"]').val() || '';
-		let customer_name       = $.trim($('input[name="customer_name"]').val());
-		let customer_email      = $.trim($('input[name="customer_email"]').val());
-		let customer_phone      = $.trim($('input[name="customer_phone"]').val());
-		let delivery_name       = $.trim($('input[name="delivery_name"]').val());
-		let delivery_email      = $.trim($('input[name="delivery_email"]').val());
-		let delivery_phone      = $.trim($('input[name="delivery_phone"]').val());
-		let delivery_address    = $.trim($('textarea[name="delivery_address"]').val());
+		let activeTab  = $('.tab-link.active').data('type');
+		let notes      = $.trim($('textarea[name="notes"]').val());		
+		let seatId     = $('select[name="seat_id"]').val();		
+		let outlet_id  = $('select[name="outlet_id"]').val() || '';
+		let name       = $.trim($('input[name="name"]').val());
+		let email      = $.trim($('input[name="email"]').val());
+		let phone      = $.trim($('input[name="phone"]').val());
+		let address    = $.trim($('textarea[name="address"]').val());
 
 		let valid = false;
 		let baseTotal = parseFloat($('#baseTotal').val()) || 0;
@@ -165,7 +175,7 @@ $(document).ready(function(){
 		let finalTotal = baseTotal;
 
 		// Dine in
-		if (activeTab == 'dinein') {
+		if (activeTab == 'Dinein') {
 			if (
 				notes.trim() !== '' &&
 				seatId.trim() !== ''
@@ -175,27 +185,22 @@ $(document).ready(function(){
 		}
 
 		// Takeaway
-		else if (activeTab == 'takeaway') {
+		else if (activeTab == 'Takeaway' || activeTab == 'Delivery') {
 			if (
 				notes.trim() !== '' &&
-				//area_id.trim() !== '' &&		
-				customer_name.trim() !== '' &&
-				customer_email.trim() !== '' &&
-				customer_phone.trim() !== ''
+				name.trim() !== '' &&
+				email.trim() !== '' &&
+				phone.trim() !== '' &&
+				outlet_id.trim() !== '' 
 			) {
 				valid = true;
 			}
 		}
 
 		// Delivery
-		else if (activeTab == 'delivery') {
+		else if (activeTab == 'Delivery') {
 			if (
-				notes.trim() !== '' &&
-				area_id.trim() !== '' &&
-				delivery_name.trim() !== '' &&
-				delivery_address.trim() !== '' &&
-				delivery_email.trim() !== '' &&
-				delivery_phone.trim() !== ''
+				address.trim() !== ''				
 			) {
 				valid = true;
 			}
@@ -205,16 +210,16 @@ $(document).ready(function(){
 		}
 
 		if (valid) {
-			$('.orderBtn').removeClass('disabled');
+			$('.btn--brand').removeClass('basket-page__content__order-btn--disabled');
 		} else {
-			$('.orderBtn').addClass('disabled');
+			$('.btn--brand').addClass('basket-page__content__order-btn--disabled');
 		}
 
 		// Update total
 		$('.grandTotal').text('₹' + Math.round(finalTotal));
 
 		// Optional delivery fee text
-		if(activeTab == 'delivery'){
+		if(activeTab == 'Delivery'){
 			$('#deliveryFeeText').show();
 		}else{
 			$('#deliveryFeeText').hide();
@@ -230,6 +235,7 @@ $(document).ready(function(){
 
 		$('.tab-link').removeClass('active');
 		$(this).addClass('active');
+		$('.active_field').toggleClass('active');
 
 		// Active content
 		$('.tab-content').removeClass('active');
@@ -238,9 +244,16 @@ $(document).ready(function(){
 		// Update order type
 		$('#order_type').val(type);
 
+		$('.active_field').each(function () {
+			$(this).attr('name', $(this).data('name'));
+		});
+
+		$('.' + type).find('.active_field').each(function () {
+			$(this).attr('name', 'active_' + $(this).data('name'));
+		});
+
 		checkFields();
 	});
-
 
 	// Initial check
 	checkFields();
@@ -252,13 +265,13 @@ function flyToCart(buttonSelector, options = {}) {
 	let defaults = {
 		imageSelector: '.product-img',
 		productWrapper: '.custom-modal',
-		cartTarget: '.bottom-sheet .handle',
-		topMove: 150,
-		firstDuration: 400,
+		cartTarget: '.bottom-sheet .sheet-handle',
+		topMove: 200,
+		firstDuration: 300,
 		secondDuration: 700,
 		finalWidth: 40,
 		finalHeight: 40,
-		opacity: 0.4
+		opacity: 0.5
 	};
 
 	// merge custom options
@@ -267,7 +280,7 @@ function flyToCart(buttonSelector, options = {}) {
 	let cartTarget = $(settings.cartTarget);
 	let startOffset = productImage.offset();
 	let endOffset = cartTarget.offset();
-	let centerLeft = startOffset.left + ($(cartTarget).width() / 2);
+	let centerLeft = startOffset.left + ($(cartTarget).width() / 3);
 	let clone = productImage.clone();
 
 	clone.css({
@@ -303,11 +316,11 @@ function flyToCart(buttonSelector, options = {}) {
 }
 
 function flyToCartBottom() {
-	$('.bottom-sheet').addClass('refresh');
+	$('.modal-cart').addClass('refresh');
 		
 	setTimeout(function () {
-		$('.bottom-sheet').removeClass('refresh');
-	}, 1500);
+		$('.modal-cart').removeClass('refresh');
+	}, 1100);
 }
 
 function flyToCartTrash() {
@@ -319,14 +332,15 @@ function flyToCartTrash() {
 }
 
 
-$(document).on('click', '.add-to-cart-button', function () {
+$(document).on('click', '.add-to-cart', function () {
 	flyToCart(this);
 	flyToCartBottom(this);
 
-	setTimeout(function () {
-		location.reload();
-	}, 1500);
+	// setTimeout(function () {
+	// 	location.reload();
+	// }, 1500);
 });
+
 
 // Increase
 $(document).on('click', '.add-icon, .add-icon-big', function () {
@@ -342,7 +356,6 @@ $(document).on('click', '.add-icon, .add-icon-big', function () {
 		type: 'GET',
 
 		success: function (response) {
-			// update qty
 			$('.manage-qty-' + productId).text(response.qty);
 
 			let qtyBtn = $('.sub-icon-control-' + productId);
@@ -353,11 +366,8 @@ $(document).on('click', '.add-icon, .add-icon-big', function () {
 				qtyBtn.removeClass('qty-remove').addClass('qty-decrease');
 			}
 
-			// modal qty
 			$('.modal-' + productId).find('.manage-modal-qty').text(response.qty);			
-			// cart count
 			$('.cart-count').show().text(response.cartCount);
-			// cart total
 			$('.cart-total').text('₹' + response.cartTotal);
 		}
 	});
@@ -373,15 +383,12 @@ $(document).on('click', '.qty-decrease', function () {
 		type: 'GET',
 
 		success: function (response) {
-			// update only current product qty
 			$('.cart-section-' + productId)
 				$('.manage-qty-' + productId).text(response.qty);
 
-			// modal qty
 			$('.modal-' + productId)
 				.find('.manage-modal-qty').text(response.qty);
 
-			// target decrease buttons
 			let qtyBtn = $('.sub-icon-control-' + productId);
 
 			if (parseInt(response.qty) <= 1) {
