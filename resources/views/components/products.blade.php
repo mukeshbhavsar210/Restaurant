@@ -1,4 +1,4 @@
-@props(['product', 'popularProducts', 'variants', 'seats', 'qty' ])
+@props(['product', 'popularProducts', 'variants', 'seats', 'qty', 'type' ])
 
 @php
     $total = 0;
@@ -18,17 +18,29 @@
             <div class="menu-product__item__ordered_qty">
                 {{ $qty }}
             </div>
-        @endif      
+        @endif  
+        
+        <div class="overlap">
+            @if(isset($wishlist[$product->id]))
+                <a href="{{ route('clear_wishlist', $product->id) }}" class="wishlist-icon-active">
+                    <span class="sprites"></span>
+                </a>
+            @else
+                <a href="{{ route('addwishlist', $product->id ) }}" class="wishlist-icon">
+                    <span class="sprites"></span>
+                </a>
+            @endif
 
-        @if(isset($wishlist[$product->id]))
-            <a href="{{ route('clear_wishlist', $product->id) }}" class="wishlist-icon-active">
-                <span class="sprites"></span>
-            </a>
-        @else
-            <a href="{{ route('addwishlist', $product->id ) }}" class="wishlist-icon">
-                <span class="sprites"></span>
-            </a>
-        @endif           
+            @if($type == 'Non-veg')
+                <span class="sprites nonveg-icon"></span>
+            @elseif($type == 'Egg')
+                <span class="sprites egg-icon"></span>
+            @elseif($type == 'Veg')
+                <span class="sprites veg-icon"></span>
+            @else
+                <span class=""></span>
+            @endif 
+        </div>
                 
         <a href="javascript:void(0)" class="open-modal" data-modal="productModal_{{ $product->id }}" class="product-img">
             <div class="menu-product__item__img">
@@ -68,20 +80,24 @@
         @else
             <img  src="{{ asset('admin-assets/img/default-150x150.png') }}" alt="{{ $product->name }}" />
         @endif
+
+        <div class="modal-overlap">
+            @if($type == 'Non-veg')
+                <span class="sprites nonveg-icon"></span>
+            @elseif($type == 'Egg')
+                <span class="sprites egg-icon"></span>
+            @elseif($type == 'Veg')
+                <span class="sprites veg-icon"></span>
+            @else
+                <span class=""></span>
+            @endif   
+        </div>
     </div>                                    
     
     <div class="btnControl flex-justify">
         <a href="javascript:void(0)" class="back-icon close-modal" data-modal="productModal_{{ $product->id }}">
             <span class="sprites"></span>                                                            
-        </a>
-
-        {{-- @if($type == 'Non-veg')
-            <span class="sprites nonveg-icon"></span>
-        @elseif($type == 'Egg')
-            <span class="sprites egg-icon"></span>
-        @elseif($type == 'Veg')
-            <span class="sprites veg-icon"></span> 
-        @endif  --}}
+        </a>        
 
         @if(isset($wishlist[$product->id]))
             <a href="{{ route('clear_wishlist', $product->id) }}" class="wishlist-icon-big-active">
@@ -91,7 +107,7 @@
             <a href="{{ route('addwishlist', $product->id ) }}" class="wishlist-icon-big">
                 <span class="sprites"></span>
             </a>
-        @endif                                                                        
+        @endif  
     </div>
 
     <div class="product-title flex-justify">
@@ -114,8 +130,7 @@
     </div>
 
     <div class="product-details">   
-        <p>{{ \Illuminate\Support\Str::limit(strtolower($product->description), 50) }}</p>
-
+        <p class="mb-3">{{ \Illuminate\Support\Str::limit(strtolower($product->description), 50) }}</p>
         @if($qty > 0)
             <div class="add-controls modal-{{ $product->id }}">
                 <div class="qty-box flex align-items-center">
@@ -136,8 +151,8 @@
         @else
             <form action="{{ route('front.addCart', $product->id) }}" method="GET" class="cart-form" data-id="{{ $product->id }}">
                 @if($product->variants->count() > 0)
-                    <input type="hidden" name="variant_name" value="{{ $variants->first()->name ?? '' }}">
-                    <input type="hidden" name="variant_price" value="{{ $variants->first()->price }}">
+                    <input type="hidden" name="variant_name" id="variant_name" value="{{ $variants->first()->name ?? '' }}">
+                    <input type="hidden" name="variant_price" id="variant_price" value="{{ $variants->first()->price }}">
                 @else
                     <input type="hidden" name="variant_price" value="{{ $product->price }}">
                 @endif
@@ -153,7 +168,8 @@
                 @foreach($product->variants as $key => $variant)
                     <label class="custom-radio" for="variant-{{ $variant->id }}">
                         <input type="radio" class="product-variant" name="variant" id="variant-{{ $variant->id }}"
-                            value="{{ $variant->price }}" data-name="{{ $variant->name }}" {{ $key == 0 ? 'checked' : '' }}>
+                            value="{{ $variant->price }}" data-name="{{ $variant->name }}" 
+                            {{ $loop->first ? 'checked' : '' }} >
                             <span class="radio-mark"></span>
                             {{ $variant->name }}
                     </label>

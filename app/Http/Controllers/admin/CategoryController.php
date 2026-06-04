@@ -29,7 +29,6 @@ class CategoryController extends Controller {
 
         $categories = $categories->paginate(10);
 
-
         //$categories = Category::orderBy('name','ASC')->get();
         $menus = Menu::orderBy('name','ASC')->get();
 
@@ -61,8 +60,9 @@ class CategoryController extends Controller {
                     [
                         'type' => 'text',
                         'name' => 'name',
-                        'label' => 'Category Name',
-                        'placeholder' => 'Enter Category Name',
+                        'label' => 'Category',
+                        'required' => true,
+                        'placeholder' => 'Enter Category',
                         'class' => 'slug-source',
                         'data'  => [
                             'target' => '#slug'
@@ -73,13 +73,15 @@ class CategoryController extends Controller {
                         'type' => 'text',
                         'name' => 'slug',
                         'label' => 'Slug',
+                        'required' => true,
                         'id'    => 'slug',
                         'col' => 'd-none'
                     ],
                     [
                         'type' => 'file',
                         'name' => 'image',
-                        'label' => 'Item Picture',
+                        'label' => 'Image',
+                        'required' => true,
                         'col' => 'col-md-12 col-12'
                     ],
                 ]
@@ -103,8 +105,9 @@ class CategoryController extends Controller {
                     [
                         'type' => 'text',
                         'name' => 'name',
-                        'label' => 'Category Name',
-                        'placeholder' => 'Enter Category Name',
+                        'label' => 'Category',
+                        'required' => true,
+                        'placeholder' => 'Enter Category',
                         'class' => 'slug-source',
                         'data'  => [
                             'target' => '#slug'
@@ -115,6 +118,7 @@ class CategoryController extends Controller {
                         'type' => 'text',
                         'name' => 'slug',
                         'label' => 'Slug',
+                        'required' => true,
                         'id'    => 'slug',
                         'col' => 'd-none'
                     ],
@@ -122,6 +126,7 @@ class CategoryController extends Controller {
                         'type' => 'checkbox',
                         'name' => 'categories',
                         'label' => 'Select Category',
+                        'required' => true,
                         'options' => $categories,
                         'option_value' => 'id',
                         'option_text' => 'name',                        
@@ -131,6 +136,7 @@ class CategoryController extends Controller {
                         'type' => 'veg_radio',
                         'name' => 'veg_nonveg',
                         'label' => 'Veg/Non-Veg?',
+                        'required' => true,
                         'options' => $vegDetails, 
                         'checked' => 0,                       
                         'col' => 'col-md-12'

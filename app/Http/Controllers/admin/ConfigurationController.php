@@ -151,7 +151,7 @@ class ConfigurationController extends Controller implements HasMiddleware {
                 'method' => 'POST',
                 'button' => 'Add Restaurant',
                                 
-                'fields' => [   
+                'fields' => [                       
                     [
                         'type' => 'file',
                         'name' => 'logo',
@@ -160,6 +160,16 @@ class ConfigurationController extends Controller implements HasMiddleware {
                         'placeholder' => '',
                         'col' => 'col-12'
                     ],                                     
+                    [
+                        'type' => 'checkbox',
+                        'name' => 'business_types',
+                        'label' => 'Business Types',
+                        'options' => $businessTypes,
+                        'option_value' => 'id',
+                        'option_text' => 'name',
+                        'col' => 'col-md-6',
+                        'class' => 'flex-2',
+                    ], 
                     [
                         'type' => 'text',
                         'name' => 'name',
@@ -182,18 +192,16 @@ class ConfigurationController extends Controller implements HasMiddleware {
                         'label' => 'Phone',
                         'required' => true,
                         'placeholder' => 'Phone',
-                        'col' => 'col-12'
-                    ],              
+                        'col' => 'col-6'
+                    ],
                     [
-                        'type' => 'checkbox',
-                        'name' => 'business_types',
-                        'label' => 'Business Types',
-                        'options' => $businessTypes,
-                        'option_value' => 'id',
-                        'option_text' => 'name',
-                        'col' => 'col-md-6',
-                        'class' => 'flex-2',
-                    ],      
+                        'type' => 'text',
+                        'name' => 'mobile',
+                        'label' => 'Mobile',
+                        'required' => true,
+                        'placeholder' => 'Mobile',
+                        'col' => 'col-6'
+                    ],
                     [
                         'type' => 'textarea',
                         'name' => 'address',
@@ -208,7 +216,7 @@ class ConfigurationController extends Controller implements HasMiddleware {
                         'label' => 'GST',
                         'required' => true,
                         'placeholder' => 'GST',
-                        'col' => 'col-4'
+                        'col' => 'col-6'
                     ],
                     [
                         'type' => 'text',
@@ -216,7 +224,7 @@ class ConfigurationController extends Controller implements HasMiddleware {
                         'label' => 'SGST',
                         'required' => true,
                         'placeholder' => 'SGST',
-                        'col' => 'col-4'
+                        'col' => 'col-3'
                     ],   
                     [
                         'type' => 'text',
@@ -224,7 +232,7 @@ class ConfigurationController extends Controller implements HasMiddleware {
                         'label' => 'CGST',
                         'required' => true,
                         'placeholder' => 'CGST',
-                        'col' => 'col-4'
+                        'col' => 'col-3'
                     ],  
                     [
                         'type' => 'text',
@@ -232,7 +240,7 @@ class ConfigurationController extends Controller implements HasMiddleware {
                         'label' => 'Payment key id',
                         'required' => false,
                         'placeholder' => 'Payment key id',
-                        'col' => 'col-12'
+                        'col' => 'col-6'
                     ],
                     [
                         'type' => 'text',
@@ -240,23 +248,31 @@ class ConfigurationController extends Controller implements HasMiddleware {
                         'label' => 'Payment key secret',
                         'required' => false,
                         'placeholder' => 'Payment key secret',
-                        'col' => 'col-12'
-                    ],             
+                        'col' => 'col-6'
+                    ],
                     [
-                        'type' => 'color',
-                        'name' => 'primary_color',
-                        'label' => 'Primary Color',
-                        'required' => false,
-                        'placeholder' => 'Primary Color',
+                        'type' => 'text',
+                        'name' => 'shipping',
+                        'label' => 'Shipping',
+                        'required' => true,
+                        'placeholder' => 'Shipping Charges',
                         'col' => 'col-6'
                     ],
                     [
                         'type' => 'color',
+                        'name' => 'primary_color',
+                        'label' => 'Primary',
+                        'required' => false,
+                        'placeholder' => 'Primary Color',
+                        'col' => 'col-3'
+                    ],
+                    [
+                        'type' => 'color',
                         'name' => 'secondary_color',
-                        'label' => 'Secondary Color',
+                        'label' => 'Secondary',
                         'required' => false,
                         'placeholder' => 'Secondary Color',
-                        'col' => 'col-6'
+                        'col' => 'col-3'
                     ],
                        
                 ]
@@ -561,7 +577,9 @@ class ConfigurationController extends Controller implements HasMiddleware {
         $data->name = $request->name;
         $data->email = $request->email;
         $data->phone = $request->phone;
+        $data->mobile = $request->mobile;
         $data->address = $request->address;
+        $data->shipping = $request->shipping;
         $data->business_types = implode(',', $request->business_types ?? []);
         $data->primary_color = $request->primary_color;
         $data->secondary_color = $request->secondary_color;
@@ -611,7 +629,9 @@ class ConfigurationController extends Controller implements HasMiddleware {
         $data->name = $request->name;
         $data->email = $request->email;
         $data->phone = $request->phone;
+        $data->mobile = $request->mobile;
         $data->address = $request->address;
+        $data->shipping = $request->shipping;
         $data->business_types = implode(',', $request->business_types ?? []);
         $data->primary_color = $request->primary_color;
         $data->secondary_color = $request->secondary_color;

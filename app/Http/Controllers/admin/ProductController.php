@@ -112,8 +112,8 @@ class ProductController extends Controller {
                     ]
                 ]
             ]
-        ]; 
-
+        ];         
+        
         return view ('admin.products.list', $data);
     }
 

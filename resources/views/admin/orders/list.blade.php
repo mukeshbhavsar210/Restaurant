@@ -81,21 +81,29 @@
                             </tr>
                         </thead>                     
                         <tbody>
-                            @forelse ($filteredOrders as $value)                                
-                                <tr>
+                            @forelse ($filteredOrders as $order)                                    
+                                @php
+                                    $subtotal = $order->total;
+                                    $shipping = $config->shipping;
+                                    $gstAmount = ($subtotal * $config->gst) / 100;
+                                    $sgstAmount = ($subtotal * $config->sgst) / 100;
+                                    $cgstAmount = ($subtotal * $config->cgst) / 100;
+                                    $grandTotal = $subtotal + $gstAmount + $sgstAmount + $cgstAmount;                                    
+                                @endphp
+                                <tr>                                    
                                     <td>
                                         <div class="product-row">
                                             <div class="show-tooltip me-3">
-                                                @foreach($value->items as $item)
+                                                @foreach($order->items as $item)
                                                     @php
                                                         $productImage = optional($item->product?->product_images->first());
                                                     @endphp
-
-                                                    <a href="{{ route('orders.detail', $value->id) }}" class="user-avatar position-relative d-inline-block ms-n2">
+                                                    
+                                                    <a href="{{ route('orders.detail', $order->id) }}" class="user-avatar position-relative d-inline-block ms-n1">
                                                         @if (!empty($productImage->image))
-                                                            <img src="{{ asset('uploads/product/small/'.$productImage->image) }}" class="thumb-md shadow-sm rounded-circle">
+                                                            <img src="{{ asset('uploads/product/small/'.$productImage->image) }}" class="thumb-lg rounded">
                                                         @else
-                                                            <img src="{{ asset('admin-assets/img/default-150x150.png') }}" class="thumb-md shadow-sm rounded-circle">
+                                                            <img src="{{ asset('admin-assets/img/default-150x150.png') }}" class="thumb-lg rounded">
                                                         @endif
 
                                                         <span class="order-product-qty">{{ $item->quantity }}</span>
@@ -103,39 +111,44 @@
                                                 @endforeach
                                             </div> 
                                             <div class="flex-grow-1 text-truncate">
-                                                @foreach($value->items as $item)
+                                                @foreach($order->items as $item)
                                                     <span class="product-title">{{ $item->product_name }},</span><br />
                                                 @endforeach    
-                                                <p>{{ $value->notes }}</p>
+                                                <p>{{ $order->notes }}</p>
                                             </div>
                                         </div>
                                     </td>                                    
                                     @if($type == 'Dinein')
                                         <td>
-                                            <p class="text-muted"><b>{{ $value->seat?->table_name }}</b> ({{ $value->seat?->capacity }})</p>
-                                            <p class="text-muted tiny-font">{{ $value->seat?->area?->area_name }}</p>
+                                            <p class="text-muted"><b>{{ $order->seat?->table_name }}</b> ({{ $order->seat?->capacity }})</p>
+                                            <p class="text-muted tiny-font">{{ $order->seat?->area?->area_name }}</p>
                                         </td>
                                     @elseif($type == 'Takeaway' || $type == 'Delivery')
                                         <td>
-                                            <p class="text-muted"><b>{{ $value->area?->area_name }}</b></p>                                            
+                                            <p class="text-muted"><b>{{ $order->area?->area_name }}</b></p>                                            
                                         </td>
                                     @endif
-                                    <td class="text-end">{{ $value->items->sum('quantity') }} x ₹{{ $value->items->sum('price') }}</td>                                    
-                                    <td class="text-end">₹{{ round($value->total) }}</td>
-                                    <td class="text-end">{{ \Carbon\Carbon::parse($value->created_at)->format('d M, Y') }}</td>
+                                    <td class="text-end">{{ $order->items->sum('quantity') }} x ₹{{ $order->items->sum('price') }}</td>                                    
                                     <td class="text-end">
-                                        
-                                        @if ($value->status == 'running')
+                                        @if($type == 'Delivery')
+                                            {{ round($grandTotal + $shipping) }}                                            
+                                        @else    
+                                            ₹{{ round($grandTotal) }}
+                                        @endif
+                                    </td>
+                                    <td class="text-end">{{ \Carbon\Carbon::parse($order->created_at)->format('d M, Y') }}</td>
+                                    <td class="text-end">                                                                                
+                                        @if ($order->status == 'running')
                                             <span class="badge bg-success">Running</span>
-                                        @elseif ($value->status == 'pending')
+                                        @elseif ($order->status == 'pending')
                                             <svg class="text-danger h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true">
                                                 <path stroke-linecap="round" stroke-linejoin="round" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                                             </svg>
-                                        @elseif ($value->status == 'placed')
+                                        @elseif ($order->status == 'placed')
                                             <span class="badge bg-info">Placed</span>
-                                        @elseif ($value->status == 'shipped')
+                                        @elseif ($order->status == 'shipped')
                                             <span class="badge bg-info">Shipped</span>
-                                        @elseif ($value->status == 'delivered')
+                                        @elseif ($order->status == 'delivered')
                                             <svg class="text-success-500 h-6 w-6 text-success" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true">
                                                 <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                                             </svg>

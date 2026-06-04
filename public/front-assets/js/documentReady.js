@@ -1,9 +1,4 @@
 $(document).ready(function(){   
-
-	// $(window).on('scroll', function () {
-    // 	console.log('scrolling', $(window).scrollTop());
-	// });
-
     // Open modal
     $('.sheet-handle').on('click', function () {
 		$('.modal-cart').toggleClass('active_bottom');		
@@ -132,7 +127,6 @@ $(document).ready(function(){
 		});
 	});
 	
-
 	//Slick gallery
 	$('.product-slider').slick({
         slidesToShow: 1,
@@ -163,10 +157,10 @@ $(document).ready(function(){
 		let activeTab  = $('.tab-link.active').data('type');
 		let notes      = $.trim($('textarea[name="notes"]').val());		
 		let seatId     = $('select[name="seat_id"]').val();		
-		let outlet_id  = $('select[name="outlet_id"]').val() || '';
-		let name       = $.trim($('input[name="name"]').val());
-		let email      = $.trim($('input[name="email"]').val());
-		let phone      = $.trim($('input[name="phone"]').val());
+		let outlet_id  = $('select[name="active_outlet_id"]').val() || '';
+		let name       = $.trim($('input[name="active_name"]').val());
+		let email      = $.trim($('input[name="active_email"]').val());
+		let phone      = $.trim($('input[name="active_phone"]').val());
 		let address    = $.trim($('textarea[name="address"]').val());
 
 		let valid = false;
@@ -185,7 +179,7 @@ $(document).ready(function(){
 		}
 
 		// Takeaway
-		else if (activeTab == 'Takeaway' || activeTab == 'Delivery') {
+		else if (activeTab == 'Takeaway') {
 			if (
 				notes.trim() !== '' &&
 				name.trim() !== '' &&
@@ -200,7 +194,12 @@ $(document).ready(function(){
 		// Delivery
 		else if (activeTab == 'Delivery') {
 			if (
-				address.trim() !== ''				
+				notes.trim() !== '' &&
+				name.trim() !== '' &&
+				email.trim() !== '' &&
+				phone.trim() !== '' &&
+				outlet_id.trim() !== '' &&
+				address.trim() !== ''
 			) {
 				valid = true;
 			}
@@ -235,7 +234,6 @@ $(document).ready(function(){
 
 		$('.tab-link').removeClass('active');
 		$(this).addClass('active');
-		$('.active_field').toggleClass('active');
 
 		// Active content
 		$('.tab-content').removeClass('active');
@@ -244,13 +242,13 @@ $(document).ready(function(){
 		// Update order type
 		$('#order_type').val(type);
 
-		$('.active_field').each(function () {
+		$('.field').each(function () {
 			$(this).attr('name', $(this).data('name'));
 		});
-
-		$('.' + type).find('.active_field').each(function () {
+		
+		$('.' + type).find('.field').each(function () {
 			$(this).attr('name', 'active_' + $(this).data('name'));
-		});
+		});		
 
 		checkFields();
 	});
@@ -290,7 +288,7 @@ function flyToCart(buttonSelector, options = {}) {
 		width: productImage.width(),
 		height: productImage.height(),
 		zIndex: 9999,
-		borderRadius: '50%',
+		borderRadius: '5px',
 		pointerEvents: 'none'
 	});
 
@@ -332,13 +330,13 @@ function flyToCartTrash() {
 }
 
 
-$(document).on('click', '.add-to-cart', function () {
+$(document).on('click', '.add-to-cart', function () {	
 	flyToCart(this);
 	flyToCartBottom(this);
 
-	// setTimeout(function () {
-	// 	location.reload();
-	// }, 1500);
+	setTimeout(function () {
+		location.reload();
+	}, 1500);
 });
 
 
@@ -419,4 +417,17 @@ $(document).on('click', '.qty-remove', function () {
 	setTimeout(function () {
 		location.reload();
 	}, 1800);
+});
+
+//Variant products
+$(document).on('change', '.product-variant', function () {
+	let price = $(this).val();
+	let name  = $(this).data('name');
+
+	// Change visible price
+	$('.product-price-show').text(price);
+
+	// Update hidden fields
+	$('#variant_name').val(name);
+	$('#variant_price').val(price);
 });

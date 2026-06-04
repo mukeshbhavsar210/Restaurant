@@ -25,7 +25,7 @@ class FrontController extends Controller {
             }])
             ->first();
 
-        $products = Product::with('category', 'variants')->latest()->get();              
+        $products = Product::with(['category.menu', 'category', 'variants'])->latest()->get();
         $config = Configuration::first();
 
         // cart session
@@ -33,18 +33,17 @@ class FrontController extends Controller {
 
        //dd(session('cart'));
 
+       //dd($products);
+
         return view('front.home.index', [
             'products' => $products,
             'popularProducts' => $popularCategory?->products ?? collect(),
             'popularCategory' => $popularCategory,            
             'config' => $config, 
-            //'qty' => getCartQty(),
             'total' => getCartTotal(),
-            'cartCount' => getCartCount(),
-            //'productQty' => getProductQty(),
+            'cartCount' => getCartCount(),            
         ]);        
     }
-
 
     public function category($categorySlug = null, $menuSlug = null) {
         $category = Category::where('slug', $categorySlug)->firstOrFail();
@@ -52,7 +51,7 @@ class FrontController extends Controller {
         $seats = Seat::orderBy('id','DESC')->get();  
         $variants = Variant::get();
         $query = Product::query();
-        $config = Configuration::first();
+        $config = Configuration::first();        
 
         // ALL products of category
         $query->where(function($q) use ($category, $menus) {
@@ -74,13 +73,11 @@ class FrontController extends Controller {
             }
         }
 
-        $products = $query->get();
+        $products = $query->get();        
 
         // product qty array
         $cart = session()->get('cart', []);
-
-       //dd($qty);
-       //dd(session('cart'));
+        //dd(session('cart'));
 
        return view('front.shop.index', [
             'products' => $products,
@@ -89,8 +86,7 @@ class FrontController extends Controller {
             'seats' => $seats,
             'variants' => $variants,
             'menuSlug' => $menuSlug,
-            'config' => $config,
-            //'qty' => getCartQty(),
+            'config' => $config,            
             'total' => getCartTotal(),
             'cartCount' => getCartCount(),
         ]);       
@@ -119,11 +115,11 @@ class FrontController extends Controller {
         } else {
             $cart[$id] = [
                 "product_id"    => $product->id,
+                "quantity"      => 1,
                 "name"          => $product->name,
-                "quantity"      => 1,                
-                "price"         => $variantPrice,
-                "variant_name"  => $variantName,
-                "image"         => $product->image
+                "variant"       => $variantName,                
+                "price"         => $variantPrice,                
+                // "image"         => $product->image
             ];
         }
 
@@ -151,7 +147,6 @@ class FrontController extends Controller {
         ]);
     }
 
-
     public function increaseCart($id) {
         $cart = session()->get('cart', []);
 
@@ -177,7 +172,6 @@ class FrontController extends Controller {
             'cartTotal' => getCartTotal(),
         ]);
     }
-
 
     public function decreaseCart($id) {
         $cart = session()->get('cart', []);

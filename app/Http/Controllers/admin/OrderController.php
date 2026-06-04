@@ -14,9 +14,7 @@ use Illuminate\Support\Facades\DB;
 
 class OrderController extends Controller {
     public function index(Request $request){
-        $orders = Order::with(['items', 'seat', 'items.product.product_images'])            
-            ->latest('orders.created_at')
-            ->get();
+        $orders = Order::with(['items', 'seat', 'items.product.product_images'])->latest('orders.created_at')->get();
 
         // Order counts
         $totalOrders = Order::count();
@@ -24,14 +22,27 @@ class OrderController extends Controller {
         $takeawayOrders = Order::where('order_type', 'Takeaway')->latest()->paginate(10, ['*'], 'takeaway_page');
         $deliveryOrders = Order::where('order_type', 'Delivery')->latest()->paginate(10, ['*'], 'delivery_page');
         $config = Configuration::first();
+        
+        $statuses = Order::pluck('status');
+        $running = Order::where('status', 'running')->get();
+        $pending = Order::where('status', 'pending')->get();
+        $placed = Order::where('status', 'placed')->get();
+        $shipped = Order::where('status', 'shipped')->get();
+        $delivered = Order::where('status', 'delivered')->get();
 
         $data = [
             'orders' => $orders,
             'config' => $config,
+            'statuses' => $statuses,
+            'running' => $running,
+            'pending' => $pending,
+            'placed' => $placed,
+            'shipped' => $shipped,
+            'delivered' => $delivered,
             'totalOrders' => $totalOrders,  
             'dineinOrders' => $dineinOrders,
             'takeawayOrders' => $takeawayOrders,
-            'deliveryOrders' => $deliveryOrders,
+            'deliveryOrders' => $deliveryOrders,            
         ];
 
         return view('admin.orders.list', $data);
@@ -56,7 +67,8 @@ class OrderController extends Controller {
             $cgstAmount += ($itemTotal * $config->cgst) / 100;
         }
 
-        $grandTotal = $subtotal + $gstAmount + $sgstAmount + $cgstAmount;
+        $shipping = $config->shipping;
+        $grandTotal = $subtotal + $gstAmount + $sgstAmount + $cgstAmount + $shipping;        
 
         return view('admin.orders.detail',[
             'order' => $order,

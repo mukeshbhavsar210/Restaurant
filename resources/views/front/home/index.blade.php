@@ -8,9 +8,10 @@
             @foreach($popularProducts as $product)
                 @php
                     $qty = getProductQty($product->id);
+                    $type = $product->menu?->veg_nonveg;
                 @endphp               
 
-                <x-products :product="$product" :variants="$product->variants" :qty="$qty" />
+                <x-products :product="$product" :variants="$product->variants" :qty="$qty" :type="$type" />
             @endforeach
         </div>
     @endif

@@ -73,7 +73,7 @@ class ProfileController extends Controller {
                             'label' => 'Password',
                             'required' => false,
                             'placeholder' => 'Password',
-                            'col' => 'col-6',
+                            'col' => 'col-12',
                         ],
                         [
                             'type' => 'text',
@@ -81,7 +81,7 @@ class ProfileController extends Controller {
                             'label' => 'Confirm Password',
                             'required' => false,
                             'placeholder' => 'Confirm Password',
-                            'col' => 'col-6',                        
+                            'col' => 'col-12',                        
                         ],
                     ]
                 ]
