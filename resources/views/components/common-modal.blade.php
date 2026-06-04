@@ -73,8 +73,8 @@
                                     @elseif($field['type'] == 'checkbox')
                                         <div class="{{ isset($field['class']) ? $field['class'] : 'row' }}">
                                             @foreach($field['options'] as $option)
-                                                <div class="col-6">                                                    
-                                                    <label class="custom-checkbox mt-1" for="data_{{ $option[$field['option_value']] }}">
+                                                <div class="col-6">
+                                                    <label class="custom-checkbox" for="data_{{ $option[$field['option_value']] }}">
                                                         <input type="checkbox" id="data_{{ $option[$field['option_value']] }}" name="{{ $field['name'] }}[]"
                                                             value="{{ $option[$field['option_text']] }}">
                                                         <span class="checkmark"></span>
@@ -269,7 +269,9 @@
             $('input[name="name"]').val($(this).data('name'));
             $('input[name="email"]').val($(this).data('email'));
             $('input[name="phone"]').val($(this).data('phone'));
+            $('input[name="mobile"]').val($(this).data('mobile'));
             $('textarea[name="address"]').val($(this).data('address'));            
+            $('input[name="shipping"]').val($(this).data('shipping'));            
             $('input[name="primary_color"]').val($(this).data('primary_color'));
             $('input[name="secondary_color"]').val($(this).data('secondary_color'));
             $('input[name="payment_key_id"]').val($(this).data('payment_key_id'));

@@ -25,12 +25,13 @@
                 @foreach ($products as $product)  
                     @php
                         $qty = getProductQty($product->id);
+                        $type = $product->menu?->veg_nonveg;                        
                     @endphp
 
-                    <x-products :product="$product" :variants="$variants" :qty="$qty" />
+                    <x-products :product="$product" :variants="$variants" :qty="$qty" :type="$type" />
                 @endforeach
             @endif
-        
+             
             <div class="col-md-12 pt-5">
                 {{-- {{ $products->withQueryString()->links() }} --}}
             </div>

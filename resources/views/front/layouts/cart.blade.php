@@ -107,16 +107,16 @@
                         @if($tab2)
                             <div class="tab-content {{ $tab2 }} {{ !$tab1 && $tab2 ? 'active' : '' }}">
                                 <div class="form-group mb-2">                                                                    
-                                    <input type="text" class="form-control active_field" data-name="name" placeholder="Name..." name="name">
+                                    <input type="text" class="form-control field" data-name="name" name="name" placeholder="Name..." >
                                 </div>
                                 <div class="form-group mb-2">
-                                    <input type="email" class="form-control active_field" data-name="email" placeholder="Email..." name="email">
+                                    <input type="email" class="form-control field" data-name="email" name="email" placeholder="Email..." >
                                 </div>
                                 <div class="form-group mb-2">
-                                    <input type="phone" class="form-control active_field" data-name="phone" placeholder="Phone..." name="phone">
+                                    <input type="phone" class="form-control field" data-name="phone" name="phone" placeholder="Phone..." >
                                 </div>
                                 <div class="form-group mb-2">
-                                    <select class="form-select active_field" data-name="outlet_id" name="outlet_id" >
+                                    <select class="form-select field" data-name="outlet_id" name="outlet_id" >
                                         <option value="">Select Outlet</option>
                                         @foreach(areaData() as $value)                                            
                                             <option value="{{ $value->id }}">{{ $value->area_name }}</option>
@@ -133,19 +133,19 @@
                                 </div>
 
                                 <div class="form-group mb-2">
-                                    <input type="text" class="form-control active_field" placeholder="Name..." name="name">
+                                    <input type="text" class="form-control field" data-name="name" name="name" placeholder="Name..." >
                                 </div>
 
                                 <div class="form-group mb-2">
-                                    <input type="phone" class="form-control active_field" placeholder="Phone..." name="phone">
+                                    <input type="phone" class="form-control field" data-name="phone" name="phone" placeholder="Phone...">
                                 </div>
 
                                 <div class="form-group mb-2">
-                                    <input type="email" class="form-control active_field" placeholder="Email..." name="email">
+                                    <input type="email" class="form-control field" data-name="email" name="email" placeholder="Email..." >
                                 </div>
 
                                 <div class="form-group mb-2">
-                                    <select class="form-select active_field" data-name="outlet_id" name="outlet_id" >
+                                    <select class="form-select field" data-name="outlet_id" name="outlet_id" >
                                         <option value="">Takeaway from Outlet</option>
                                         @foreach(areaData() as $value)                                            
                                             <option value="{{ $value->id }}">{{ $value->area_name }}</option>
@@ -157,8 +157,8 @@
                     
                         <input type="hidden" name="order_type" id="order_type" value="{{ $tab1 }}" class="form-control">
                         <input type="hidden" name="total" value="{{ $total }}" class="form-control">
-                        {{-- <input type="hidden" name="variant_name" id="variant_name" value="{{ $variants->first()->name ?? '' }}">
-                        <input type="hidden" name="variant_price" id="variant_price" value="{{ $variants->first()->price ?? $product->price }}"> --}}
+                        {{-- <input type="text" name="variant_name" id="variant_name" value="{{ $variants->first()->name ?? '' }}">
+                        <input type="text" name="variant_price" id="variant_price" value="{{ $variants->first()->price ?? $product->price }}"> --}}
                                                                 
                         <div class="basket-page__content__terms">
                             <p class="validation">Fill all required fields</p>

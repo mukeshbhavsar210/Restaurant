@@ -5,9 +5,17 @@
 @include('admin.layouts.message')
 
 @php
-    $shipping = ($order->order_type === 'delivery') ? $order->shipping : 0;
-    $grandTotal = $subtotal + $gstAmount + $sgstAmount + $cgstAmount + $shipping;
-    $type = strtolower($order->order_type);
+    //$shipping = ($order->order_type === 'Delivery') ? $order->shipping : 50;
+    $dinein = $order->order_type === 'Dinein';
+    $takeaway = $order->order_type === 'Takeaway';
+    $delivery = $order->order_type === 'Delivery';
+    $placed = $order->status == 'placed';
+    $running = $order->status == 'running';
+    $pending = $order->status == 'pending';
+    $shipped = $order->status == 'shipped';
+    $delivered = $order->status == 'delivered';
+    $cancelled = $order->status == 'cancelled';
+    $available = $order->status == 'available';    
 @endphp
 
     <div class="row">        
@@ -24,10 +32,10 @@
 
                         <div class="col-md-8">
                             <div class="padd-invoice">
-                                @if($type === 'dinein')
+                                @if($dinein)
                                     <h5 class="mb-1">{{ $order->seat?->table_name }}</h5>
                                     <p class="mb-0">{{ $order->seat?->area?->area_name }}</p>
-                                @elseif($type === 'takeaway' || $type === 'delivery')   
+                                @elseif($takeaway || $delivery)
                                     <address>
                                         <b>{{ $order->name }}</b><br />
                                         {{ $order->address }}<br />
@@ -40,21 +48,21 @@
                         <div class="col-md-4">                            
                             <div class="row mb-1">
                                 <div class="col-md-4 text-right">Order Type</div>
-                                <div class="col-md-8">: <p class="types-restaurant border border-primary text-primary">{{ ucfirst($type) }}</p></div>
+                                <div class="col-md-8">: <p class="types-restaurant border border-primary text-primary">{{ $order->order_type }}</p></div>
                             </div>
                             <div class="row mb-1">
                                 <div class="col-md-4 text-right">Status</div>
                                 <div class="col-md-8">:
-                                    @if($type === 'dinein')
-                                        <span class="badge {{ $order->status == 'running' ? 'bg-danger' : 'bg-success' }}">
-                                            {{ $order->status == 'running' ? 'Running' : 'Available' }}
+                                    @if($dinein)
+                                        <span class="badge {{ $running ? 'bg-danger' : 'bg-success' }}">
+                                            {{ $running ? 'Running' : 'Available' }}
                                         </span>
-                                    @elseif ($type == 'takeaway' || $type == 'delivery')
-                                        @if ($order->status == 'placed')
+                                    @elseif ($takeaway || $delivery)
+                                        @if ($placed)
                                             <span class="badge bg-success">Placed Order</span>                                        
-                                        @elseif ($order->status == 'shipped')
+                                        @elseif ($shipped)
                                             <span class="badge bg-info">Shipped</span>
-                                        @elseif ($order->status == 'delivered')
+                                        @elseif ($delivered)
                                             <span class="badge bg-success">Delivered</span>
                                         @else
                                             <span class="badge bg-danger">Cancelled</span>
@@ -66,12 +74,12 @@
                                 <div class="col-md-4 text-right">Total</div>
                                 <div class="col-md-8">: <b>₹{{ round($grandTotal) }}</b></div>
                             </div>                            
-                            @if($type === 'dinein')
+                            @if($dinein)
                                 <div class="row">
                                     <div class="col-md-4 text-right">Order On</div>
                                     <div class="col-md-8">: {{ \Carbon\Carbon::parse($order->created_at)->format('d M, Y, h:i A') }}</div>
                                 </div>
-                            @elseif ($type == 'takeaway' || $type == 'delivered')
+                            @elseif ($takeaway || $delivery)
                                 <div class="row">                                
                                     <div class="col-md-4 text-right">Shipped Date</div>
                                     <div class="col-md-8">:                            
@@ -137,16 +145,16 @@
                                 <td colspan="3" class="text-end">CGST ({{ $config->cgst }}%):</td>
                                 <td class="text-end">₹{{ round($cgstAmount) }}</td>
                             </tr>
-                            @if($order->order_type === 'delivery')
+                            @if($delivery)
                                 <tr>
-                                    <td colspan="3" class="text-end">Shipping</td>
-                                    <td class="text-end">₹{{ $order->shipping }}</td>
+                                    <td colspan="3" class="text-end">Shipping:</td>
+                                    <td class="text-end">₹{{ $config->shipping }}</td>
                                 </tr>
                             @endif
                             <tr>
                                 <td colspan="3" class="text-end"><b>Grand Total</b></td>
                                 <td class="text-end"><b>₹{{ round($grandTotal) }}</b></td>
-                            </tr>                                               
+                            </tr>
                         </tbody>
                     </table>                   
                 </div>
@@ -157,22 +165,22 @@
             <div class="card">
                 <div class="card-body"> 
                     <form action="" method="post" name="changeOrderStatusForm" id="changeOrderStatusForm">
-                        @if($type === 'dinein')
+                        @if($dinein)
                             <div class="form-group">
                                 <label for="shipped_date">Status</label>
                                 <select name="status" id="status" class="form-select">
-                                    <option value="available" {{ ($order->status == 'available') ? 'selected' : ''}}>Available</option>
-                                    <option value="running" {{ ($order->status == 'running') ? 'selected' : ''}}>Running</option>                                    
+                                    <option value="available" {{ ($available) ? 'selected' : ''}}>Available</option>
+                                    <option value="running" {{ ($running) ? 'selected' : ''}}>Running</option>                                    
                                 </select>
                             </div>
-                        @elseif ($type == 'takeaway' || $type == 'delivery')
+                        @elseif ($takeaway || $delivery)
                             <div class="form-group">
                                 <label for="shipped_date">Status</label>
                                 <select name="status" id="status" class="form-select">                                    
-                                    <option value="pending" {{ ($order->status == 'pending') ? 'selected' : ''}}>Pending</option>
-                                    <option value="shipped" {{ ($order->status == 'shipped') ? 'selected' : ''}}>Shipped</option>
-                                    <option value="delivered" {{ ($order->status == 'delivered') ? 'selected' : ''}}>Delivered</option>
-                                    <option value="cancelled" {{ ($order->status == 'cancelled') ? 'selected' : ''}}>Cancelled</option>
+                                    <option value="pending" {{ ($pending) ? 'selected' : ''}}>Pending</option>
+                                    <option value="shipped" {{ ($shipped) ? 'selected' : ''}}>Shipped</option>
+                                    <option value="delivered" {{ ($delivered) ? 'selected' : ''}}>Delivered</option>
+                                    <option value="cancelled" {{ ($cancelled) ? 'selected' : ''}}>Cancelled</option>
                                 </select>
                             </div>
                         @endif  

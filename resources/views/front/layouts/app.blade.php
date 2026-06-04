@@ -99,20 +99,7 @@
                 }
             }
         })
-    }
-		
-	//Variant products
-	$(document).on('change', '.product-variant', function () {
-		let price = $(this).val();
-		let name  = $(this).data('name');
-
-		// Change visible price
-		$('.product-price-show').text(price);
-
-		// Update hidden fields
-		$('#variant_name').val(name);
-		$('#variant_price').val(price);
-	});
+    }		
 </script>
 
 @yield('customJs')
