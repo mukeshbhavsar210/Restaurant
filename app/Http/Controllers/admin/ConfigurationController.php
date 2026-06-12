@@ -4,6 +4,7 @@ namespace App\Http\Controllers\admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Area;
+use App\Models\Order;
 use App\Models\Configuration;
 use App\Models\Menu;
 use App\Models\Payment;
@@ -34,7 +35,8 @@ use Illuminate\Support\Facades\Hash;
 use App\Http\Requests\ProfileUpdateRequest;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Redirect;
-
+use Barryvdh\DomPDF\Facade\Pdf;
+use SimpleSoftwareIO\QrCode\Facades\QrCode;
 
 class ConfigurationController extends Controller implements HasMiddleware {
     public static function middleware(): array {
@@ -59,7 +61,7 @@ class ConfigurationController extends Controller implements HasMiddleware {
 
     public function index(Request $request){
         $areas = Area::orderBy('area_name','ASC')->get();
-        $seats = Seat::where('area_id',NULL)->with('seat')->get();
+        //$seats = Seat::where('area_id',NULL)->with('seat')->orderBy('table_order', 'ASC')->get();
         $tableRunning = OrderItem::with('seat')->get();
 
         $totalTable = DB::table('seats')
@@ -95,14 +97,19 @@ class ConfigurationController extends Controller implements HasMiddleware {
                     ->select(DB::raw('count(*) as total'))
                     ->get()[0]->total;
                 
-        $outlets = Area::withCount('seat as total_seats')->with('seats')
-                ->orderByRaw("CASE WHEN area_name = 'Default' THEN 0 ELSE 1 END")
-                ->get();
+        $outlets = Area::withCount('seat as total_seats')
+                    ->with([
+                        'seats' => function ($query) {
+                            $query->orderBy('table_order', 'ASC');
+                        }
+                    ])
+                    ->orderByRaw("CASE WHEN area_name = 'Default' THEN 0 ELSE 1 END")
+                    ->get();
 
         $roles = Role::with('permissions')->get()
             ->sortByDesc(function ($role) {
                 return $role->name === 'superadmin';
-            });
+            });            
 
         $payments = Payment::get();        
         $users = User::get();
@@ -116,10 +123,10 @@ class ConfigurationController extends Controller implements HasMiddleware {
 
         $data = [
             'config'                => $config,
-            'outlets'              => $outlets,
+            'outlets'               => $outlets,
             'payments'              => $payments,            
             'areas'                 => $areas,
-            'seats'                 => $seats,
+            // 'seats'                 => $seats,
             'tableIndividual'       => $tableIndividual,
             'totalTable'            => $totalTable,
             'tableRunning'          => $tableRunning,
@@ -144,259 +151,159 @@ class ConfigurationController extends Controller implements HasMiddleware {
 
         $data['configForm'] = [
             'title' => 'Setup Restaurant',
-            'modal_id' => 'createConfigModal',            
-
+            'modal_id' => 'createConfigModal',  
+            
             'formConfig' => [
                 'action' => route('configurations.store'),
                 'method' => 'POST',
-                'button' => 'Add Restaurant',
-                                
-                'fields' => [                       
-                    [
-                        'type' => 'file',
-                        'name' => 'logo',
-                        'label' => 'Logo',
-                        'required' => true,
-                        'placeholder' => '',
-                        'col' => 'col-12'
-                    ],                                     
-                    [
-                        'type' => 'checkbox',
-                        'name' => 'business_types',
-                        'label' => 'Business Types',
-                        'options' => $businessTypes,
-                        'option_value' => 'id',
-                        'option_text' => 'name',
-                        'col' => 'col-md-6',
-                        'class' => 'flex-2',
-                    ], 
-                    [
-                        'type' => 'text',
-                        'name' => 'name',
-                        'label' => 'Name',
-                        'required' => true,
-                        'placeholder' => 'Name',
-                        'col' => 'col-12',                        
-                    ],                    
-                    [
-                        'type' => 'email',
-                        'name' => 'email',
-                        'label' => 'Email',
-                        'required' => true,
-                        'placeholder' => 'Email',
-                        'col' => 'col-12'
-                    ],
-                    [
-                        'type' => 'text',
-                        'name' => 'phone',
-                        'label' => 'Phone',
-                        'required' => true,
-                        'placeholder' => 'Phone',
-                        'col' => 'col-6'
-                    ],
-                    [
-                        'type' => 'text',
-                        'name' => 'mobile',
-                        'label' => 'Mobile',
-                        'required' => true,
-                        'placeholder' => 'Mobile',
-                        'col' => 'col-6'
-                    ],
-                    [
-                        'type' => 'textarea',
-                        'name' => 'address',
-                        'label' => 'Address',
-                        'required' => true,
-                        'placeholder' => 'Address',
-                        'col' => 'col-12'
-                    ],     
-                    [
-                        'type' => 'text',
-                        'name' => 'gst',
-                        'label' => 'GST',
-                        'required' => true,
-                        'placeholder' => 'GST',
-                        'col' => 'col-6'
-                    ],
-                    [
-                        'type' => 'text',
-                        'name' => 'sgst',
-                        'label' => 'SGST',
-                        'required' => true,
-                        'placeholder' => 'SGST',
-                        'col' => 'col-3'
-                    ],   
-                    [
-                        'type' => 'text',
-                        'name' => 'cgst',
-                        'label' => 'CGST',
-                        'required' => true,
-                        'placeholder' => 'CGST',
-                        'col' => 'col-3'
-                    ],  
-                    [
-                        'type' => 'text',
-                        'name' => 'payment_key_id',
-                        'label' => 'Payment key id',
-                        'required' => false,
-                        'placeholder' => 'Payment key id',
-                        'col' => 'col-6'
-                    ],
-                    [
-                        'type' => 'text',
-                        'name' => 'payment_key_secret',
-                        'label' => 'Payment key secret',
-                        'required' => false,
-                        'placeholder' => 'Payment key secret',
-                        'col' => 'col-6'
-                    ],
-                    [
-                        'type' => 'text',
-                        'name' => 'shipping',
-                        'label' => 'Shipping',
-                        'required' => true,
-                        'placeholder' => 'Shipping Charges',
-                        'col' => 'col-6'
-                    ],
-                    [
-                        'type' => 'color',
-                        'name' => 'primary_color',
-                        'label' => 'Primary',
-                        'required' => false,
-                        'placeholder' => 'Primary Color',
-                        'col' => 'col-3'
-                    ],
-                    [
-                        'type' => 'color',
-                        'name' => 'secondary_color',
-                        'label' => 'Secondary',
-                        'required' => false,
-                        'placeholder' => 'Secondary Color',
-                        'col' => 'col-3'
-                    ],
-                       
-                ]
-            ]
-        ]; 
-
-        $data['branchForm'] = [
-            'title' => 'Create Outlet',
-            'modal_id' => 'createBranchModal',            
-
-            'formConfig' => [
-                'action' => route('branch.store'),
-                'method' => 'POST',
-                'button' => 'Add Branch',
-                                
-                'fields' => [
-                    [
-                        'type' => 'text',
-                        'name' => 'area_name',
-                        'label' => 'Outlet Name',
-                        'required' => true,
-                        'placeholder' => 'Outlet Name',
-                        'class' => 'slug-source',
-                        'data'  => [
-                            'target' => '#area_slug'
+                'button' => 'Add Restaurant',                
+            ],
+            
+             'accordion' => [
+                [
+                    'title' => 'Restaurant Details',
+                    'fields' => [
+                        [
+                            'type' => 'text',
+                            'name' => 'name',
+                            'label' => 'Name',
+                            'required' => true,
+                            'placeholder' => 'Name',
+                            'col' => 'col-12',                        
+                        ],                    
+                        [
+                            'type' => 'email',
+                            'name' => 'email',
+                            'label' => 'Email',
+                            'required' => true,
+                            'placeholder' => 'Email',
+                            'col' => 'col-12'
+                        ],
+                        [
+                            'type' => 'text',
+                            'name' => 'phone',
+                            'label' => 'Phone',
+                            'required' => true,
+                            'placeholder' => 'Phone',
+                            'col' => 'col-6'
+                        ],
+                        [
+                            'type' => 'text',
+                            'name' => 'mobile',
+                            'label' => 'Mobile',
+                            'required' => true,
+                            'placeholder' => 'Mobile',
+                            'col' => 'col-6'
+                        ],
+                        [
+                            'type' => 'file',
+                            'name' => 'logo',
+                            'label' => 'Logo',
+                            'required' => false,
+                            'placeholder' => '',
+                            'col' => 'col-12'
                         ], 
-                        'col' => 'col-md-12'
-                    ],
-                    [
-                        'type' => 'text',
-                        'name' => 'area_slug',
-                        'label' => 'Slug',
-                        'required' => true,
-                        'id'    => 'area_slug',
-                        'col' => 'd-none'
-                    ],
-                    [
-                        'type' => 'text',
-                        'name' => 'manager_name',
-                        'label' => 'Manager Name',
-                        'required' => true,       
-                        'placeholder' => 'Manager Name',                 
-                        'col' => 'col-md-12'
-                    ],
-                    [
-                        'type' => 'text',
-                        'name' => 'phone',
-                        'label' => 'Phone',
-                        'required' => true,       
-                        'placeholder' => 'Phone',
-                        'col' => 'col-md-12'
-                    ],
-                    [
-                        'type' => 'text',
-                        'name' => 'mobile',
-                        'label' => 'Mobile',
-                        'required' => true,       
-                        'placeholder' => 'Mobile',
-                        'col' => 'col-md-12'
-                    ],
-                    [
-                        'type' => 'textarea',
-                        'name' => 'address',
-                        'label' => 'Address',
-                        'required' => true,       
-                        'placeholder' => 'Address',
-                        'col' => 'col-md-12'
-                    ],
-                ]
-            ]
-        ];          
-        
-        $data['tableForm'] = [
-            'title' => 'Add Table',
-            'modal_id' => 'createTableModal',            
-
-            'formConfig' => [
-                'action' => route('table.store'),
-                'method' => 'POST',
-                'button' => 'Add Table',                
-                
-                'fields' => [
-                    [
-                        'type' => 'text',
-                        'name' => 'table_name',
-                        'label' => 'Table',
-                        'required' => true,
-                        'placeholder' => 'e.g. Table_01',                        
-                        'class' => 'slug-source',
-                        'data'  => [
-                            'target' => '#table_slug'
-                        ], 
-                        'col' => 'col-md-12'
-                    ],
-                    [
-                        'type' => 'text',
-                        'name' => 'table_slug',
-                        'label' => 'Slug',
-                        'required' => true,
-                        'id'    => 'table_slug',
-                        'col' => 'd-none'
-                    ],
-                    [
-                        'type' => 'select',
-                        'name' => 'area_id',
-                        'label' => 'Outlet',
-                        'required' => true,
-                        'options' => $outlets,
-                        'option_value' => 'id',
-                        'option_text' => 'area_name',
-                        'option_label' => 'area_name',
-                        'col' => 'col-12'
-                    ],
-                    [
-                        'type' => 'radio',
-                        'name' => 'capacity',
-                        'label' => 'Seat',
-                        'required' => true,
-                        'options' => $seatingCapacities,
-                        'col' => 'col-md-12'
+                        [
+                            'type' => 'checkbox',
+                            'name' => 'business_types',
+                            'label' => 'Business Types',
+                            'required' => true,
+                            'options' => $businessTypes,
+                            'option_value' => 'id',
+                            'option_text' => 'name',
+                            'col' => 'col-md-6',
+                            'class' => 'flex-2',
+                        ],                        
+                        [
+                            'type' => 'textarea',
+                            'name' => 'address',
+                            'label' => 'Address',
+                            'required' => true,
+                            'placeholder' => 'Address',
+                            'rows' => 3,
+                            'col' => 'col-12'
+                        ],   
                     ]
-                ]
-            ]
-        ];
+                ],
+                [
+                    'title' => 'Other Settings',
+                    'fields' => [                           
+                                [
+                                    'type' => 'text',
+                                    'name' => 'upi_id',
+                                    'label' => 'UPI ID',
+                                    'required' => false,
+                                    'placeholder' => 'UPI ID',
+                                    'col' => 'col-12'
+                                ],
+                                [
+                                    'type' => 'file',
+                                    'name' => 'upi',
+                                    'label' => 'UPI QR',
+                                    'required' => false,
+                                    'placeholder' => '',
+                                    'col' => 'col-12'
+                                ],               
+                                [
+                                    'type' => 'text',
+                                    'name' => 'shipping',
+                                    'label' => 'Shipping',
+                                    'required' => true,
+                                    'placeholder' => 'Shipping Charges',
+                                    'col' => 'col-4'
+                                ],     
+                                [
+                                    'type' => 'text',
+                                    'name' => 'cgst',
+                                    'label' => 'CGST',
+                                    'required' => true,
+                                    'placeholder' => 'CGST',
+                                    'col' => 'col-4'
+                                ], 
+                                [
+                                    'type' => 'text',
+                                    'name' => 'sgst',
+                                    'label' => 'SGST',
+                                    'required' => true,
+                                    'placeholder' => 'SGST',
+                                    'col' => 'col-4'
+                                ],                                                                
+                                [
+                                    'type' => 'color',
+                                    'name' => 'primary_color',
+                                    'label' => 'Primary',
+                                    'required' => false,
+                                    'placeholder' => 'Primary Color',
+                                    'col' => 'col-6'
+                                ],
+                                [
+                                    'type' => 'color',
+                                    'name' => 'secondary_color',
+                                    'label' => 'Secondary',
+                                    'required' => false,
+                                    'placeholder' => 'Secondary Color',
+                                    'col' => 'col-6'
+                                ],
+                                [
+                                    'type' => 'text',
+                                    'name' => 'payment_key_id',
+                                    'label' => 'Payment key id',
+                                    'required' => false,
+                                    'placeholder' => 'Payment key id',
+                                    'col' => 'col-12'
+                                ],
+                                [
+                                    'type' => 'text',
+                                    'name' => 'payment_key_secret',
+                                    'label' => 'Payment key secret',
+                                    'required' => false,
+                                    'placeholder' => 'Payment key secret',
+                                    'col' => 'col-12'
+                                ],
+                            ]
+                        ]
+                    ],
+        ];       
 
         $data['pageForm'] = [
             'title' => 'Create Page',
@@ -524,7 +431,7 @@ class ConfigurationController extends Controller implements HasMiddleware {
                         'label' => 'Password',
                         'required' => true,
                         'placeholder' => 'Password',
-                        'col' => 'col-6'
+                        'col' => 'col-12'
                     ],
                     [
                         'type' => 'password',
@@ -532,7 +439,7 @@ class ConfigurationController extends Controller implements HasMiddleware {
                         'label' => 'Confirm Password',
                         'required' => true,
                         'placeholder' => 'Confirm Password',
-                        'col' => 'col-6'
+                        'col' => 'col-12'
                     ],
                     [
                         'type' => 'file',
@@ -584,10 +491,10 @@ class ConfigurationController extends Controller implements HasMiddleware {
         $data->primary_color = $request->primary_color;
         $data->secondary_color = $request->secondary_color;
         $data->payment_key_id = $request->payment_key_id;
-        $data->payment_key_secret = $request->payment_key_secret;
-        $data->gst = $request->gst;
-        $data->sgst = $request->sgst;
+        $data->payment_key_secret = $request->payment_key_secret;                
         $data->cgst = $request->cgst;
+        $data->sgst = $request->sgst;
+        $data->upi_id = $request->upi_id;
 
         // Image upload
         if ($request->hasFile('logo')) {
@@ -601,10 +508,23 @@ class ConfigurationController extends Controller implements HasMiddleware {
             $data->logo = $fileName;
         }
 
+        // UPI upload
+        if ($request->hasFile('upi')) {
+            $file = $request->file('upi');
+            $extension = $file->getClientOriginalExtension();
+            $fileName = $data->name . '.' . $extension;
+            $path = public_path('/uploads/logo/' . $fileName);
+            $manager = new ImageManager(new Driver());
+            $logo = $manager->read($file);
+            //$logo->cover(300, 300)->save($path);
+            $data->upi = $fileName;
+        }
+
         $data->save();
 
         return back()->with('success', 'Configurations added successfully.');
     }
+
 
     public function configurations_update(Request $request) {
         $validator = Validator::make($request->all(), [
@@ -636,15 +556,13 @@ class ConfigurationController extends Controller implements HasMiddleware {
         $data->primary_color = $request->primary_color;
         $data->secondary_color = $request->secondary_color;
         $data->payment_key_id = $request->payment_key_id;
-        $data->payment_key_secret = $request->payment_key_secret;
-        $data->gst = $request->gst;
-        $data->sgst = $request->sgst;
+        $data->payment_key_secret = $request->payment_key_secret;        
         $data->cgst = $request->cgst;
+        $data->sgst = $request->sgst;
+         $data->upi_id = $request->upi_id;
         
         //Image upload
         if ($request->hasFile('logo')) { 
-
-            // Delete old logo
             if (!empty($data->logo)) {
                 $oldPath = public_path('uploads/logo/' . $data->logo);
 
@@ -656,14 +574,32 @@ class ConfigurationController extends Controller implements HasMiddleware {
             $file = $request->file('logo');
             $extenstion = $file->getClientOriginalExtension();
             $fileName = $data->name.'.'.$extenstion;
-
             $path = public_path().'/uploads/logo/'.$fileName;
-
             $manager = new ImageManager(new Driver());
             $logo = $manager->read($file);
-            
             $logo->toJpeg(100)->save($path);            
             $data->logo = $fileName;
+        }
+
+        //UPI upload
+        if ($request->hasFile('upi')) { 
+            if (!empty($data->upi)) {
+                $oldPath = public_path('uploads/logo/' . $data->upi);
+
+                if (file_exists($oldPath)) {
+                    unlink($oldPath);
+                }
+            }
+
+            $file = $request->file('upi');
+            $extenstion = $file->getClientOriginalExtension();
+            //$fileName = $data->name.'.'.$extenstion;
+            $fileName = 'upi.'.$data->name.'.'.$extenstion;
+            $path = public_path().'/uploads/logo/'.$fileName;
+            $manager = new ImageManager(new Driver());
+            $upi = $manager->read($file);
+            $upi->toJpeg(100)->save($path);            
+            $data->upi = $fileName;
         }
         
         $data->save();
@@ -701,125 +637,7 @@ class ConfigurationController extends Controller implements HasMiddleware {
             return redirect()->route('configurations.index')->withInput()->withErrors($validator);
         }
     }
-    
-    public function branch_edit($areaId, Request $request){
-        $area = Area::find($areaId);
-
-        if (empty($area)) {
-            return redirect()->route('configurations.index');
-        }
-
-        return view('admin.areas.edit', compact('area'));
-    }
-
-    public function branch_update($areaId, Request $request){
-        $area = Area::find($areaId);
-        if (empty($area)) {
-            $request->session()->flash('error', 'area not found');
-            return response()->json([
-                'status' => false,
-                'notFound' => true,
-                'message' => 'area not found'
-            ]);
-        }
-
-        $validator = Validator::make($request->all(), [
-            'name' => 'required',            
-        ]);
-
-        if ($validator->passes()) {
-            $area->name = $request->name;            
-            $area->save();
-
-            $request->session()->flash('success', 'Branch updated successfully');
-
-            return response()->json([
-                'status' => true,
-                'message' => 'Branch updated successfully'
-            ]);
-
-        } else {
-            return response()->json([
-                'status' => false,
-                'errors' => $validator->errors()
-            ]);
-        }
-    }
-
-    public function branch_delete($id){
-        $area = Area::find($id);
-        $area->delete();
-
-        return redirect()->route('configurations.index')->with('success','Branch deleted successfully.');
-    }
-
-    public function table_store(Request $request){
-        //QR CODE
-        $number = mt_rand(1000000000, 9999999999);        
-        $request['product_code'] = $number;
-
-         $validator = Validator::make($request->all(), [
-            'area_id'    => 'required',
-            'table_name' => 'required',
-            'capacity'   => 'required',
-        ]);
-
-        if ($validator->fails()) {
-            return redirect()->back()
-                ->withErrors($validator)
-                ->withInput();
-        }
-
-        $table = new Seat();
-        $table->area_id = $request->area_id;
-        $table->table_name = $request->table_name;
-        $table->table_slug = Str::slug($request->table_name);
-        $table->capacity = $request->capacity;
-        $table->save();
-
-        return redirect()->back()->with('success', 'Table added successfully');
-       
-    }
-
-    // public function productCodeExists($number){
-    //     return Seat::whereProductCode($number)->exists();
-    // }    
-
-    public function table_delete($id) {
-        $table = Seat::find($id);
-
-        if (!$table) {
-            return redirect()->back()
-                ->with('error', 'Seat not found');
-        }
-
-        $table->delete();
-
-        return redirect()->route('configurations.index')
-            ->with('success', 'Seat deleted successfully.');
-    }
-    
-    public function table_destroy($id, Request $request){
-        $subCategory = Menu::find($id);
-
-        if(empty($subCategory)){
-            $request->session()->flash('error','Record not found');
-            return response([
-                'status' => false,
-                'notFound' => true,
-            ]);
-        }
-
-        $subCategory->delete();
-
-        $request->session()->flash('success', 'Sub Category deleted successfully');
-
-        return response([
-            'status' => true,
-            'message' => 'Sub Category deleted successfully',
-        ]);
-    }
-
+        
     //Pages
     public function page_store(Request $request){
         $validator = Validator::make($request->all(), [
@@ -1110,4 +928,92 @@ class ConfigurationController extends Controller implements HasMiddleware {
         $request->session()->flash('success','User deleted successfully');
         return redirect()->route('configurations.index')->with('success','User deleted successfully.');
     }
+
+
+    public function dashboard(){
+        $orders_count = DB::table('orders')
+                    ->select(DB::raw('count(*) as total'))
+                    ->get()[0]->total;
+
+        $users_count = DB::table('users')
+                    ->select(DB::raw('count(*) as total'))
+                    ->get()[0]->total;
+
+        $total_sale = Order::all()->sum('total');
+
+        $sales_count = DB::table('orders')
+                    ->select(DB::raw('count(*) as total'))
+                    ->get()[0]->total;
+
+        $total_categories = DB::table('categories')
+                    ->select(DB::raw('count(*) as total'))
+                    ->get()[0]->total;
+
+        $total_menu = DB::table('menus')
+                    ->select(DB::raw('count(*) as total'))
+                    ->get()[0]->total;
+
+        $total_items = DB::table('products')
+                    ->select(DB::raw('count(*) as total'))
+                    ->get()[0]->total;
+
+        $data['orders_count'] = $orders_count;
+        $data['users_count'] = $users_count;
+        $data['sales_count'] = $sales_count;
+        $data['total_sale'] = $total_sale;
+        $data['total_categories'] = $total_categories;
+        $data['total_menu'] = $total_menu;
+        $data['total_items'] = $total_items;
+
+        return view('admin.dashboard', $data);
+
+        //$admin = Auth::guard('admin')->user();
+        //echo 'Welcome '.$admin->name.' <a href="'.route('admin.logout').'">Logout</a>';
+    }    
+
+    public function logout() {     
+        Auth::guard('web')->logout();
+        session()->invalidate();
+        session()->regenerateToken();
+
+        return redirect()->route('login');
+    }
+
+
+    public function dineinOrderStatus(Request $request, $id) {
+        try {
+            Seat::where('id', $id)->update([
+                'status' => $request->status
+            ]);
+
+            return response()->json([
+                'status' => true,
+                'message' => 'Status Updated'
+            ]);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => false,
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }   
+
+
+    public function tablePdf($id) {
+        $seat = Seat::with('area')->findOrFail($id);
+        $config = Configuration::first();
+
+        // Table URL
+        $tableUrl = url('/table/'.$seat->area->area_slug.'/table-'.$seat->table);
+
+        // Generate QR Code
+        $qrCode = base64_encode(QrCode::format('png')->size(250)->margin(1)->generate($tableUrl));
+
+        $pdf = Pdf::loadView('admin.configurations.table', compact('seat', 'config', 'qrCode', 'tableUrl'))
+                ->setPaper([0, 0, 250, 350], 'portrait');
+
+        return $pdf->download('Table-'.$seat->table_name.'.pdf');
+    }
+    
 }

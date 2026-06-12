@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class Seat extends Model {
     use HasFactory;   
 
-    protected $fillable = [ 'table_name', 'table_slug', 'area_id', 'status', 'capacity' ];
+    protected $fillable = [ 'table', 'type_id', 'area_id', 'table_order', 'status', 'capacity' ];
 
     public function seat(){
         return $this->hasMany(Seat::class, 'area_id');
@@ -22,6 +22,10 @@ class Seat extends Model {
     // public function area(){
     //     return $this->belongsTo(Area::class, 'id');
     // }
+
+    public function type() {
+        return $this->belongsTo(TableType::class, 'type_id');
+    }
 
     public function area(){
         return $this->belongsTo(Area::class);

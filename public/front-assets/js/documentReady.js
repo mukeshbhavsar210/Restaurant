@@ -156,11 +156,12 @@ $(document).ready(function(){
 	function checkFields() {
 		let activeTab  = $('.tab-link.active').data('type');
 		let notes      = $.trim($('textarea[name="notes"]').val());		
+		let phone      = $.trim($('input[name="phone"]').val());
 		let seatId     = $('select[name="seat_id"]').val();		
 		let outlet_id  = $('select[name="active_outlet_id"]').val() || '';
 		let name       = $.trim($('input[name="active_name"]').val());
 		let email      = $.trim($('input[name="active_email"]').val());
-		let phone      = $.trim($('input[name="active_phone"]').val());
+		//let phone      = $.trim($('input[name="active_phone"]').val());
 		let address    = $.trim($('textarea[name="address"]').val());
 
 		let valid = false;
@@ -172,6 +173,7 @@ $(document).ready(function(){
 		if (activeTab == 'Dinein') {
 			if (
 				notes.trim() !== '' &&
+				phone.trim() !== '' &&
 				seatId.trim() !== ''
 			) {
 				valid = true;
@@ -183,8 +185,7 @@ $(document).ready(function(){
 			if (
 				notes.trim() !== '' &&
 				name.trim() !== '' &&
-				email.trim() !== '' &&
-				phone.trim() !== '' &&
+				email.trim() !== '' &&				
 				outlet_id.trim() !== '' 
 			) {
 				valid = true;
@@ -196,8 +197,7 @@ $(document).ready(function(){
 			if (
 				notes.trim() !== '' &&
 				name.trim() !== '' &&
-				email.trim() !== '' &&
-				phone.trim() !== '' &&
+				email.trim() !== '' &&				
 				outlet_id.trim() !== '' &&
 				address.trim() !== ''
 			) {
@@ -428,6 +428,6 @@ $(document).on('change', '.product-variant', function () {
 	$('.product-price-show').text(price);
 
 	// Update hidden fields
-	$('#variant_name').val(name);
-	$('#variant_price').val(price);
+	$('.variant_name').val(name);
+	$('.variant_price').val(price);
 });

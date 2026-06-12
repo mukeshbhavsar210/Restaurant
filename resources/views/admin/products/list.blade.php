@@ -68,48 +68,33 @@
                                             <tr>
                                                 <td>
                                                     <div class="product-row">
-                                                        <div class="show-tooltip">
-                                                            <div class="uploaded">
-                                                                <span class="badge bg-black">
-                                                                    {{ $value->product_images->count() }}
-                                                                </span>
-                                                            </div>                                                        
+                                                        <div class="show-tooltip">                                                            
+                                                            <span class="badge bg-black">{{ $value->product_images->count() }}</span>                                                            
+                                                            
                                                             @php
                                                                 $type = $value->menu?->veg_nonveg;
                                                                 $productImage = $value->product_images->first();
                                                             @endphp
-                                                            
-                                                            @if (!empty($productImage?->image))
-                                                                <img src="{{ asset('uploads/product/small/'.$productImage->image) }}" height="90" class="me-3 rounded"/>
-                                                                
-                                                            @else
-                                                                <img src="{{ asset('admin-assets/img/default-150x150.png') }}" height="90" class="me-3 rounded" />
-                                                            @endif
+
+                                                            @if($type == 'Non-veg')                                                                
+                                                                <span class="sprites nonveg-icon"></span>
+                                                            @elseif($type == 'Egg')                                                                
+                                                                <span class="sprites egg-icon"></span>
+                                                            @elseif($type == 'Veg')                                                                
+                                                                <span class="sprites veg-icon"></span>
+                                                            @endif  
                                                         </div>
-                                                            
+                                                                                                                        
+                                                        @if (!empty($productImage?->image))
+                                                            <img src="{{ asset('uploads/product/small/'.$productImage->image) }}" height="90" class="me-3 rounded"/>
+                                                        @else
+                                                            <img src="{{ asset('admin-assets/img/default-150x150.png') }}" height="90" class="me-3 rounded" />
+                                                        @endif
                                                         <div>
                                                             <h5 class="mb-0">{{ $value->name }}</h5>
                                                             <p class="text-muted mb-0">{{ $value->description }}</p>                                                            
                                                         </div>
                                                     </div>
-                                                </td>
-                                                <td width="100">
-                                                    @if($type == 'Non-veg')
-                                                        <div class="flex">
-                                                            <span class="sprites nonveg-icon"></span>
-                                                            <span class="text-muted">Non-Veg</span>
-                                                        </div>
-                                                    @elseif($type == 'Egg')
-                                                        <div class="flex">
-                                                            <span class="sprites egg-icon"></span>
-                                                            <span class="text-muted">Egg</span>
-                                                        </div>
-                                                    @elseif($type == 'Veg')
-                                                        <div class="flex">
-                                                            <span class="sprites veg-icon"></span> 
-                                                            <span class="text-muted">Veg</span>
-                                                        </div>
-                                                    @endif  
                                                 </td>
                                                 <td class="text-end">
                                                     <h5 class="mb-0">
@@ -122,35 +107,14 @@
                                                         @endif                                    
                                                     </h5>                                   
                                                 </td>
-                                                <td width="150">
+                                                <td>
                                                     <div class="flex pull-right">
                                                         @if ($value->status == 1)  
                                                             <span class="sprites green-tick-icon"></span>
                                                         @else
                                                             <span class="sprites red-tick-icon"></span>
                                                         @endif  
-                                                        {{-- <a href="javascript:void(0)"
-                                                            class="editProduct edit-icon"
-                                                            data-bs-toggle="modal"
-                                                            data-bs-target="#createProductModal"
-                                                            data-action="{{ route('products.update', $value->id) }}"                                            
-                                                            data-method="PUT"
-                                                            data-title="Edit Product"
-                                                            data-button="Update Product"
-
-                                                            data-name="{{ $value->name }}"
-                                                            data-slug="{{ $value->slug }}"
-                                                            data-price="{{ $value->price }}"
-                                                            data-category_id="{{ $value->category_id }}"
-                                                            data-menu_id="{{ $value->menu_id }}"
-                                                            data-price="{{ $value->price }}"
-                                                            data-description="{{ $value->description }}"
-                                                            data-image_id="{{ $value->image_id }}"
-                                                            >
-
-                                                            <span class="sprites"></span>
-                                                        </a> --}}
-
+                                                        
                                                         <a href="{{ route('products.edit', $value->id) }}" class="edit-icon">
                                                             <span class="sprites"></span>
                                                         </a>                                  

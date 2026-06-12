@@ -14,7 +14,7 @@ use Illuminate\Http\Request;
 class QrController extends Controller
 {
     public function index(Request $request){
-        $seatings = Seating::orderBy('table_name','ASC')->get();
+        $seatings = Seat::orderBy('table','ASC')->get();
         $areas = Area::orderBy('area_name','ASC')->get();
         
         $data = [];

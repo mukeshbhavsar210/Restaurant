@@ -5,7 +5,7 @@
 @include('front/layouts/message')
 
 <div class="order-summary">
-    <h2>Order placed successfully!</h2>
+    <h2>Admin Order placed successfully!</h2>
     <p>Redirecting to Main page in <span id="countdown">7</span>  seconds...</p>  
     <a href="{{ route('customer.invoice', $order->id) }}" class="btn btn-primary btn-sm mt-3">
         Download Invoice

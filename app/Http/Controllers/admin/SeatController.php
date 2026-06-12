@@ -16,7 +16,7 @@ use Illuminate\Support\Collection;
 class SeatController extends Controller
 {
     public function index(Request $request){
-        $seatings = Seat::orderBy('table_name','ASC')->get();
+        $seatings = Seat::orderBy('table','ASC')->get();
         $areas = Area::orderBy('area_name','ASC')->with('seating')->get();
 
         $areaCount = DB::table('areas')
@@ -49,7 +49,7 @@ class SeatController extends Controller
         if ($validator->passes()) {
             $menu = new Seat();
             $menu->area_id = $request->area_name;
-            $menu->table_name = $request->table_name;
+            $menu->table = $request->table;
             $menu->table_slug = $request->slug;          
             $menu->capacity = $request->capacity;
             $menu->save();

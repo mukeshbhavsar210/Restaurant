@@ -25,10 +25,6 @@
                     <button class="nav-link mobile-menu-btn nav-icon" id="togglemenu">
                         <i class="iconoir-menu-scale"></i>
                     </button>
-                </li> 
-                <li class="mx-1 welcome-text">
-                    <h3 class="mb-0 fw-bold text-truncate">Good Morning, Admin!</h3>
-                    <h6 class="mb-0 fw-normal text-muted text-truncate fs-14">Here's your overview this week.</h6>
                 </li>                   
             </ul>
             <ul class="topbar-item list-unstyled d-inline-flex align-items-center mb-0">
@@ -49,78 +45,38 @@
                         <i class="icofont-bell-alt"></i>
                         <span class="alert-badge"></span>
                     </a>
-                    <div class="dropdown-menu stop dropdown-menu-end dropdown-lg py-0" data-popper-placement="bottom-end" style="position: absolute; inset: 0px 0px auto auto; margin: 0px; transform: translate(-8px, 76px);">
-                
+                    <div class="dropdown-menu stop dropdown-menu-end dropdown-lg py-0" data-popper-placement="bottom-end" style="position: absolute; inset: 0px 0px auto auto; margin: 0px; transform: translate(-8px, 76px);">                
                         <h5 class="dropdown-item-text m-0 py-2 d-flex justify-content-between align-items-center">
-                            Notifications <a href="#" class="badge text-body-tertiary badge-pill">
-                                <i class="iconoir-plus-circle fs-4"></i>
-                            </a>
-                        </h5>
-                        <ul class="nav nav-tabs nav-tabs-custom nav-success nav-justified mb-1" role="tablist">
-                            <li class="nav-item" role="presentation">
-                                <a class="nav-link mx-0 active" data-bs-toggle="tab" href="#All" role="tab" aria-selected="true">
-                                    All <span class="badge bg-primary-subtle text-primary badge-pill ms-1">24</span>
-                                </a>
-                            </li>
-                            <li class="nav-item" role="presentation">
-                                <a class="nav-link mx-0" data-bs-toggle="tab" href="#Projects" role="tab" aria-selected="false" tabindex="-1">
-                                    Projects
-                                </a>
-                            </li>
-                            <li class="nav-item" role="presentation">
-                                <a class="nav-link mx-0" data-bs-toggle="tab" href="#Teams" role="tab" aria-selected="false" tabindex="-1">
-                                    Team
-                                </a>
-                            </li>
-                        </ul>
+                            Notifications 
+                        </h5>                       
                         <div class="ms-0 simplebar-scrollable-y" style="max-height:230px;" data-simplebar="init"><div class="simplebar-wrapper" style="margin: 0px;"><div class="simplebar-height-auto-observer-wrapper"><div class="simplebar-height-auto-observer"></div></div><div class="simplebar-mask"><div class="simplebar-offset" style="right: 0px; bottom: 0px;"><div class="simplebar-content-wrapper" tabindex="0" role="region" aria-label="scrollable content" style="height: auto; overflow: hidden scroll;"><div class="simplebar-content" style="padding: 0px;">
-                            <div class="tab-content" id="myTabContent">
-                                <div class="tab-pane fade show active" id="All" role="tabpanel" aria-labelledby="all-tab" tabindex="0">                                    
-                                    <a href="#" class="dropdown-item">
-                                        <small class="float-end text-muted ps-2">2 min ago</small>
-                                        <div class="d-flex align-items-center">
-                                            <div class="flex-shrink-0 bg-primary-subtle text-primary thumb-md rounded-circle">
-                                                <i class="iconoir-wolf fs-4"></i>
-                                            </div>
-                                            <div class="flex-grow-1 ms-2 text-truncate">
-                                                <h6 class="my-0 fw-normal text-dark fs-13">Your order is placed</h6>
-                                                <small class="text-muted mb-0">Dummy text of the printing and industry.</small>
-                                            </div>
-                                        </div>
-                                    </a>
+                            <a href="#" class="dropdown-item">
+                                <small class="float-end text-muted ps-2">2 min ago</small>
+                                <div class="d-flex align-items-center">
+                                    <div class="flex-shrink-0 bg-primary-subtle text-primary thumb-md rounded-circle">
+                                        <i class="iconoir-wolf fs-4"></i>
+                                    </div>
+                                    <div class="flex-grow-1 ms-2 text-truncate">
+                                        <h6 class="my-0 fw-normal text-dark fs-13">Order is placed</h6>
+                                        <small class="text-muted mb-0">Dummy text of the printing and industry.</small>
+                                    </div>
                                 </div>
-                                <div class="tab-pane fade" id="Projects" role="tabpanel" aria-labelledby="projects-tab" tabindex="0">                                    
-                                    <a href="#" class="dropdown-item">
-                                        <small class="float-end text-muted ps-2">40 min ago</small>
-                                        <div class="d-flex align-items-center">
-                                            <div class="flex-shrink-0 bg-primary-subtle text-primary thumb-md rounded-circle">                                                    
-                                                <i class="iconoir-birthday-cake fs-4"></i>
-                                            </div>
-                                            <div class="flex-grow-1 ms-2 text-truncate">
-                                                <h6 class="my-0 fw-normal text-dark fs-13">UX 3 Task complete.</h6>
-                                                <small class="text-muted mb-0">Dummy text of the printing.</small>
-                                            </div>
-                                        </div>
-                                    </a>
-                                </div>
-                                <div class="tab-pane fade" id="Teams" role="tabpanel" aria-labelledby="teams-tab" tabindex="0">
-                                    <a href="#" class="dropdown-item">
-                                        <small class="float-end text-muted ps-2">1 hr ago</small>
-                                        <div class="d-flex align-items-center">
-                                            <div class="flex-shrink-0 bg-primary-subtle text-primary thumb-md rounded-circle">
-                                                <i class="iconoir-drone fs-4"></i>
-                                            </div>
-                                            <div class="flex-grow-1 ms-2 text-truncate">
-                                                <h6 class="my-0 fw-normal text-dark fs-13">Your order is placed</h6>
-                                                <small class="text-muted mb-0">It is a long established fact that a reader.</small>
-                                            </div>
-                                        </div>
-                                    </a>
-                                </div>
-                            </div>
-                    
-                        </div></div></div></div><div class="simplebar-placeholder" style="width: 318px; height: 420px;"></div></div><div class="simplebar-track simplebar-horizontal" style="visibility: hidden;"><div class="simplebar-scrollbar" style="width: 0px; display: none;"></div></div><div class="simplebar-track simplebar-vertical" style="visibility: visible;"><div class="simplebar-scrollbar" style="height: 125px; display: block; transform: translate3d(0px, 0px, 0px);"></div></div></div>
-                        <!-- All-->
+                            </a>                                                  
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="simplebar-placeholder" style="width: 318px; height: 420px;"></div>
+        </div>
+        <div class="simplebar-track simplebar-horizontal" style="visibility: hidden;">
+            <div class="simplebar-scrollbar" style="width: 0px; display: none;">
+                </div>
+            </div>
+            <div class="simplebar-track simplebar-vertical" style="visibility: visible;">
+                <div class="simplebar-scrollbar" style="height: 125px; display: block; transform: translate3d(0px, 0px, 0px);">
+            </div>
+        </div>
+    </div>                        
                         <a href="pages-notifications.html" class="dropdown-item text-center text-dark fs-13 py-2">
                             View All <i class="fi-arrow-right"></i>
                         </a>
@@ -162,12 +118,12 @@
 
                         <div class="dropdown-divider mb-0"></div>
 
-                        <form method="POST" action="{{ route('logout') }}" >
+                        <form method="POST" action="{{ route('admin.logout') }}" >
 							@csrf
-                                <a href="{{ route('logout') }}" onclick="event.preventDefault(); this.closest('form').submit();" class="dropdown-item text-danger">
+                            <a href="{{ route('admin.logout') }}" onclick="event.preventDefault(); this.closest('form').submit();" class="dropdown-item text-danger">
                                 <i class="las la-power-off fs-18 me-1 align-text-bottom"></i>
-                                {{ __('Log Out') }}
-						    </a>
+                                Logout
+                            </a>
 						</form>
                     </div>
                 </li>
@@ -220,10 +176,8 @@
 <div class="startbar-overlay d-print-none"></div>
 
 <div class="page-wrapper">
-    <div class="page-content">
-        <div class="container-xxl">
-            @yield('content')
-        </div>                
+    <div class="page-content">        
+        @yield('content')        
         
         <footer class="footer text-center text-sm-start d-print-none">
             <div class="container-xxl">
@@ -245,10 +199,11 @@
 <script src="{{ asset('admin-assets/js/bootstrap.bundle.min.js') }}"></script>
 <script src="{{ asset('admin-assets/plugins/dropzone/min/dropzone.min.js') }}"></script> 
 <script src="{{ asset('admin-assets/js/app.js') }}"></script>
-<script src="{{ asset('admin-assets/js/admin_documentReady.js') }}"></script>
+<script src="{{ asset('admin-assets/js/documentReady_admin.js') }}"></script>
 <script src="{{ asset('admin-assets/plugins/summernote/summernote-bs4.min.js') }}"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 {{-- <script src="{{ asset('admin-assets/js/simplebar.min.js') }}"></script>
-
 <script src="{{ asset('admin-assets/plugins/select2/js/select2.min.js') }}"></script>
 <script src="{{ asset('admin-assets/js/datetimepicker.js') }}"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script> --}}
@@ -291,6 +246,8 @@
     //         });
     //     });
     // });
+
+    
 
 $(document).ready(function(){
         $("#variant_checkbox").change(function(){
@@ -384,9 +341,7 @@ $(document).ready(function(){
             data: { title: element.val() },
             dataType: 'json',
             success: function (response) {
-
                 submitBtn.prop('disabled', false);
-
                 if (response.status) {
                     form.find(target).val(response.slug);
                 }
@@ -453,6 +408,69 @@ $(document).ready(function(){
             }
         });
     });    
+
+    $(document).on('change', '.status-switch', function () {
+        let seatId = $(this).closest('form').data('id');
+        let status = $(this).is(':checked') ? 'running' : 'available';        
+        let url = "{{ route('orderStatus', ':id') }}";
+
+        url = url.replace(':id', seatId);
+
+        $.ajax({
+            url: url,
+            type: 'POST',
+            data: {
+                _token: '{{ csrf_token() }}',
+                status: status
+            },
+            success: function(response) {
+                alert(response.message);
+                location.reload();                
+            },
+            error: function(xhr) {
+                console.log(xhr.responseText);
+            }
+        });
+    });
+
+    $(document).on('click', '.download-pdf', async function () {        
+        const { jsPDF } = window.jspdf;
+
+        let seatId = $(this).data('id');
+        let tableName = $(this).data('table');
+        let element = document.getElementById('qr-' + seatId);
+
+        const canvas = await html2canvas(element);
+        const imgData = canvas.toDataURL('image/png');
+        const pdf = new jsPDF('p', 'mm', 'a4');
+
+        pdf.text('Table: ' + tableName, 20, 20);
+        pdf.addImage(imgData, 'PNG', 20, 30, 60, 60);
+
+        pdf.save('QR-' + tableName + '.pdf');
+    });
+
+    $(document).ready(function() {        
+        $('#outletSelect').on('change', function() {
+            if ($(this).val() !== '') {
+                $('#outletForm').submit();
+            }
+        });
+    });
+
+    $('#outletSelect').on('change', function() {        
+        $.ajax({
+            url: "{{ route('invoice.branch.store') }}",
+            type: "POST",
+            data: {
+                _token: $('meta[name="csrf-token"]').attr('content'),
+                outlet_id: $(this).val()
+            },
+            success: function(response) {
+                console.log('Saved');
+            }
+        });
+    });
 </script>
 
 @yield('customJs')

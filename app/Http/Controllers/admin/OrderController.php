@@ -11,6 +11,7 @@ use App\Models\Seat;
 use App\Models\Tax;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class OrderController extends Controller {
     public function index(Request $request){
@@ -53,31 +54,10 @@ class OrderController extends Controller {
         $orderItems = OrderItem::where('order_id',$orderId)->get();  
         $products = Product::latest('id');
         $config = Configuration::first();          
-
-        $subtotal = 0;
-        $gstAmount = 0;
-        $sgstAmount = 0;
-        $cgstAmount = 0;
-
-        foreach ($order->items as $item) {
-            $itemTotal = $item->price * $item->quantity;
-            $subtotal += $itemTotal;
-            $gstAmount += ($itemTotal * $config->gst) / 100;
-            $sgstAmount += ($itemTotal * $config->sgst) / 100;
-            $cgstAmount += ($itemTotal * $config->cgst) / 100;
-        }
-
-        $shipping = $config->shipping;
-        $grandTotal = $subtotal + $gstAmount + $sgstAmount + $cgstAmount + $shipping;        
-
+      
         return view('admin.orders.detail',[
             'order' => $order,
             'orderItems' => $orderItems,
-            'subtotal' => $subtotal,
-            'gstAmount' => $gstAmount,
-            'sgstAmount' => $sgstAmount,
-            'cgstAmount' => $cgstAmount,
-            'grandTotal' => $grandTotal,
             'products' => $products,
             'config' => $config,
         ]);
@@ -90,6 +70,23 @@ class OrderController extends Controller {
         $order->shipped_date = $request->shipped_date;
         $order->save();        
 
+        try {
+            Seat::where('id', $id)->update([
+                'status' => $request->status
+            ]);
+
+            return response()->json([
+                'status' => true,
+                'message' => 'Status Updated'
+            ]);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => false,
+                'error' => $e->getMessage()
+            ], 500);
+        }
+
         $message = 'Order status updated successfully';
 
         session()->flash('success',$message);
@@ -100,16 +97,28 @@ class OrderController extends Controller {
         ]);
     }
 
+
     public function sendInvoiceEmail(Request $request, $orderId){
         orderEmail($orderId, $request->userType);
-
         $message = 'Order email sent successfully';
-
         session()->flash('success',$message);
 
         return response()->json([
             'status' => true,
             'message' => $message,
         ]);
+    }   
+
+    public function invoicePdf($id){
+        $order = Order::with(['items.product'])->findOrFail($id);
+        $config = Configuration::first();
+        $pdf = Pdf::loadView('admin.orders.invoice', compact('order','config'))->setPaper([0, 0, 275, 500], 'portrait');
+
+        return $pdf->download(
+            'invoice_'.$order->id.
+            '_table_'.$order->seat?->table.
+            '_'.$order->seat?->area?->area_name.            
+            '.pdf'
+        );
     }
 }
