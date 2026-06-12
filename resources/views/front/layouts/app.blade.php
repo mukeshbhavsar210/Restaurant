@@ -24,15 +24,22 @@
 <div id="menu-page" class="page" style="display:flex;flex-direction:column;">	
 	<header id="sticky-header">
 		<div class="header">
-			<a href="{{ route('front.home') }}">
+			<a href="{{ route('front.menu') }}">
 				<img src="{{ asset('uploads/logo/'.configData()->logo) }}" alt="{{ configData()->name }}" class="logo"  />
 			</a>
 		</div>
 
 		<section class="categories-section categories-section--medium-photo">
 			<div class="categories-section__container">										
-				@if(session('wishlist'))				
+				@if(session('wishlist'))	
+					@php
+						$wishlistCount = count(session('wishlist', []));
+					@endphp
 					<div class="menu-category {{ request()->routeIs('front.wishlist') ? 'menu-category--active' : '' }}">
+						@if($wishlistCount > 0)
+							<span class="wishlist-counts">{{ $wishlistCount }}</span>
+						@endif
+						
 						<a href="{{ route('front.wishlist') }}" class="favourite-icon">
 							<span class="sprites"></span>
 						</a>
@@ -42,16 +49,10 @@
 
 				@if (getCategories()->isNotEmpty())
 					@foreach (getCategories() as $value )	
-						<div class="menu-category
-								{{
-									(request()->routeIs('front.menu') && request()->segment(2) == $value->slug) ||
-									(request()->routeIs('front.home') && $loop->first)
-									? 'menu-category--active'
-									: ''
-								}}">
+						<div class="menu-category {{ (request()->routeIs('front.menu') && request()->segment(1) == $value->slug) ? 'menu-category--active' : '' }}">
 							<a href="{{ route('front.menu',[$value->slug])}}">
 								@if ($value->image != "")
-									<img src="{{ asset('uploads/category/'.$value->image) }} " alt="">								
+									<img src="{{ asset('uploads/category/'.$value->image) }}" alt="" class="item">
 								@endif									
 							</a>								
 							<p>{{ $value->name }}</p>						
@@ -82,24 +83,7 @@
 	setTimeout(function(){
 		$('.custom-success-alert').fadeOut();
 	}, 3000);
-
-	function addToWishlist(id){
-        $.ajax({
-            url: '{{ route("front.addToWishlist",) }}',
-            type: 'post',
-            data: {id:id},
-            dataType: 'json',
-            success: function(response){
-                if(response.status == true){
-                    $("#wishlistModal .modal-body").html(response.message);
-                    $("#wishlistModal").modal('show');
-                } else {
-                    window.location.href= "{{ route('front.home') }}";
-                    alert(response.message);
-                }
-            }
-        })
-    }		
+	
 </script>
 
 @yield('customJs')

@@ -5,7 +5,13 @@
 @include('admin.layouts.message')
 
 @php
-    //$shipping = ($order->order_type === 'Delivery') ? $order->shipping : 50;
+    $subtotal = $order->total;
+    $shipping = $config->shipping;
+    $gstAmount = ($subtotal * $config->gst) / 100;
+    $sgstAmount = ($subtotal * $config->sgst) / 100;
+    $cgstAmount = ($subtotal * $config->cgst) / 100;
+    $grandTotal = $subtotal + $gstAmount + $sgstAmount + $cgstAmount;
+                                
     $dinein = $order->order_type === 'Dinein';
     $takeaway = $order->order_type === 'Takeaway';
     $delivery = $order->order_type === 'Delivery';
@@ -135,15 +141,15 @@
                             </tr>
                             <tr>
                                 <td colspan="3" class="text-end">GST ({{ $config->gst }}%)</td>
-                                <td class="text-end">₹{{ round($gstAmount) }}</td>
+                                <td class="text-end">₹{{ $gstAmount }}</td>
                             </tr>                    
                             <tr>
                                 <td colspan="3" class="text-end">SCGT ({{ $config->sgst }}%):</td>
-                                <td class="text-end">₹{{ round($sgstAmount) }}</td>
+                                <td class="text-end">₹{{ $sgstAmount }}</td>
                             </tr>
                             <tr>
                                 <td colspan="3" class="text-end">CGST ({{ $config->cgst }}%):</td>
-                                <td class="text-end">₹{{ round($cgstAmount) }}</td>
+                                <td class="text-end">₹{{ $cgstAmount }}</td>
                             </tr>
                             @if($delivery)
                                 <tr>
@@ -164,7 +170,11 @@
         <div class="col-md-3">            
             <div class="card">
                 <div class="card-body"> 
-                    <form action="" method="post" name="changeOrderStatusForm" id="changeOrderStatusForm">
+                    <a href="{{ route('orders.invoice', $order->id) }}" class="btn btn-primary">
+                        Download Invoice
+                    </a>                    
+                    
+                    <form action="" method="post" name="changeOrderStatusForm" id="changeOrderStatusForm" class="mt-3">
                         @if($dinein)
                             <div class="form-group">
                                 <label for="shipped_date">Status</label>

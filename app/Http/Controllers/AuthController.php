@@ -178,10 +178,10 @@ class AuthController extends Controller
         }
     }
 
-    // public function logout(){
-    //     Auth::logout();
-    //     return redirect()->route('user.home')->with('success','You successfully logged out!');;
-    // }
+    public function logout(){
+        Auth::logout();
+        return redirect()->route('user.home')->with('success','You successfully logged out!');;
+    }
 
     public function orders(){
         $user = Auth::user();

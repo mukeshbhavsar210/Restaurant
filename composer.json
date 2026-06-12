@@ -7,10 +7,13 @@
     "license": "MIT",
     "require": {
         "php": "^8.2",
+        "barryvdh/laravel-dompdf": "^3.1",
         "intervention/image": "^3.11",
         "laravel/framework": "^11.31",
         "laravel/tinker": "^2.9",
         "milon/barcode": "^11.0",
+        "razorpay/razorpay": "^2.9",
+        "simplesoftwareio/simple-qrcode": "*",
         "spatie/laravel-permission": "^6.25"
     },
     "require-dev": {

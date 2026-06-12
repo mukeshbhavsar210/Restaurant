@@ -15,13 +15,13 @@
 <div class="card">
     <div class="card-body">
         <div class="row">                
-            <div class="col-md-9 col-12">
+            <div class="col-md-9 col-4">
                 <div class="page-title"> 
                     <h4>Category</h4>        
                     <span class="counts">{{ $totalCategories }}</span>                    
                 </div>
             </div>
-            <div class="col-md-3 col-12">
+            <div class="col-md-3 col-8">
                 <div class="flex pull-right">
                     <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#{{ $categoryForm['modal_id'] }}">{{ $categoryForm['button_name'] }}</button>
                     <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#{{ $menuForm['modal_id'] }}">{{ $menuForm['button_name'] }}</button>
@@ -41,17 +41,11 @@
                                     aria-expanded="{{ $loop->first ? 'true' : 'false' }}" 
                                     aria-controls="collapse_{{ $value->id }}">
                                     
-                                    <div class="flex">
-                                        <div class="thumb-category">
-                                            @if($value->image)
-                                                <img src="{{ asset('uploads/category/'.$value->image) }}" style="height: 50px; width:50px; margin-right:10px;" class="shadow-sm rounded" />
-                                            @endif
-                                            <p class="count-category">
-                                                {{ $value->menus_count }}
-                                            </p>
-                                        </div>
-                                        <h5 class="mb-0 mt-2">{{ $value->name }}</h5>
-                                    </div>                                    
+                                    {{ $value->name }}
+
+                                    <span class="ms-2 badge bg-secondary">
+                                        {{ $value->menus_count }}
+                                    </span>
                             </button>
                         </div>
                         
@@ -60,10 +54,26 @@
                             aria-labelledby="heading_{{ $value->id }}" 
                             data-bs-parent="#categoryAccordion">
 
-                            <div class="accordion-body">                                 
+                            <div class="accordion-body">
                                 <div class="row">
-                                    <div class="col-12">
-                                        <div class="chip-extra">
+                                    <div class="col-md-2 col-12">
+                                        <div class="product-row">                                      
+                                            @if($value->image)
+                                                <img src="{{ asset('uploads/category/'.$value->image) }}" style="height: 70px; width:70px; margin-right:10px;" class="shadow-sm rounded" />
+                                            @endif 
+
+                                            <div class="flex">
+                                                <h5>{{ $value->name }}</h5>                                        
+                                                <a href="javascript:void(0)" class="delete-icon commonDeleteBtn"
+                                                    data-bs-toggle="modal" data-bs-target="#commonDeleteModal"
+                                                    data-url="{{ route('category.delete', $value->id) }}" data-title="{{ $value->name }}">
+                                                    <span class="sprites"></span>
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-10 col-12">
+                                        <div class="chip-extra mt-2">
                                             @if ($value->menus->count())                                    
                                                 @foreach ($value->menus as $menu)
                                                     <div class="chip-unique">                                                                                                        
@@ -87,15 +97,9 @@
                                                         </div>                                                    
                                                     </div>                                                
                                                 @endforeach                                                                      
-                                            @endif        
-
-                                            <a href="javascript:void(0)" class="btn btn-outline-danger commonDeleteBtn"
-                                                data-bs-toggle="modal" data-bs-target="#commonDeleteModal"
-                                                data-url="{{ route('category.delete', $value->id) }}" data-title="{{ $value->name }}">
-                                                Delete {{ $value->name }}
-                                            </a>                               
+                                            @endif                                                                                                    
                                         </div>
-                                    </div>                                    
+                                    </div>
                                 </div>
                             </div>
                         </div>

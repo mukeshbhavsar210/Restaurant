@@ -11,217 +11,278 @@
             @endphp
 
             <form class="controlForm" action="{{ $formConfig['action'] }}" method="POST" enctype="multipart/form-data">
-                @csrf       
-                
-                <input type="hidden" name="_method" class="formMethod" value="POST">             
+                @csrf                       
+                    <input type="hidden" name="_method" class="formMethod" value="POST">             
+                    <div class="modal-body">
+                        @if(isset($modal['accordion']) && is_array($modal['accordion']))
+                            <div class="accordion accordion-flush" id="modalAccordion">
+                                @foreach($modal['accordion'] as $index => $section)
+                                    <div class="accordion-item">
+                                        <h2 class="accordion-header">
+                                            <button class="accordion-button px-0 fw-semibold {{ $index ? 'collapsed' : '' }}" type="button"
+                                                data-bs-toggle="collapse" data-bs-target="#accordion{{ $index }}" >
+                                                {{ $section['title'] }}
+                                            </button>
+                                        </h2>
 
-                <div class="modal-body">
-                    <div class="row">
-                        @foreach($modal['formConfig']['fields'] as $field)
-                            <div class="{{ $field['col'] ?? 'col-md-12' }}">
-                                <div class="form-group">
-                                    @if(($field['type'] ?? '') != 'hidden' && !empty($field['label']))
-                                        <label class="form-label" for="{{ $field['name'] }}">
-                                            {{ $field['label'] }}
-                                            @if($field['required'] ?? false)
-                                                <span class="text-danger">*</span>
-                                            @endif
-                                        </label>
-                                    @endif
-                                    
-                                    @if($field['type'] == 'text') 
-                                        <input type="{{ $field['type'] }}" name="{{ $field['name'] }}" id="{{ $field['name'] ?? '' }}" value="{{ $field['value'] ?? old($field['name']) }}"
-                                                placeholder="{{ $field['placeholder'] ?? '' }}" class="form-control {{ $field['class'] ?? '' }}"    
+                                        <div id="accordion{{ $index }}" class="accordion-collapse collapse {{ $index == 0 ? 'show' : '' }}" data-bs-parent="#modalAccordion" >
+                                            <div class="accordion-body px-0">
+                                                <div class="row">
+                                                    @foreach($section['fields'] as $field)
+                                                        <div class="{{ $field['col'] ?? 'col-md-12' }}">
+                                                            <div class="form-group">                                                      
+                                                                @if(($field['type'] ?? '') != 'hidden' && !empty($field['label']))
+                                                                    <label class="form-label" for="{{ $field['name'] }}">
+                                                                        {{ $field['label'] }}
+                                                                        @if($field['required'] ?? false)
+                                                                            <span class="text-danger">*</span>
+                                                                        @endif
+                                                                    </label>
+                                                                @endif
 
-                                                @if(isset($field['data']))
-                                                    @foreach($field['data'] as $key => $value)
-                                                        data-{{ $key }}="{{ $value }}"
+                                                                @if($field['type'] == 'textarea')
+                                                                    <textarea name="{{ $field['name'] }}" class="form-control" rows="{{ $field['rows'] ?? 3 }}" placeholder="{{ $field['placeholder'] ?? '' }}"
+                                                                        {{ !empty($field['required']) ? 'required' : '' }}
+                                                                    ></textarea>
+                                                                @elseif($field['type'] == 'checkbox')
+                                                                    <div class="{{ isset($field['class']) ? $field['class'] : 'row' }}">
+                                                                        @foreach($field['options'] as $option)
+                                                                            <div class="col">
+                                                                                <label class="custom-checkbox" for="data_{{ $option[$field['option_value']] }}">
+                                                                                    <input type="checkbox" id="data_{{ $option[$field['option_value']] }}" name="{{ $field['name'] }}[]"
+                                                                                        value="{{ $option[$field['option_text']] }}">
+                                                                                    <span class="checkmark"></span>
+                                                                                    {{ $option[$field['option_text']] }}
+                                                                                </label>
+                                                                            </div>
+                                                                        @endforeach
+                                                                    </div>
+                                                                @else
+                                                                    <input type="{{ $field['type'] }}" name="{{ $field['name'] }}" class="form-control" placeholder="{{ $field['placeholder'] ?? '' }}"
+                                                                    {{ !empty($field['required']) ? 'required' : '' }} >                                                        
+                                                                @endif
+                                                            </div>                                                        
+                                                        </div>
                                                     @endforeach
-                                                @endif
-                                        >
-
-                                    @elseif($field['type'] == 'price') 
-                                        <div class="form-group" id="original-price">
-                                            <input type="{{ $field['type'] }}" name="{{ $field['name'] }}" id="{{ $field['name'] }}" value="{{ $field['value'] ?? old($field['name']) }}"
-                                                placeholder="{{ $field['placeholder'] ?? '' }}" class="form-control {{ $field['class'] ?? '' }}" >
-                                        </div>
-
-                                    @elseif($field['type'] == 'radio')                                   
-                                        <div class="row">
-                                            @foreach($field['options'] as $option)
-                                                <div class="col-6">
-                                                    <label class="custom-radio mb-1">
-                                                        <input type="radio" name="{{ $field['name'] }}" value="{{ $option }}">
-                                                        <span class="radio-mark"></span>
-                                                        {{ $option }}
-                                                        {{ $option == 1 ? 'Seat' : 'Seats' }}
-                                                    </label>
                                                 </div>
-                                            @endforeach
+                                            </div>
                                         </div>
+                                    </div>
+                                @endforeach
+                            </div>
+                        @endif
 
-                                    @elseif($field['type'] == 'veg_radio')                                   
-                                        <div class="form-group mb-0">
-                                            <div class="btn-group mt-1" role="group" aria-label="Basic radio toggle button group">
-                                                @foreach($field['options'] as $key => $option)
-                                                    <input type="radio" class="btn-check" name="{{ $field['name'] }}" value="{{ $option }}" id="{{ $option }}" autocomplete="off" {{ ($field['checked'] ?? '') == $key ? 'checked' : '' }} >
-                                                    <label class="btn btn-outline-secondary" for="{{ $option }}">{{ $option }}</label>                                            
+                        <div class="row">
+                            @foreach($modal['formConfig']['fields'] ?? [] as $field)
+                                <div class="{{ $field['col'] ?? 'col-md-12' }}">
+                                    <div class="form-group">
+                                        @if(($field['type'] ?? '') != 'hidden' && !empty($field['label']))
+                                            <label class="form-label" for="{{ $field['name'] }}">
+                                                {{ $field['label'] }}
+                                                @if($field['required'] ?? false)
+                                                    <span class="text-danger">*</span>
+                                                @endif
+                                            </label>
+                                        @endif
+                                        
+                                        @if($field['type'] == 'text') 
+                                            <input type="{{ $field['type'] }}" name="{{ $field['name'] }}" id="{{ $field['name'] ?? '' }}" value="{{ $field['value'] ?? old($field['name']) }}"
+                                                    placeholder="{{ $field['placeholder'] ?? '' }}" class="form-control {{ $field['class'] ?? '' }}"    
+
+                                                    @if(isset($field['data']))
+                                                        @foreach($field['data'] as $key => $value)
+                                                            data-{{ $key }}="{{ $value }}"
+                                                        @endforeach
+                                                    @endif
+                                            >                                    
+
+                                        @elseif($field['type'] == 'price') 
+                                            <div class="form-group" id="original-price">
+                                                <input type="{{ $field['type'] }}" name="{{ $field['name'] }}" id="{{ $field['name'] }}" value="{{ $field['value'] ?? old($field['name']) }}"
+                                                    placeholder="{{ $field['placeholder'] ?? '' }}" class="form-control {{ $field['class'] ?? '' }}" >
+                                            </div>
+
+                                        @elseif($field['type'] == 'radio')                                   
+                                            <div class="row">
+                                                @foreach($field['options'] as $option)
+                                                    <div class="col-6">
+                                                        <label class="custom-radio mb-1">
+                                                            <input type="radio" name="{{ $field['name'] }}" value="{{ $option }}">
+                                                            <span class="radio-mark"></span>
+                                                            {{ $option }}
+                                                            {{ $option == 1 ? 'Seat' : 'Seats' }}
+                                                        </label>
+                                                    </div>
                                                 @endforeach
                                             </div>
-                                        </div>
 
-                                    @elseif($field['type'] == 'checkbox')
-                                        <div class="{{ isset($field['class']) ? $field['class'] : 'row' }}">
-                                            @foreach($field['options'] as $option)
-                                                <div class="col-6">
-                                                    <label class="custom-checkbox" for="data_{{ $option[$field['option_value']] }}">
-                                                        <input type="checkbox" id="data_{{ $option[$field['option_value']] }}" name="{{ $field['name'] }}[]"
-                                                            value="{{ $option[$field['option_text']] }}">
-                                                        <span class="checkmark"></span>
+                                        @elseif($field['type'] == 'veg_radio')                                   
+                                            <div class="form-group mb-0">
+                                                <div class="btn-group mt-1" role="group" aria-label="Basic radio toggle button group">
+                                                    @foreach($field['options'] as $key => $option)
+                                                        <input type="radio" class="btn-check" name="{{ $field['name'] }}" value="{{ $option }}" id="{{ $option }}" autocomplete="off" {{ ($field['checked'] ?? '') == $key ? 'checked' : '' }} >
+                                                        <label class="btn btn-outline-secondary" for="{{ $option }}">{{ $option }}</label>                                            
+                                                    @endforeach
+                                                </div>
+                                            </div>
+
+                                        @elseif($field['type'] == 'checkbox')
+                                            <div class="{{ isset($field['class']) ? $field['class'] : 'row' }}">
+                                                @foreach($field['options'] as $option)
+                                                    <div class="col-6">
+                                                        <label class="custom-checkbox" for="data_{{ $option[$field['option_value']] }}">
+                                                            <input type="checkbox" id="data_{{ $option[$field['option_value']] }}" name="{{ $field['name'] }}[]"
+                                                                value="{{ $option[$field['option_text']] }}">
+                                                            <span class="checkmark"></span>
+                                                            {{ $option[$field['option_text']] }}
+                                                        </label>
+                                                    </div>
+                                                @endforeach
+                                            </div>
+
+                                        @elseif($field['type'] == 'select')
+                                            <select name="{{ $field['name'] }}" id="{{ $field['name'] }}" class="form-select">
+                                                <option value="">Select {{ $field['label'] }}</option>
+                                                @foreach($field['options'] as $option)
+                                                    <option value="{{ $option[$field['option_value']] }}"
+                                                        {{ ($field['value'] ?? old($field['name'])) == $option[$field['option_value']] ? 'selected' : '' }}>
                                                         {{ $option[$field['option_text']] }}
+                                                    </option>
+                                                @endforeach
+                                                {{-- @foreach($field['options'] as $option)
+                                                    <option value="{{ $option[$field['option_value']] }}"
+                                                        {{ ($field['value'] ?? old($field['name'])) == $option[$field['option_text']] ? 'selected' : '' }}>
+                                                        {{ $option->{$field['option_text']} }}
+                                                    </option>                                            
+                                                @endforeach                                         --}}
+                                            </select> 
+
+                                        @elseif($field['type'] == 'selectLoad')
+                                            <select name="{{ $field['name'] }}" id="{{ $field['id'] }}" class="form-select">
+                                                <option value="">Select Menu</option>
+                                            </select>
+
+                                        @elseif($field['type'] == 'email')
+                                            <input type="{{ $field['type'] }}" id="{{ $field['name'] }}" name="{{ $field['name'] }}" class="form-control" placeholder="{{ $field['placeholder'] ?? '' }}">
+
+                                        @elseif($field['type'] == 'password')
+                                            <input type="{{ $field['type'] }}" id="{{ $field['name'] }}" name="{{ $field['name'] }}" class="form-control" placeholder="{{ $field['placeholder'] ?? '' }}">
+
+                                        @elseif($field['type'] == 'textarea')
+                                            <textarea name="{{ $field['name'] }}" class="form-control {{ !empty($field['summer_class']) ? $field['summer_class'] : '' }}" rows="3"></textarea>
+                                            
+                                        @elseif($field['type'] == 'color')                                        
+                                            <input type="{{ $field['type'] }}" id="{{ $field['name'] }}" name="{{ $field['name'] }}" class="form-control" placeholder="{{ $field['placeholder'] ?? '' }}">
+
+                                        @elseif($field['type'] == 'date')                                        
+                                            <input type="{{ $field['type'] }}" id="{{ $field['name'] }}" name="{{ $field['name'] }}" class="form-control" placeholder="{{ $field['placeholder'] ?? '' }}">
+
+                                        @elseif($field['type'] == 'file')                                        
+                                            <input type="{{ $field['type'] }}" id="{{ $field['name'] }}" name="{{ $field['name'] }}" class="form-control" placeholder="{{ $field['placeholder'] ?? '' }}">
+                                            
+                                        @elseif($field['type'] == 'category')                                                                                
+                                            <select name="sub_category_id" id="sub_category" class="form-select" >
+                                                <option value="">Sub Category</option>
+                                            </select> 
+                                            
+                                        @elseif($field['type'] == 'variants')
+                                            <div class="flex-justify mb-2">
+                                                <div class="form-check">
+                                                    <input type="checkbox" class="form-check-input" id="variant_checkbox">
+                                                    <label class="form-check-label" for="variant_checkbox">
+                                                        Add Variants
                                                     </label>
                                                 </div>
-                                            @endforeach
-                                        </div>
 
-                                    @elseif($field['type'] == 'select')
-                                        <select name="{{ $field['name'] }}" id="{{ $field['name'] }}" class="form-select">
-                                            <option value="">Select {{ $field['label'] }}</option>
-                                            @foreach($field['options'] as $option)
-                                                <option value="{{ $option[$field['option_value']] }}"
-                                                    {{ ($field['value'] ?? old($field['name'])) == $option[$field['option_text']] ? 'selected' : '' }}>
-                                                    {{ $option->{$field['option_text']} }}
-                                                </option>                                            
-                                            @endforeach                                        
-                                        </select> 
-
-                                    @elseif($field['type'] == 'selectLoad')
-                                        <select name="{{ $field['name'] }}" id="{{ $field['id'] }}" class="form-select">
-                                            <option value="">Select Menu</option>
-                                        </select>
-
-                                    @elseif($field['type'] == 'email')
-                                        <input type="{{ $field['type'] }}" id="{{ $field['name'] }}" name="{{ $field['name'] }}" class="form-control" placeholder="{{ $field['placeholder'] ?? '' }}">
-
-                                    @elseif($field['type'] == 'password')
-                                        <input type="{{ $field['type'] }}" id="{{ $field['name'] }}" name="{{ $field['name'] }}" class="form-control" placeholder="{{ $field['placeholder'] ?? '' }}">
-
-                                    @elseif($field['type'] == 'textarea')
-                                        <textarea name="{{ $field['name'] }}" class="form-control {{ !empty($field['summer_class']) ? $field['summer_class'] : '' }}" rows="3"></textarea>
-                                        
-                                    @elseif($field['type'] == 'color')                                        
-                                        <input type="{{ $field['type'] }}" id="{{ $field['name'] }}" name="{{ $field['name'] }}" class="form-control" placeholder="{{ $field['placeholder'] ?? '' }}">
-
-                                    @elseif($field['type'] == 'date')                                        
-                                        <input type="{{ $field['type'] }}" id="{{ $field['name'] }}" name="{{ $field['name'] }}" class="form-control" placeholder="{{ $field['placeholder'] ?? '' }}">
-
-                                    @elseif($field['type'] == 'file')                                        
-                                        <input type="{{ $field['type'] }}" id="{{ $field['name'] }}" name="{{ $field['name'] }}" class="form-control" placeholder="{{ $field['placeholder'] ?? '' }}">
-                                        
-                                    @elseif($field['type'] == 'category')                                                                                
-                                        <select name="sub_category_id" id="sub_category" class="form-select" >
-                                            <option value="">Sub Category</option>
-                                        </select> 
-                                        
-                                    @elseif($field['type'] == 'variants')
-                                        <div class="flex-justify mb-2">
-                                            <div class="form-check">
-                                                <input type="checkbox" class="form-check-input" id="variant_checkbox">
-                                                <label class="form-check-label" for="variant_checkbox">
-                                                    Add Variants
-                                                </label>
+                                                <a href="javascript:0" class="add-icon" id="add-variant" style="display:none;">
+                                                    <span class="sprites"></span>
+                                                </a>
                                             </div>
 
-                                            <a href="javascript:0" class="add-icon" id="add-variant" style="display:none;">
-                                                <span class="sprites"></span>
-                                            </a>
-                                        </div>
+                                            <div id="variant-wrapper" style="display:none;">
+                                                <div id="variant-container">
+                                                    <div class="row mb-1 variant-row">
+                                                        <div class="col-6">
+                                                            <select name="variants[0][name]" class="form-select">
+                                                                <option value="">Select Variant</option>
+                                                                <option value="Oil">Oil</option>
+                                                                <option value="Butter">Butter</option>
+                                                            </select>
+                                                        </div>
 
-                                        <div id="variant-wrapper" style="display:none;">
-                                            <div id="variant-container">
-                                                <div class="row mb-1 variant-row">
-                                                    <div class="col-6">
-                                                        <select name="variants[0][name]" class="form-select">
-                                                            <option value="">Select Variant</option>
-                                                            <option value="Oil">Oil</option>
-                                                            <option value="Butter">Butter</option>
-                                                        </select>
-                                                    </div>
-
-                                                    <div class="col-6">
-                                                        <div class="flex">
-                                                            <input type="text" name="variants[0][price]" class="form-control" placeholder="Price">
-                                                            <a href="javascript:0" class="remove-variant mt-1 delete-icon">
-                                                                <span class="sprites"></span>
-                                                            </a>
+                                                        <div class="col-6">
+                                                            <div class="flex">
+                                                                <input type="text" name="variants[0][price]" class="form-control" placeholder="Price">
+                                                                <a href="javascript:0" class="remove-variant mt-1 delete-icon">
+                                                                    <span class="sprites"></span>
+                                                                </a>
+                                                            </div>
                                                         </div>
                                                     </div>
                                                 </div>
                                             </div>
-                                        </div>
 
-                                    @elseif($field['type'] == 'multiple')
-                                        <div class="form-group">                                           
-                                            <input type="file" id="image" name="images[]" class="form-control" accept="image/*" multiple>
-                                            <small class="text-muted">Maximum 5 images allowed.</small>
-                                            <div id="image-preview" ></div>
-                                        </div>
-
-                                        <div class="row">
-                                            @if(isset($product) && $product->images->isNotEmpty())                        
-                                                <div id="product-gallery" >                                    
-                                                    @foreach ($product->images as $index => $image)
-                                                        <div class="col-2 uploaded-images" id="image-row-{{ $image->id }}">                                        
-                                                            <input type="hidden" name="image_array[{{ $index }}][image_id]" value="{{ $image->id }}">
-                                                            <img src="{{ asset('uploads/product/small/'.$image->image) }}" class="rounded" />
-
-                                                            <a href="javascript:void(0)" class="deleteProductImg delete-icon-edit" data-id="{{ $image->id }}">
-                                                                <span class="sprites"></span>
-                                                            </a>
-                                                        </div>
-                                                    @endforeach                                                            
-                                                </div>                               
-                                            @endif                                                                                                    
-                                        </div>
-                                        <div class="row" id="product-gallery"></div>
-
-                                    {{-- @elseif($field['type'] == 'dropzone')
-                                        <input type="hidden" id="{{ $field['name'] }}_id" name="{{ $field['name'] }}_id" value=" ">
-                                        
-                                        <div id="{{ $field['name'] }}" data-input="{{ $field['name'] }}_id" class="dropzone custom-dropzone dz-clickable">
-                                            <div class="dz-message needsclick">
-                                                Drop files here or click to upload
+                                        @elseif($field['type'] == 'multiple')
+                                            <div class="form-group">                                           
+                                                <input type="file" id="image" name="images[]" class="form-control" accept="image/*" multiple>
+                                                <small class="text-muted">Maximum 5 images allowed.</small>
+                                                <div id="image-preview" ></div>
                                             </div>
-                                        </div>   
-                                        
-                                        <div class="row mt-2">
-                                            @if(isset($product) && $product->images->isNotEmpty())                        
-                                                <div id="product-gallery" class="row">                                    
-                                                    @foreach ($product->images as $index => $image)
-                                                        <div class="col-2 uploaded-images" id="image-row-{{ $image->id }}">                                        
-                                                            <input type="hidden" name="image_array[{{ $index }}][image_id]" value="{{ $image->id }}">
-                                                            <img src="{{ asset('uploads/product/small/'.$image->image) }}" class="rounded" />
 
-                                                            <a href="javascript:void(0)" class="deleteProductImg delete-icon-edit" data-id="{{ $image->id }}">
-                                                                <span class="sprites"></span>
-                                                            </a>
-                                                        </div>
-                                                    @endforeach                                                            
-                                                </div>                               
-                                            @endif                                                        
-                                            <div class="row" id="product-gallery"></div>         
-                                        </div> --}}
-                                    @endif
+                                            <div class="row">
+                                                @if(isset($product) && $product->images->isNotEmpty())                        
+                                                    <div id="product-gallery" >                                    
+                                                        @foreach ($product->images as $index => $image)
+                                                            <div class="col-2 uploaded-images" id="image-row-{{ $image->id }}">                                        
+                                                                <input type="hidden" name="image_array[{{ $index }}][image_id]" value="{{ $image->id }}">
+                                                                <img src="{{ asset('uploads/product/small/'.$image->image) }}" class="rounded" />
+
+                                                                <a href="javascript:void(0)" class="deleteProductImg delete-icon-edit" data-id="{{ $image->id }}">
+                                                                    <span class="sprites"></span>
+                                                                </a>
+                                                            </div>
+                                                        @endforeach                                                            
+                                                    </div>                               
+                                                @endif                                                                                                    
+                                            </div>
+                                            <div class="row" id="product-gallery"></div>
+
+                                        {{-- @elseif($field['type'] == 'dropzone')
+                                            <input type="hidden" id="{{ $field['name'] }}_id" name="{{ $field['name'] }}_id" value=" ">
+                                            
+                                            <div id="{{ $field['name'] }}" data-input="{{ $field['name'] }}_id" class="dropzone custom-dropzone dz-clickable">
+                                                <div class="dz-message needsclick">
+                                                    Drop files here or click to upload
+                                                </div>
+                                            </div>   
+                                            
+                                            <div class="row mt-2">
+                                                @if(isset($product) && $product->images->isNotEmpty())                        
+                                                    <div id="product-gallery" class="row">                                    
+                                                        @foreach ($product->images as $index => $image)
+                                                            <div class="col-2 uploaded-images" id="image-row-{{ $image->id }}">                                        
+                                                                <input type="hidden" name="image_array[{{ $index }}][image_id]" value="{{ $image->id }}">
+                                                                <img src="{{ asset('uploads/product/small/'.$image->image) }}" class="rounded" />
+
+                                                                <a href="javascript:void(0)" class="deleteProductImg delete-icon-edit" data-id="{{ $image->id }}">
+                                                                    <span class="sprites"></span>
+                                                                </a>
+                                                            </div>
+                                                        @endforeach                                                            
+                                                    </div>                               
+                                                @endif                                                        
+                                                <div class="row" id="product-gallery"></div>         
+                                            </div> --}}
+                                        @endif
+                                    </div>
                                 </div>
+                            @endforeach
                             </div>
-                        @endforeach
-                    </div>
-                </div>
-
-                <div class="modal-footer">                    
-                    <button type="submit" class="btn btn-primary">{{ $formConfig['button'] }}</button>                    
-                </div>
-            </form>
+                        </div>
+                        <div class="modal-footer">                    
+                            <button type="submit" class="btn btn-primary">{{ $formConfig['button'] }}</button>                    
+                        </div>
+                    </form>                         
         </div>
     </div>
 </div>
@@ -252,7 +313,7 @@
             $('.btn-primary').text($(this).data('button'));
 
             // Reset all checkboxes first
-            $('input[name="business_types[]"]').prop('checked', false);
+            $('[name="business_types[]"]').prop('checked', false);
 
             // Get DB values
             let businessTypes = $(this).data('business_types');
@@ -260,26 +321,26 @@
             if (businessTypes) {
                 businessTypes = businessTypes.split(',');
                 businessTypes.forEach(function (value) {
-                    $('input[name="business_types[]"][value="' + value + '"]')
+                    $('[name="business_types[]"][value="' + value + '"]')
                         .prop('checked', true);
 
                 });
             }
             
-            $('input[name="name"]').val($(this).data('name'));
-            $('input[name="email"]').val($(this).data('email'));
-            $('input[name="phone"]').val($(this).data('phone'));
-            $('input[name="mobile"]').val($(this).data('mobile'));
-            $('textarea[name="address"]').val($(this).data('address'));            
-            $('input[name="shipping"]').val($(this).data('shipping'));            
-            $('input[name="primary_color"]').val($(this).data('primary_color'));
-            $('input[name="secondary_color"]').val($(this).data('secondary_color'));
-            $('input[name="payment_key_id"]').val($(this).data('payment_key_id'));
-            $('input[name="payment_key_secret"]').val($(this).data('payment_key_secret'));
-            $('input[name="gst"]').val($(this).data('gst'));
-            $('input[name="sgst"]').val($(this).data('sgst'));
-            $('input[name="cgst"]').val($(this).data('cgst'));
-        });
+            $('[name="name"]').val($(this).data('name'));
+            $('[name="email"]').val($(this).data('email'));
+            $('[name="phone"]').val($(this).data('phone'));
+            $('[name="mobile"]').val($(this).data('mobile'));
+            $('[name="address"]').val($(this).data('address'));
+            $('[name="shipping"]').val($(this).data('shipping'));
+            $('[name="upi_id"]').val($(this).data('upi_id'));
+            $('[name="sgst"]').val($(this).data('sgst'));
+            $('[name="cgst"]').val($(this).data('cgst'));
+            $('[name="primary_color"]').val($(this).data('primary_color'));
+            $('[name="secondary_color"]').val($(this).data('secondary_color'));
+            $('[name="payment_key_id"]').val($(this).data('payment_key_id'));
+            $('[name="payment_key_secret"]').val($(this).data('payment_key_secret'));
+        });       
 
         $('.editPage').click(function () {
             $('.controlForm').attr('action', $(this).data('action'));            
@@ -287,9 +348,9 @@
             $('.modal-title').text($(this).data('title'));
             $('.btn-primary').text($(this).data('button'));
 
-            $('input[name="page_name"]').val($(this).data('page_name'));
-            $('input[name="page_slug"]').val($(this).data('page_slug'));
-            $('textarea[name="content"]').val($(this).data('content'));            
+            $('[name="page_name"]').val($(this).data('page_name'));
+            $('[name="page_slug"]').val($(this).data('page_slug'));
+            $('[name="content"]').val($(this).data('content'));            
         });
 
         $('.editProduct').click(function () {
@@ -298,13 +359,13 @@
             $('.modal-title').text($(this).data('title'));
             $('.btn-primary').text($(this).data('button'));            
 
-            $('input[name="name"]').val($(this).data('name'));
-            $('input[name="slug"]').val($(this).data('slug'));
-            $('input[name="category_id"]').val($(this).data('category_id'));
-            $('input[name="menu_id"]').val($(this).data('menu_id'));
-            $('input[name="price"]').val($(this).data('price'));
-            $('textarea[name="description"]').val($(this).data('description'));
-            $('input[name="image_id"]').val($(this).data('image_id'));
+            $('[name="name"]').val($(this).data('name'));
+            $('[name="slug"]').val($(this).data('slug'));
+            $('[name="category_id"]').val($(this).data('category_id'));
+            $('[name="menu_id"]').val($(this).data('menu_id'));
+            $('[name="price"]').val($(this).data('price'));
+            $('[name="description"]').val($(this).data('description'));
+            $('[name="image_id"]').val($(this).data('image_id'));
         });       
 
         $('.editPassword').click(function () {
@@ -313,9 +374,9 @@
             $('.modal-title').text($(this).data('title'));
             $('.btn-primary').text($(this).data('button'));            
 
-            $('input[name="current_password"]').val($(this).data('current_password'));
-            $('input[name="password"]').val($(this).data('password'));
-            $('input[name="password_confirmation"]').val($(this).data('password_confirmation'));            
+            $('[name="current_password"]').val($(this).data('current_password'));
+            $('[name="password"]').val($(this).data('password'));
+            $('[name="password_confirmation"]').val($(this).data('password_confirmation'));            
         });
 
         $('.editProfile').click(function () {
@@ -324,9 +385,9 @@
             $('.modal-title').text($(this).data('title'));
             $('.btn-primary').text($(this).data('button'));            
 
-            $('input[name="name"]').val($(this).data('name'));
-            $('input[name="email"]').val($(this).data('email'));
-            $('input[name="mobile"]').val($(this).data('mobile'));
+            $('[name="name"]').val($(this).data('name'));
+            $('[name="email"]').val($(this).data('email'));
+            $('[name="mobile"]').val($(this).data('mobile'));
         });
 
         $(document).on('click', '.commonDeleteBtn', function () {

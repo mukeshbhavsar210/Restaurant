@@ -16,42 +16,76 @@ use App\Models\OrderItem;
 use App\Models\Seat;
 use App\Models\Variant;
 use Illuminate\Support\Facades\DB;
+use Razorpay\Api\Api;
+use Barryvdh\DomPDF\Facade\Pdf;
 
-class FrontController extends Controller {
-    public function index() {
+class FrontController extends Controller {  
+
+    public function index($categorySlug = null, $menuSlug = null,  ) {
+        // Home page
+        if (!$categorySlug) {
+            $popularCategory = Category::where('name', 'Popular')
+            ->with(['products' => function ($query) {
+                $query->latest();
+            }])
+            ->first();
+                        
+            $products = Product::with(['category.menu', 'category', 'variants'])->latest()->get();
+            
+            $seats = collect();
+            if (session('branch_id')) {
+                $seats = Seat::where('branch_id', session('branch_id'))->orderBy('table')->get();
+            }
+
+            $seats = Seat::where('area_id', session('area_id'))->orderBy('table_order', 'ASC')->get();
+            $config = Configuration::first();
+            $tableSlug = request()->segment(2);
+            
+            $cart = session()->get('cart', []);
+
+            if (!session()->has('area_id')) {
+                $defaultArea = Area::where('area_name', 'Default')->first();
+                if ($defaultArea) {
+                    session([
+                        'area_id' => $defaultArea->id,
+                        'area_name' => $defaultArea->area_name,
+                    ]);
+                }
+            }
+            $seats = Seat::where('area_id', session('area_id'))->orderBy('table_order')->get();
+
+            // dd($config);
+            //dd(session('cart'));
+            //dd(session()->all());
+
+            // dd($config);
+
+            return view('front.shop.index', [
+                'products' => $products,
+                'tableSlug' => $tableSlug,
+                'popularProducts' => $popularCategory?->products ?? collect(),
+                'popularCategory' => $popularCategory,
+                'category' => null,
+                'menus' => collect(),
+                'seats' => $seats,
+                //'menuSlug' => null,
+                'config' => $config,
+                'total' => getCartTotal(),
+                'cartCount' => getCartCount(),
+            ]);
+        }
+
+        $category = Category::where('slug',  $categorySlug)->firstOrFail();
+        $menus = $category->menus;        
+        //$variants = Variant::get();
+        $query = Product::query();
+        $config = Configuration::first();  
+        
         $popularCategory = Category::where('name', 'Popular')
             ->with(['products' => function ($query) {
                 $query->latest();
             }])
             ->first();
-
-        $products = Product::with(['category.menu', 'category', 'variants'])->latest()->get();
-        $config = Configuration::first();
-
-        // cart session
-        $cart = session()->get('cart', []);
-
-       //dd(session('cart'));
-
-       //dd($products);
-
-        return view('front.home.index', [
-            'products' => $products,
-            'popularProducts' => $popularCategory?->products ?? collect(),
-            'popularCategory' => $popularCategory,            
-            'config' => $config, 
-            'total' => getCartTotal(),
-            'cartCount' => getCartCount(),            
-        ]);        
-    }
-
-    public function category($categorySlug = null, $menuSlug = null) {
-        $category = Category::where('slug', $categorySlug)->firstOrFail();
-        $menus = $category->menus;
-        $seats = Seat::orderBy('id','DESC')->get();  
-        $variants = Variant::get();
-        $query = Product::query();
-        $config = Configuration::first();        
 
         // ALL products of category
         $query->where(function($q) use ($category, $menus) {
@@ -73,24 +107,70 @@ class FrontController extends Controller {
             }
         }
 
-        $products = $query->get();        
+        $products = $query->get();  
+        
+        $seats = collect();
+        if (session('branch_id')) {
+            $seats = Seat::where('branch_id', session('branch_id'))->orderBy('table')->get();
+        }
 
-        // product qty array
+        if (session('area_id')) {            
+            $seats = Seat::where('area_id', session('area_id'))->orderBy('table_order', 'ASC')->get();
+        }
+        
         $cart = session()->get('cart', []);
-        //dd(session('cart'));
+
+        //dd($seats);        
+        //dd(session('cart')); 
+
+    // dd($config);
 
        return view('front.shop.index', [
             'products' => $products,
+            'popularProducts' => $popularCategory?->products ?? collect(),
+            'popularCategory' => $popularCategory,
             'category' => $category,
             'menus' => $menus,
-            'seats' => $seats,
-            'variants' => $variants,
+            'seats' => $seats,            
             'menuSlug' => $menuSlug,
             'config' => $config,            
             'total' => getCartTotal(),
             'cartCount' => getCartCount(),
         ]);       
     }
+
+
+
+    public function tableQr($branchSlug, $table) {
+        $branch = Area::where('area_slug', $branchSlug)->firstOrFail();
+
+        $seat = Seat::where('area_id', $branch->id)
+            ->where('table', $table)
+            ->firstOrFail();
+
+        session([
+            'area_id'   => $branch->id,
+            'table_id'  => $seat->id,
+            'area_name' => $branch->area_name,
+            'table'     => $seat->table,
+        ]);
+
+        return redirect()->route('front.menu');
+    }
+
+    // public function tableQr($branchSlug, $tableSlug) {
+    //     $branch = Area::where('area_slug', $branchSlug)->firstOrFail();
+    //     $seat = Seat::where('area_id', $branch->id)->where('table', $tableSlug)->firstOrFail();        
+
+    //     session([
+    //         'area_id'      => $branch->id,
+    //         'table_id'     => $seat->id,
+    //         'area_name'    => $branch->area_name,
+    //         'table'   => $seat->table,
+    //     ]);
+        
+    //     return redirect()->route('front.menu');
+    // }
 
     //Add to Cart
     public function addToCart(Request $request, $id) {
@@ -117,11 +197,34 @@ class FrontController extends Controller {
                 "product_id"    => $product->id,
                 "quantity"      => 1,
                 "name"          => $product->name,
-                "variant"       => $variantName,                
-                "price"         => $variantPrice,                
-                // "image"         => $product->image
+                "variant"       => $variantName,
+                "price"         => $variantPrice,                     
+                "area_id"       => session('area_id'),
+                "table_id"      => session('table_id'),
+                "area_name"     => session('area_name'),
+                "table"         => session('table'),                
             ];
         }
+
+        // if(isset($cart[$id])) {
+        //     $cart[$id]['quantity']++;
+        //     $cart[$id]['area_id'] = session('area_id');
+        //     $cart[$id]['table_id'] = session('table_id');
+        //     $cart[$id]['area_name'] = session('area_name');
+        //     $cart[$id]['table'] = session('table');
+        // } else {
+        //     $cart[$id] = [
+        //         "product_id" => $product->id,
+        //         "quantity"   => 1,
+        //         "name"       => $product->name,
+        //         "variant"    => $variantName,
+        //         "price"      => $variantPrice,
+        //         "area_id"    => session('area_id'),
+        //         "table_id"   => session('table_id'),
+        //         "area_name"  => session('area_name'),
+        //         "table" => session('table'),
+        //     ];
+        // }
 
         session()->put('cart', $cart);
 
@@ -138,13 +241,15 @@ class FrontController extends Controller {
             ]);
         }               
 
-        return response()->json([
-            'status' => true,
-            'qty' => $cart[$id]['quantity'] ?? 0,
-            'cartCount' => count($cart),
-            'cartTotal' => $total,
-            'message' => 'Added to cart'
-        ]);
+        return back()->with('success', 'Product added to cart.');
+
+        // return response()->json([
+        //     'status' => true,
+        //     'qty' => $cart[$id]['quantity'] ?? 0,
+        //     'cartCount' => count($cart),
+        //     'cartTotal' => $total,
+        //     'message' => 'Added to cart'
+        // ]);
     }
 
     public function increaseCart($id) {
@@ -200,30 +305,63 @@ class FrontController extends Controller {
         }
     }
 
+
    public function removeCart($id) {
         $cart = session()->get('cart', []);
 
-        if(isset($cart[$id])){
+        if (isset($cart[$id])) {
             unset($cart[$id]);
             session()->put('cart', $cart);
         }
 
-        return response()->json([
-            'status' => true,
-            'cartCount' => getCartCount(),
-            'cartTotal' => getCartTotal(),
-        ]);
+        return back()->with('success', 'Item deleted');
     }
-    
+
+//    public function removeCart($id) {
+//         $cart = session()->get('cart', []);
+
+//         if(isset($cart[$id])){
+//             unset($cart[$id]);
+//             session()->put('cart', $cart);
+//         }
+
+//         return response()->json([
+//             'status' => true,
+//             'cartCount' => getCartCount(),
+//             'cartTotal' => getCartTotal(),
+//         ]);
+
+//         return back()->with('success', 'Item deleted');
+//     }    
 
     //Wishlist page
     public function wishlist() {
-        $products = Product::orderBy('id','DESC')->with('product_images')->get();
+        $wishlistIds = array_keys(session('wishlist', []));
+
+         $products = Product::with('product_images')
+        ->whereIn('id', $wishlistIds)
+        ->orderByDesc('id')
+        ->get();
+
+        $seats = collect();
+        if (session('branch_id')) {
+            $seats = Seat::where('branch_id', session('branch_id'))->orderBy('table')->get();
+        }
+
+        $seats = Seat::where('area_id', session('area_id'))->orderBy('table_order', 'ASC')->get();
+
+        $config = Configuration::first();
+
         $data = [
-            'products'=> $products,            
+            'products'=> $products,
+            'config'=> $config,
+            'seats'=> $seats,
         ];        
 
-        return view('front.home.wishlist', $data);        
+        //dd(session('wishlist'));
+        //dd(session()->all());
+
+        return view('front.shop.wishlist', $data);        
     }
 
     //Slug
@@ -254,7 +392,7 @@ class FrontController extends Controller {
         $areaSelected = ' ';
 
         $products = Product::orderBy('id','DESC')->get();
-        $seats = Seat::orderBy("table_name","ASC")->with('area')->get(); 
+        $seats = Seat::orderBy("table","ASC")->with('area')->get(); 
         $areas = Area::where('status',1);
 
         // if(!empty($areaSlug)) {
@@ -270,7 +408,7 @@ class FrontController extends Controller {
         $data['areas'] = $areas;        
         $data['areaSelected'] = $areaSelected;
         
-        return view('front.home.restaurant',$data);
+        return view('front.shop.restaurant',$data);
     }   
 
     //Clear Cart
@@ -280,64 +418,55 @@ class FrontController extends Controller {
     }
 
     //Wishlist
-    public function addToWish($id){
-        $product = Product::find($id);
-        
-        if (!$product) {
-            abort(404);
-        }
+    public function addToWish($id) {
+        $product = Product::findOrFail($id);
 
-        $cart = session()->get('wishlist');
+        $wishlist = session()->get('wishlist', []);
 
-        if (!$cart) {
-            $cart = [
-                $id => [
-                    "name" => $product->name,
-                    "quantity" => 1,
-                    "price" => $product->price,
-                    "image" => $product->image,        
-                ]
+        // Add only if not already exists
+        if (!isset($wishlist[$id])) {
+            $wishlist[$id] = [
+                'id'    => $product->id,
+                'name'  => $product->name,
+                'price' => $product->price,
+                'image' => $product->image,
             ];
 
-            session()->put('wishlist', $cart);
-            return redirect()->back()->with('success', 'Product added to wishlist successfully!');
+            session()->put('wishlist', $wishlist);
+
+            return redirect()->back()
+                ->with('success', 'Product added to wishlist successfully!');
         }
 
-        if (isset($cart[$id])) {
-            $cart[$id]['quantity']++;
-            session()->put('wishlist', $cart);
-            return redirect()->back()->with('success', 'Product added to wishlist successfully!');
-        }
-
-        $cart[$id] = [
-            "name" => $product->name,
-            "quantity" => 1,
-            "price" => $product->price, 
-            "image" => $product->image,            
-        ];
-
-        session()->put('wishlist', $cart);
-
-        if (request()->wantsJson()) {
-            return response()->json(['message' => 'Product added to wishlist successfully!']);
-        }
-        return redirect()->back()->with('success', 'Product added to wishlist successfully!');
+        return redirect()->back()
+            ->with('info', 'Product already exists in wishlist.');
     }
 
-    public function removeWishlistItem(Request $request) {
-        if ($request->id) {
-            $cart = session()->get('wishlist');
-            if (isset($cart[$request->id])) {
-                unset($cart[$request->id]);
-                session()->put('wishlist', $cart);
-            }
-            session()->flash('success', 'Product removed successfully');
+    public function removeWish($id) {
+        $wishlist = session()->get('wishlist', []);
+
+        if (isset($wishlist[$id])) {
+            unset($wishlist[$id]);
+            session()->put('wishlist', $wishlist);
         }
+
+        return redirect()->back()
+            ->with('success', 'Product removed from wishlist.');
     }
 
-    public function clearWishlist(){
-        session()->forget('wishlist');
-        return redirect()->route('front.home')->with('success','Wishlist cleared successfully.');
+
+    public function removeWishlist($id) {
+        $wishlist = session('wishlist', []);
+
+        unset($wishlist[$id]);
+
+        if (empty($wishlist)) {
+            session()->forget('wishlist');
+        } else {
+            session(['wishlist' => $wishlist]);
+        }
+
+        return back()->with('success', 'Product removed from wishlist.');
     }
 
 
@@ -365,59 +494,155 @@ class FrontController extends Controller {
         }
 
         // Add delivery charge
-        // if ($request->order_type == 'Delivery') {
-        //     $total += 50;
-        // }
-
-        $order = new Order();
-        $order->order_type = $request->order_type;
-        $order->session_id = session('session_id');
-        $order->notes = $request->notes;
-        $order->total = $total;
-        
-        // Dinein
-        if ($request->order_type === 'Dinein') {            
-            $order->seat_id     = $request->seat_id;
-            $order->status      = 'running';
+        if ($request->order_type == 'Delivery') {
             $total += 50;
         }
 
-        // Takeaway & Delivery
-        if (
-            $request->order_type === 'Takeaway' || $request->order_type === 'Delivery'
-        ) {
-            $order->area_id  = $request->active_outlet_id;
-            $order->name     = $request->active_name;
-            $order->email    = $request->active_email;
-            $order->phone    = $request->active_phone;
-            $order->status   = 'placed';
-        }
-
-        // Delivery only
-        if ($request->order_type === 'Delivery') {
-            $order->address = $request->address;
-        }           
-
-        //dd($request->all());
-
-        $order->save();
-
-        // Order Items
-        foreach ($cart as $item) {
-            OrderItem::create([
-                'order_id'      => $order->id,
-                'product_id'    => $item['product_id'],
-                'product_name'  => $item['name'],
-                'quantity'      => $item['quantity'],
-                'price'         => $item['price'],
-                'total'         => $item['quantity'] * $item['price'],
+        if ($request->order_type === 'Takeaway' || $request->order_type === 'Delivery') {            
+            $order = Order::create([
+                'order_type'  => $request->order_type,
+                'session_id'  => session('session_id'),
+                'notes'       => $request->notes,
+                'phone'       => $request->phone,
+                'area_id'     => $request->active_outlet_id,
+                'name'        => $request->active_name,
+                'email'       => $request->active_email,
+                'address'     => $request->address,                
+                'total'       => $total,
+                'payment_status' => 'Pending',
+                'status'      => 'pending',
             ]);
+
+            foreach ($cart as $item) {
+                OrderItem::create([
+                    'order_id'      => $order->id,
+                    'product_id'    => $item['product_id'],
+                    'product_name'  => $item['name'],
+                    'quantity'      => $item['quantity'],
+                    'price'         => $item['price'],
+                    'total'         => $item['quantity'] * $item['price'],
+                ]);
+            }
+
+            Session::forget('cart');
+            Session::flush();
+          
+            return redirect()->route('razorpay.checkout', $order->id); 
+
+        } elseif($request->order_type === 'Dinein' && $request->filled('seat_id')) {
+            $order = Order::create([
+                'order_type' => $request->order_type,
+                'session_id' => session('session_id'),
+                'area_id'  => session('area_id'),
+                'branch'  => session('area_name'),
+                'table'   => session('table_name'),
+                'seat_id' => $request->seat_id ?? session('seat_id'),
+                'notes' => $request->notes,
+                'phone' => $request->phone,
+                'total' => $total,
+                'payment_method' => 'Pay at table',
+                'payment_status' => 'Pending',
+                'status' => 'running',
+            ]);
+
+            //Seat status changed
+            Seat::where('id', $request->seat_id)->update(['status' => 'running']);
+
+            foreach ($cart as $item) {
+                OrderItem::create([
+                    'order_id'      => $order->id,
+                    'product_id'    => $item['product_id'],
+                    'product_name'  => $item['name'],
+                    'quantity'      => $item['quantity'],
+                    'price'         => $item['price'],
+                    'total'         => $item['quantity'] * $item['price'],
+                ]);
+            }
+
+            Session::forget('cart');
+            Session::flush();
+
+            if (auth()->guard('admin')->check()) {
+                return redirect()
+                    ->route('admin.order.success', $order->id)
+                    ->with('success', 'Admin Order placed successfully');
+            }
+          
+            return redirect()->route('order.success', $order->id)->with('success','Order placed successfully');
+        }               
+    }
+
+
+    public function checkout($id) {
+        $order = Order::find($id);
+
+        $api = new Api(
+            config('services.razorpay.key'),
+            config('services.razorpay.secret')
+        );       
+
+        $config = Configuration::first();
+        $cgstPercent = $config->cgst;
+        $sgstPercent = $config->sgst;
+
+        $subtotal = $order->total;
+        $cgst = ($subtotal * $cgstPercent) / 100;
+        $sgst = ($subtotal * $sgstPercent) / 100;
+        $shipping = 0;
+
+        if ($order->order_type == 'Delivery') {
+            $shipping = $config->shipping;
         }
 
-        // Clear cart
+        $grandTotal = $subtotal + $cgst + $sgst + $shipping;
+
+        $razorpayOrder = $api->order->create([
+            'receipt' => 'ORD-'.$order->id,
+            'amount' => round($grandTotal * 100), // paise
+            'currency' => 'INR',
+        ]);
+
+        $order->update([
+            'razorpay_order_id' => $razorpayOrder['id']
+        ]);
+
+        return view('front.checkout.razorpay-checkout', compact('order', 'config'));
+    }
+
+
+    public function orderSuccess($orderId) {
+        $order = Order::with(['items.product','seat.area'])->findOrFail($orderId);
+        return view('front.checkout.success', compact('order'));
+    }
+
+    public function adminOrderSuccess($orderId) {
+        $order = Order::with(['items.product','seat.area'])->findOrFail($orderId);
+        return view('admin.checkout.success', compact('order'));
+    }
+
+
+    public function paymentSuccess(Request $request, $orderId) {
+        $order = Order::findOrFail($orderId);       
+        $config = Configuration::first();
+        $cart = Session::get('checkout_cart');
+        $paymentId = $request->payment_id;
+       
+        $order->update([
+            'payment_status' => 'Paid',
+            'payment_method' => 'Razorpay',
+            'razorpay_payment_id' => $request->payment_id,            
+            'status' => 'placed',
+        ]);        
+
         Session::forget('cart');
 
-        return redirect()->route('front.home')->with('success','Order placed successfully.');       
+        return view('front.checkout.success', compact('order','config'));
+    }
+
+
+    public function paymentFailed($orderId) {
+        $order = Order::findOrFail($orderId);
+        return view('front.checkout.failed', compact('order'));
     }
 
 
@@ -449,5 +674,19 @@ class FrontController extends Controller {
         session()->put('cart', $cart);
 
         return response()->json(['status' => true]);
+    }
+
+
+    public function invoiceCustoerPdf($id){
+        $order = Order::with(['items.product'])->findOrFail($id);
+        $config = Configuration::first();
+        $pdf = Pdf::loadView('admin.orders.invoice', compact('order','config'))->setPaper([0, 0, 250, 800], 'portrait');
+
+        return $pdf->download(
+            'invoice_'.$order->id.
+            '_table_'.$order->seat?->table.
+            '_'.$order->seat?->area?->area_name.            
+            '.pdf'
+        );
     }
 }

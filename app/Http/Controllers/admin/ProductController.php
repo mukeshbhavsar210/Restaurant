@@ -68,7 +68,7 @@ class ProductController extends Controller {
                         'options' => $categories,
                         'option_value' => 'id',
                         'option_text' => 'name',
-                        'col' => 'col-md-6 col-12'
+                        'col' => 'col-md-6 col-6'
                     ],
                     [
                         'type' => 'selectLoad',
@@ -79,7 +79,7 @@ class ProductController extends Controller {
                         'options' => $categories,
                         'option_value' => 'menu_item',
                         'option_text' => 'name',                        
-                        'col' => 'col-md-6 col-12'
+                        'col' => 'col-md-6 col-6'
                     ],
                     [
                         'type' => 'price',

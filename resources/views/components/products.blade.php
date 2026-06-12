@@ -1,11 +1,12 @@
-@props(['product', 'popularProducts', 'variants', 'seats', 'qty', 'type' ])
+@props(['product', 'popularProducts', 'variants', 'seats', 'qty', 'type', 'config', ])
 
 @php
     $total = 0;
     $deliveryFee = 50;
-    $id = $product->id;
+    $id = $product->id;    
     $productImage = $product->product_images->first();    
     $wishlist = session('wishlist', []);
+    $wishlistIds = array_keys($wishlist);
     $cart = session('cart', []);            
     foreach($cart as $item){
         $total += $item['price'] * $item['quantity'];
@@ -14,17 +15,17 @@
 
 <div class="menu-product">
     <div class="menu-product__item">
-        @if($qty > 0)
+        @if($type != 'wishlist' && $qty > 0)
             <div class="menu-product__item__ordered_qty">
                 {{ $qty }}
             </div>
-        @endif  
+        @endif
         
         <div class="overlap">
             @if(isset($wishlist[$product->id]))
-                <a href="{{ route('clear_wishlist', $product->id) }}" class="wishlist-icon-active">
+                <a href="{{ route('remove_wishlist', $product->id) }}" class="{{ $type === 'wishlist' ? 'clear-icon' : 'wishlist-icon-active' }}">
                     <span class="sprites"></span>
-                </a>
+                </a>                
             @else
                 <a href="{{ route('addwishlist', $product->id ) }}" class="wishlist-icon">
                     <span class="sprites"></span>
@@ -51,13 +52,13 @@
         </a>
 
         <div class="menu-product__item__top-block">            
-            <p>{{ $product->name }}</p>
+            <p>{{ Str::limit($product->name, 15, '...') }}</p>
             <p>
-                ₹<span class="product-price-show">
+                <span class="product-price-show">
                     @if($product->variants->count() > 0)
-                        {{ $product->variants->first()->price }}
+                        ₹{{ $product->variants->first()->price }}
                     @else
-                        {{ $product->price }}
+                        ₹{{ $product->price }}
                     @endif
                 </span>   
             </p>
@@ -100,7 +101,7 @@
         </a>        
 
         @if(isset($wishlist[$product->id]))
-            <a href="{{ route('clear_wishlist', $product->id) }}" class="wishlist-icon-big-active">
+            <a href="{{ route('remove_wishlist', $product->id) }}" class="{{ $type === 'wishlist' ? 'clear-big-icon' : 'wishlist-icon-big-active' }}">
                 <span class="sprites"></span>
             </a>
         @else
@@ -151,10 +152,10 @@
         @else
             <form action="{{ route('front.addCart', $product->id) }}" method="GET" class="cart-form" data-id="{{ $product->id }}">
                 @if($product->variants->count() > 0)
-                    <input type="hidden" name="variant_name" id="variant_name" value="{{ $variants->first()->name ?? '' }}">
-                    <input type="hidden" name="variant_price" id="variant_price" value="{{ $variants->first()->price }}">
-                @else
-                    <input type="hidden" name="variant_price" value="{{ $product->price }}">
+                    <input type="hidden" name="variant_name" class="variant_name" value="{{ $variants->first()->name ?? '' }}">
+                    <input type="hidden" name="variant_price" class="variant_price" value="{{ $variants->first()->price }}">
+                {{--@else
+                     <input type="hidden" name="variant_price" value="{{ $product->price }}"> --}}
                 @endif
 
                 <button type="submit" class="add-to-cart add-icon-big">

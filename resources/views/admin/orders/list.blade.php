@@ -64,20 +64,18 @@
                     @php
                         $filteredOrders = $orders->where('order_type', $type);
                     @endphp
-                
+
                     <table class="table mb-0">
                         <thead class="table-light">
                             <tr>
-                                <th class="border-top-0"><b>Order#</b></th>
-                                @if($type == 'Dinein')
-                                    <th class="border-top-0" width="150"><b>Table/Outlet</b></th>    
-                                @elseif($type == 'Takeaway' || $type == 'Delivery')
-                                    <th class="border-top-0" width="150"><b>Table/Outlet</b></th>    
-                                @endif
-                                <th class="border-top-0 text-end" width="100"><b>Qty/Price</b></th>                                
+                                <th class="border-top-0" width="170"><b>Order#</b></th>
+                                <th class="border-top-0" width="400"><b>Products name</b></th>
+                                <th class="border-top-0" width="130"><b>Table/Outlet</b></th>
+                                <th class="border-top-0 text-end" width="50"><b>Qty</b></th>                                
                                 <th class="border-top-0 text-end" width="100"><b>Total</b></th>
                                 <th class="border-top-0 text-end" width="130"><b>Order On</b></th>
-                                <th class="border-top-0 text-end" width="80"><b>Status</b></th>
+                                <th class="border-top-0 text-end" width="80"><b>Action</b></th>
+                                <th class="border-top-0 text-end" width="80"><b>Download</b></th>
                             </tr>
                         </thead>                     
                         <tbody>
@@ -88,47 +86,71 @@
                                     $gstAmount = ($subtotal * $config->gst) / 100;
                                     $sgstAmount = ($subtotal * $config->sgst) / 100;
                                     $cgstAmount = ($subtotal * $config->cgst) / 100;
-                                    $grandTotal = $subtotal + $gstAmount + $sgstAmount + $cgstAmount;                                    
+                                    $grandTotal = $subtotal + $gstAmount + $sgstAmount + $cgstAmount;
                                 @endphp
-                                <tr>                                    
+                                <tr>
                                     <td>
                                         <div class="product-row">
-                                            <div class="show-tooltip me-3">
+                                            <div class="show-tooltip2 me-3">
                                                 @foreach($order->items as $item)
                                                     @php
                                                         $productImage = optional($item->product?->product_images->first());
                                                     @endphp
                                                     
-                                                    <a href="{{ route('orders.detail', $order->id) }}" class="user-avatar position-relative d-inline-block ms-n1">
+                                                    <a href="{{ route('orders.detail', $order->id) }}" class="user-avatar position-relative d-inline-block ms-n2">
                                                         @if (!empty($productImage->image))
-                                                            <img src="{{ asset('uploads/product/small/'.$productImage->image) }}" class="thumb-lg rounded">
+                                                            <img src="{{ asset('uploads/product/small/'.$productImage->image) }}" height="60" class="rounded-circle" alt="{{ $item->name }}" />
                                                         @else
-                                                            <img src="{{ asset('admin-assets/img/default-150x150.png') }}" class="thumb-lg rounded">
+                                                            <img src="{{ asset('admin-assets/img/default-150x150.png') }}" height="60" class="rounded-circle" />
                                                         @endif
 
                                                         <span class="order-product-qty">{{ $item->quantity }}</span>
                                                     </a>                                                    
                                                 @endforeach
-                                            </div> 
-                                            <div class="flex-grow-1 text-truncate">
-                                                @foreach($order->items as $item)
-                                                    <span class="product-title">{{ $item->product_name }},</span><br />
-                                                @endforeach    
-                                                <p>{{ $order->notes }}</p>
-                                            </div>
+                                            </div>                                                 
                                         </div>
-                                    </td>                                    
+                                    </td>      
+                                    <td>                                        
+                                        <div class="flex-grow-1 text-truncate">
+                                            @foreach($order->items as $item)
+                                                <span class="product-title">{{ $item->product_name }},</span>
+                                            @endforeach    
+                                            <p>{{ $order->notes }}</p>
+                                        </div>
+                                    </td>                              
                                     @if($type == 'Dinein')
                                         <td>
-                                            <p class="text-muted"><b>{{ $order->seat?->table_name }}</b> ({{ $order->seat?->capacity }})</p>
-                                            <p class="text-muted tiny-font">{{ $order->seat?->area?->area_name }}</p>
+                                            <div class="flex">
+                                                <p>Table {{ $order->seat?->table }}</p>
+                                                @if ($order->seat->status == 'running')
+                                                    <div class="dot-status green blink"></div>                                                
+                                                @elseif ($order->seat->status == 'available')
+                                                    <div class="dot-status red"></div>                                                
+                                                @endif
+                                            </div>
+                                            <p class="text-muted">{{ $order->seat?->area?->area_name }}</p>
                                         </td>
                                     @elseif($type == 'Takeaway' || $type == 'Delivery')
                                         <td>
                                             <p class="text-muted"><b>{{ $order->area?->area_name }}</b></p>                                            
+                                            @if ($order->status == 'pending')
+                                                <svg class="text-danger h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                                </svg>
+                                            @elseif ($order->status == 'placed')
+                                                <span class="badge bg-info">Placed</span>
+                                            @elseif ($order->status == 'shipped')
+                                                <span class="badge bg-info">Shipped</span>
+                                            @elseif ($order->status == 'delivered')
+                                                <svg class="text-success-500 h-6 w-6 text-success" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                                </svg>
+                                            @else
+                                                <span class="badge bg-danger">Cancelled</span>
+                                            @endif
                                         </td>
                                     @endif
-                                    <td class="text-end">{{ $order->items->sum('quantity') }} x ₹{{ $order->items->sum('price') }}</td>                                    
+                                    <td class="text-end">{{ $order->items->sum('quantity') }}</td>                                    
                                     <td class="text-end">
                                         @if($type == 'Delivery')
                                             {{ round($grandTotal + $shipping) }}                                            
@@ -137,25 +159,21 @@
                                         @endif
                                     </td>
                                     <td class="text-end">{{ \Carbon\Carbon::parse($order->created_at)->format('d M, Y') }}</td>
-                                    <td class="text-end">                                                                                
-                                        @if ($order->status == 'running')
-                                            <span class="badge bg-success">Running</span>
-                                        @elseif ($order->status == 'pending')
-                                            <svg class="text-danger h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true">
-                                                <path stroke-linecap="round" stroke-linejoin="round" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                                            </svg>
-                                        @elseif ($order->status == 'placed')
-                                            <span class="badge bg-info">Placed</span>
-                                        @elseif ($order->status == 'shipped')
-                                            <span class="badge bg-info">Shipped</span>
-                                        @elseif ($order->status == 'delivered')
-                                            <svg class="text-success-500 h-6 w-6 text-success" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true">
-                                                <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                                            </svg>
-                                        @else
-                                            <span class="badge bg-danger">Cancelled</span>
+                                    <td class="text-end float-end">   
+                                        @if($order->seat)
+                                            <form class="dineineStatus mt-3" data-id="{{ $order->seat->id }}">
+                                                @csrf
+                                                <div class="form-check form-switch">
+                                                    <input type="checkbox" class="form-check-input status-switch" {{ $order->seat->status == 'running' ? 'checked' : '' }} />
+                                                </div>
+                                            </form>
                                         @endif
-                                    </td>                                        
+                                    </td>   
+                                    <td>
+                                        <a href="{{ route('orders.invoice', $order->id) }}" class="download-icon">
+                                            <span class="sprites"></span>
+                                        </a>
+                                    </td>                                  
                                 </tr>
                             @empty
                                 <tr>

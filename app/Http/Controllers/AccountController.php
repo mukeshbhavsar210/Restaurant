@@ -160,9 +160,9 @@ class AccountController extends Controller
         }
     }
 
-    public function login(){
-        return view('front.layouts.app');
-    }
+    // public function login(){
+    //     return view('front.layouts.app');
+    // }
 
     // public function authenticate(Request $request){
     //     $validator = Validator::make($request->all(),[
@@ -187,7 +187,7 @@ class AccountController extends Controller
     
     public function logout(){
         Auth::logout();
-        return redirect()->route('home');
+        return redirect()->route('login');
     }
 
     public function updatePassword(Request $request){

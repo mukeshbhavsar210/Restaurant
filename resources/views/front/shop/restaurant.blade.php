@@ -7,8 +7,6 @@
         <div class="menu-grid">
             @if(!empty($products))
                 @foreach($products as $value)
-                   
-
                     <a href="javascript:void(0);" >
                         <div class="menu-product">
                             <div class="menu-product__item">

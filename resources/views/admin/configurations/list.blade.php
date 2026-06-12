@@ -5,32 +5,28 @@
 @include('admin.layouts.message')
 
 <div class="card">               
-    <div class="card-body">
+    <div class="card-body mobile-padd">
         @php
-            $tabs = [
+            $tabs = [                
                 [
                     'id' => 'tabs-1',
-                    'title' => 'Configurations',
-                    'active' => true,
+                    'title' => 'Configurations', 
+                    'active' => true,                   
                 ],
                 [
                     'id' => 'tabs-2',
-                    'title' => 'Outlets',
-                ],
-                [
-                    'id' => 'tabs-3',
                     'title' => 'Pages',
                 ],
                 [
-                    'id' => 'tabs-4',
+                    'id' => 'tabs-3',
                     'title' => 'Permissions',
                 ],
                 [
-                    'id' => 'tabs-5',
+                    'id' => 'tabs-4',
                     'title' => 'Roles',
                 ],
                 [
-                    'id' => 'tabs-6',
+                    'id' => 'tabs-5',
                     'title' => 'Users',
                 ],
             ];
@@ -63,48 +59,44 @@
                                 <div class="accordion-body">
                                     <div class="flex-2">
                                         <img src="{{ asset('uploads/logo/'.configData()->logo) }}" alt="{{ configData()->name }}" class="rounded" style="width: 150px" />
-                                        <a href="javascript:void(0)"
-                                            class="editConfig edit-icon mt-4"
-                                            data-bs-toggle="modal"
-                                            data-bs-target="#createConfigModal"
-                                            data-action="{{ route('configurations.update') }}"
-                                            data-method="PUT"
-                                            data-title="Edit Restaurant"
-                                            data-button="Update Restaurant"
-                                            data-business_types="{{ configData()->business_types }}"
-                                            data-name="{{ configData()->name }}"
-                                            data-email="{{ configData()->email }}"
-                                            data-phone="{{ configData()->phone }}"
-                                            data-mobile="{{ configData()->mobile }}"
-                                            data-address="{{ configData()->address }}"
-                                            data-shipping="{{ configData()->shipping }}"
-                                            data-primary_color="{{ configData()->primary_color }}"
-                                            data-secondary_color="{{ configData()->secondary_color }}"
-                                            data-payment_key_id="{{ configData()->payment_key_id }}"
-                                            data-payment_key_secret="{{ configData()->payment_key_secret }}"
-                                            data-gst="{{ configData()->gst }}"
-                                            data-sgst="{{ configData()->sgst }}"
-                                            data-cgst="{{ configData()->cgst }}"
-                                            >     
-                                            <span class="sprites"></span>
-                                        </a>
                                     </div>
 
-                                    <h2 class="mb-0 mt-2">{{ $config->name }}</h2>
+                                    {{-- <h2 class="mb-0 mt-2">{{ $config->name }}</h2> --}}
                                     <p class="mb-2 mt-1">{{ $config->address }}<br />Email: {{ $config->email }}, Mobile: {{ $config->phone }}</p>                                                     
+                                    <a href="javascript:void(0)" class="editConfig btn btn-outline-primary mt-1" data-bs-toggle="modal"
+                                        data-bs-target="#createConfigModal"
+                                        data-action="{{ route('configurations.update') }}"
+                                        data-method="PUT" data-title="Edit Restaurant" data-button="Update Restaurant"
+                                        data-business_types="{{ configData()->business_types }}"
+                                        data-name="{{ configData()->name }}"
+                                        data-email="{{ configData()->email }}"
+                                        data-phone="{{ configData()->phone }}"
+                                        data-mobile="{{ configData()->mobile }}"
+                                        data-address="{{ configData()->address }}" 
+                                        data-shipping="{{ configData()->shipping }}"
+                                        data-upi_id="{{ configData()->upi_id }}"
+                                        data-sgst="{{ configData()->sgst }}"
+                                        data-cgst="{{ configData()->cgst }}"
+                                        data-primary_color="{{ configData()->primary_color }}"
+                                        data-secondary_color="{{ configData()->secondary_color }}"
+                                        data-payment_key_id="{{ configData()->payment_key_id }}"
+                                        data-payment_key_secret="{{ configData()->payment_key_secret }}"
+                                        >     
+                                        Edit Config
+                                    </a>                                  
                                 </div>
                             </div>                                    
                         </div>
                         <div class="accordion-item">
-                            <h5 class="accordion-header m-0" id="headingThree">
-                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                            <h5 class="accordion-header m-0" id="headingTwo">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
                                     Order Details
                                 </button>
                             </h5>
-                            <div id="collapseThree" class="accordion-collapse collapse" aria-labelledby="headingThree" data-bs-parent="#accordionExample">
+                            <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent="#accordionExample">
                                 <div class="accordion-body"> 
                                     <div class="row">    
-                                        <div class="col-auto">
+                                        <div class="col-md-4 col-12">
                                             <div class="card border-1">
                                                 <div class="card-header">
                                                     <h4 class="card-title">Types</h4>
@@ -121,29 +113,18 @@
                                                     @endforeach                                                    
                                                 </div>
                                             </div>
-                                        </div>                                   
-                                        <div class="col-auto">
-                                            <div class="card border-1">
-                                                <div class="card-header">
-                                                    <h4 class="card-title">Payment Gateway</h4>
-                                                </div>
-                                                <div class="card-body pt-0">
-                                                    <p class="card-text text-muted mb-1">Payment Key Id: {{ $config->payment_key_id }}</p>
-                                                    <p class="card-text text-muted">Payment Key Secret: {{ $config->payment_key_secret }}</p>
-                                                </div>
-                                            </div>                                                                           
-                                        </div>                                        
-                                        <div class="col-auto">
+                                        </div> 
+                                        <div class="col-md-4 col-12">
                                             <div class="card border-1">
                                                 <div class="card-header">
                                                     <h4 class="card-title">Taxes</h4>
                                                 </div>
                                                 <div class="card-body pt-0">
-                                                    <p class="card-text text-muted mb-1">GST: {{ $config->gst }}, SGST:{{ $config->sgst }}, CGST: {{ $config->cgst }}</p>                                                    
+                                                    <p class="card-text mb-1">SGST:{{ $config->sgst }}, CGST: {{ $config->cgst }}</p>                                                    
                                                 </div>
                                             </div>                                                                           
-                                        </div>
-                                        <div class="col-auto">
+                                        </div>                                                                           
+                                        <div class="col-md-4 col-12">
                                             <div class="card border-1">
                                                 <div class="card-header">
                                                     <h4 class="card-title">Theme Color</h4>
@@ -151,11 +132,11 @@
                                                 <div class="card-body pt-0">
                                                     <div class="flex">
                                                         <div class="flex">
-                                                            <p class="text-muted mb-1">Primary:</p>
+                                                            <p class="mb-1">Primary:</p>
                                                             <p class="themeColor mb-1" style="background-color:{{ $config->primary_color }}"></p>
                                                         </div>
                                                         <div class="flex">
-                                                            <p class="text-muted mb-0">Secondary:</p>
+                                                            <p class="mb-0">Secondary:</p>
                                                             <p class="themeColor mb-0" style="background-color:{{ $config->secondary_color }}"></p>
                                                         </div>
                                                     </div>
@@ -166,113 +147,67 @@
                                 </div>
                             </div>
                         </div>
+                        <div class="accordion-item">
+                            <h5 class="accordion-header m-0" id="headingThree">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                                    Payments details
+                                </button>
+                            </h5>
+                            <div id="collapseThree" class="accordion-collapse collapse" aria-labelledby="headingThree" data-bs-parent="#accordionExample">
+                                <div class="accordion-body"> 
+                                    <div class="row">           
+                                        <div class="col-md-4 col-12">
+                                            <div class="card border-1">
+                                                <div class="card-header">
+                                                    <h4 class="card-title">UPI QR</h4>
+                                                </div>
+                                                <div class="card-body pt-0">                                                    
+                                                    <img src="{{ asset('uploads/logo/'.configData()->upi) }}" class="rounded img-fluid" />
+                                                </div>                                                
+                                            </div>                                                                           
+                                        </div>                                                                   
+                                        <div class="col-md-4 col-12">
+                                            <div class="card border-1">
+                                                <div class="card-header">
+                                                    <h4 class="card-title">Payment Gateway</h4>
+                                                </div>
+                                                <div class="card-body pt-0">
+                                                    <p class="card-text mb-1">Payment Key Id: {{ $config->payment_key_id }}</p>
+                                                    <p class="card-text ">Payment Key Secret: {{ $config->payment_key_secret }}</p>
+                                                </div>
+                                            </div>                                                                           
+                                        </div>
+                                        <div class="col-md-4 col-12">
+                                            <div class="card border-1">
+                                                <div class="card-header">
+                                                    <h4 class="card-title">UPI details</h4>
+                                                </div>
+                                                <div class="card-body pt-0">
+                                                    <p>UPI ID: {{ $config->upi_id }}</p>                                                    
+                                                </div>                                                
+                                            </div>                                                                           
+                                        </div>  
+                                                                                
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 @else
-                    <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#{{ $configForm['modal_id'] }}">{{ $configForm['title'] }}</button>
+                    <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#{{ $configForm['modal_id'] }}">{{ $configForm['title'] }}</button>                    
                 @endif
             </div>
 
             <div class="tab-pane" id="tabs-2" role="tabpanel">
-                <div class="row mt-0 mt-md-2">
-                    <div class="col-md-9 col-12">
-                        <div class="page-title">
-                            <h4>Outlets</h4> 
-                            <span class="counts">{{ $outletCounts }}</span>
-                        </div>
-                    </div>
-                    
-                    <div class="col-md-3 col-12 mt-2 mt-md-0">
-                        <div class="flex float-end">
-                            <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#{{ $branchForm['modal_id'] }}">{{ $branchForm['title'] }}</button>
-                            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#{{ $tableForm['modal_id'] }}">{{ $tableForm['title'] }}</button>
-                        </div>
-                    </div>            
-                </div>                        
-
-                <div class="accordion mt-1" id="accordionExample">
-                    @if($outlets->isNotEmpty())
-                        @foreach ($outlets as $key => $value)
-                            <div class="accordion-item">                                    
-                                <div class="accordion-header" id="heading{{ $value->id }}">
-                                    <button class="accordion-button {{ $key != 0 ? 'collapsed' : '' }}"
-                                            type="button" data-bs-toggle="collapse"
-                                            data-bs-target="#collapse{{ $value->id }}"
-                                            aria-expanded="{{ $key == 0 ? 'true' : 'false' }}"
-                                            aria-controls="collapse{{ $value->id }}">
-
-                                            {{ $value->area_name }} - {{ $value->total_seats }}
-                                    </button>
-                                </div>
-
-                                <div id="collapse{{ $value->id }}" class="accordion-collapse collapse {{ $key == 0 ? 'show' : '' }}" aria-labelledby="heading{{ $value->id }}" data-bs-parent="#accordionExample">
-                                    <div class="accordion-body">
-                                        <div class="flex-justify mb-2">
-                                            <div>
-                                                <p class="mb-0">{{ $value->manager_name }} M.: {{ $value->mobile }}</p>
-                                                <p>{{ $value->address }}, Phone: {{ $value->phone }}</p>
-                                            </div>
-                                            <div>
-                                                @if($value->area_name !== 'Default')
-                                                    <a href="javascript:void(0)" class="btn btn-outline-danger commonDeleteBtn"
-                                                        data-bs-toggle="modal" data-bs-target="#commonDeleteModal"
-                                                        data-url="{{ route('delete.branch', $value->id) }}" data-title="{{ $value->area_name }} outlet">
-                                                        Delete Outlet
-                                                    </a>
-                                                @endif                                                
-                                            </div>
-                                        </div>
-
-                                        <div class="row">     
-                                            @foreach ($value->seats as $seat)
-                                                <div class="col-md-2 col-6">
-                                                    <div class="card border-1">
-                                                        <div class="card-body">        
-                                                            <div class="flex-justify">                                                
-                                                                <h5 class="mb-0">{{ $seat->table_name }}</h5>
-                                                                @if($seat->status == 'running')                                                                    
-                                                                    <div class="dot-status green blink"></div>
-                                                                @elseif($seat->status == 'available')
-                                                                    <div class="dot-status red"></div>                                                                            
-                                                                @endif 
-                                                            </div>
-                                                            <div class="qr-code">
-                                                                {!! DNS2D::getBarcodeHTML('http://127.0.0.1:8000/'.$value->area_slug.'/'.$seat->table_slug, 'QRCODE',4.2,4.2) !!}
-                                                            </div>                                                            
-                                                            <div class="flex-justify">
-                                                                <p class="mb-0">
-                                                                    @if($seat->capacity)
-                                                                        {{ $seat->capacity }}
-                                                                    @endif
-                                                                </p>
-                                                                <a href="javascript:void(0)" class="card-link text-danger commonDeleteBtn"
-                                                                    data-bs-toggle="modal" data-bs-target="#commonDeleteModal"
-                                                                    data-url="{{ route('delete.table', $seat->id) }}" data-title="{{ $seat->table_name }} ({{ $value->area_name }})">
-                                                                    Delete Table
-                                                                </a>                                                                        
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            @endforeach
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        @endforeach
-                    @endif
-                </div>
-            </div>
-
-            <div class="tab-pane" id="tabs-3" role="tabpanel">
                 <div class="row mt-3">
-                    <div class="col-md-10 col-12">
+                    <div class="col-md-10 col-6">
                         <div class="page-title">
                             <h4>Pages</h4> 
                             <span class="counts">{{ $pageCounts }}</span>
                         </div>
                     </div>
                     
-                    <div class="col-md-2 col-12">
+                    <div class="col-md-2 col-6">
                         <button type="button" class="btn btn-primary float-end" data-bs-toggle="modal" data-bs-target="#{{ $pageForm['modal_id'] }}">{{ $pageForm['title'] }}</button>
                     </div>            
                 </div>                       
@@ -327,16 +262,16 @@
                 </div>
             </div>
 
-            <div class="tab-pane" id="tabs-4" role="tabpanel">
+            <div class="tab-pane" id="tabs-3" role="tabpanel">
                 <div class="row mt-3">
-                    <div class="col-md-7 col-12">     
+                    <div class="col-md-7 col-6">     
                         <div class="page-title"> 
                             <h4>Permissions</h4>
                             <span class="counts">{{ $totalPermissions }}</span>
                         </div>
                     </div>
 
-                    <div class="col-md-5 col-12 float-end">                
+                    <div class="col-md-5 col-6 float-end">                
                         <button type="button" class="btn btn-primary float-end" data-bs-toggle="modal" data-bs-target="#{{ $permissionForm['modal_id'] }}">{{ $permissionForm['title'] }}</button>                                
                     </div>
                 </div>  
@@ -366,15 +301,15 @@
             </div>
         </div>
 
-        <div class="tab-pane" id="tabs-5" role="tabpanel">
+        <div class="tab-pane" id="tabs-4" role="tabpanel">
             <div class="row mt-3">                
-                <div class="col-md-7 col-12">
+                <div class="col-md-7 col-6">
                     <div class="page-title"> 
                         <h4>Roles</h4>
                         <span class="counts">{{ $totalRoles }}</span>
                     </div>
                 </div>
-                <div class="col-md-5 col-12">
+                <div class="col-md-5 col-6">
                     <button type="button" class="btn btn-primary float-end" data-bs-toggle="modal" data-bs-target="#{{ $roleForm['modal_id'] }}">{{ $roleForm['title'] }}</button>                                
                 </div>
             </div>
@@ -432,15 +367,15 @@
             </div>
         </div>
 
-        <div class="tab-pane" id="tabs-6" role="tabpanel">
+        <div class="tab-pane" id="tabs-5" role="tabpanel">
             <div class="row mt-3">                
-                <div class="col-md-7 col-12">
+                <div class="col-md-7 col-6">
                     <div class="page-title"> 
                         <h4>Users</h4>
                         <span class="counts">{{ $userCounts }}</span>
                     </div>
                 </div>
-                <div class="col-md-5 col-12">
+                <div class="col-md-5 col-6">
                     <button type="button" class="btn btn-primary float-end" data-bs-toggle="modal" data-bs-target="#{{ $userForm['modal_id'] }}">{{ $userForm['title'] }}</button>
                 </div>
             </div>
@@ -511,17 +446,11 @@
     </div>
 </div>
 
+
 @include('components.common-modal', [
     'modal' => $configForm,
 ])
 
-@include('components.common-modal', [
-    'modal' => $branchForm,
-])
-
-@include('components.common-modal', [
-    'modal' => $tableForm,
-])
 
 @include('components.common-modal', [
     'modal' => $pageForm,
@@ -542,8 +471,7 @@
 @endsection
         
 @section('customJs')
-<script type="text/javascript">
-      
+<script type="text/javascript">      
     $(document).on("click", ".user_dialog", function () {
         alert("H");
         var UserName = $(this).data('id');
@@ -560,6 +488,6 @@
 
         url.searchParams.set('open', id);
         window.history.replaceState({}, '', url);
-    });
+    });    
 </script>
 @endsection

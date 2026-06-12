@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class Area extends Model {
     use HasFactory;
 
-    protected $fillable = [ 'manager_name', 'area_name', 'area_slug', 'phone', 'mobile', 'address' ];
+    protected $fillable = [ 'manager_name', 'area_name', 'area_slug', 'phone', 'mobile', 'address', 'view' ];
 
     public function seat(){
         return $this->hasMany(Seat::class);

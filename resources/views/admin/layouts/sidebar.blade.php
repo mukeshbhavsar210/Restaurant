@@ -16,7 +16,13 @@
             <i class="iconoir-compact-disc menu-icon"></i>
             <span>Products</span>
         </a>
-    </li>     
+    </li>  
+    <li class="nav-item">
+        <a href="{{ route('invoice.index') }}" class="nav-link {{ (\Request::route()->getName() == 'invoice.index') ? 'active' : '' }}">
+            <i class="iconoir-compact-disc menu-icon"></i>
+            <span>Invoice</span>
+        </a>
+    </li>   
     <li class="nav-item">
         <a href="{{ route('orders.index') }}" class="nav-link {{ (\Request::route()->getName() == 'orders.index') || (\Request::route()->getName() == 'orders.detail') ? 'active' : '' }}">
             <i class="iconoir-journal-page menu-icon"></i>

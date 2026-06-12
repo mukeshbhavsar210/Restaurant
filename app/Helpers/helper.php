@@ -13,8 +13,7 @@ use App\Models\View;
 use App\Models\Theme;
 use Illuminate\Support\Facades\Mail;
 
-    function getCategories()
-    {
+    function getCategories() {
         return Category::whereHas('products')
             ->orderByRaw("
                 CASE 
@@ -35,15 +34,22 @@ use Illuminate\Support\Facades\Mail;
         }
     }
 
+    // if (!function_exists('seatData')) {
+    //     function seatData()
+    //     {
+    //         return \App\Models\Seat::with('area')
+    //             ->whereHas('area', function ($query) {
+    //                 $query->where('area_name', 'Default');
+    //             })
+    //             ->orderByRaw('CAST(REGEXP_SUBSTR(table_name, "[0-9]+") AS UNSIGNED)')
+    //             ->get();
+    //     }
+    // }
+
     if (!function_exists('seatData')) {
         function seatData()
         {
-            return \App\Models\Seat::with('area')
-                ->whereHas('area', function ($query) {
-                    $query->where('area_name', 'Default');
-                })
-                ->orderByRaw('CAST(REGEXP_SUBSTR(table_name, "[0-9]+") AS UNSIGNED)')
-                ->get();
+            return Seat::get();
         }
     }
 
@@ -91,7 +97,7 @@ function getProducts(){
 } 
 
 function getSeats(){
-    return Seat::orderBy('table_name','ASC')->with('area')->orderBy('id','DESC')->get();
+    return Seat::orderBy('table','ASC')->with('area')->orderBy('id','DESC')->get();
 }  
 
 function orderEmail($orderId, $userType="customer"){
