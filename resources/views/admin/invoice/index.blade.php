@@ -45,7 +45,7 @@
                         </div>
                     </div>
                     
-                    <div class="col-md-5 col-7 ">
+                    <div class="col-md-5 col-7">
                         <div class="flex float-end">
                             <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#{{ $branchForm['modal_id'] }}">{{ $branchForm['title'] }}</button>
                             <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#{{ $tableForm['modal_id'] }}">{{ $tableForm['title'] }}</button>
@@ -73,13 +73,12 @@
                         @if($value->seats->count())                                
                             <div class="flex-2 mt-2 mb-2">
                                 @foreach($value->seats as $seat)                                
-                                    <a href="{{ route('invoice.pos.order', $seat->id) }}" class="text-decoration-none">
-                                        <div class="kot-card 
+                                <div class="kot-card 
                                             {{ $seat->status == 'running' ? 'running' : '' }}
                                             {{ $seat->status == 'available' ? 'available' : '' }}
                                             {{ $seat->status == 'printed' ? 'printed' : '' }}
                                             {{ $seat->status == 'kot-running' ? 'kot-running' : '' }}">
-
+                                        <a href="{{ route('invoice.pos.order', $seat->id) }}" class="text-decoration-none">
                                             AC {{ $seat->table }}
                                             <div class="dropdown">
                                                 <button class="btn btn-sm p-0 border-0" type="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -118,8 +117,8 @@
                                                     </li>
                                                 </ul>
                                             </div>
-                                        </div>
-                                    </a>                                
+                                        </a>
+                                    </div>                                    
                             @endforeach
                             </div>
                         @else

@@ -52,6 +52,7 @@
 
                 <form method="POST" action="{{ route('submit.order') }}">
                     @csrf
+                    
                     <div class="scroll-order">
                         <div class="basket-page__content__products">
                             @foreach(session('cart', []) as $id => $item)    
@@ -174,7 +175,8 @@
                         @endif
                     
                         <input type="hidden" name="order_type" id="order_type" value="{{ $tab1 }}" class="form-control">
-                        <input type="hidden" name="total" value="{{ $total }}" class="form-control">                            
+                        <input type="hidden" name="total" value="{{ $total }}" class="form-control">
+                        <input type="hidden" name="who" value="customer" class="form-control">
                                                                 
                         <div class="basket-page__content__terms">
                             <p class="validation">Fill all required fields</p>

@@ -24,7 +24,7 @@ Route::controller(FrontController::class)->group(function() {
 
     Route::post('/order', 'placeOrder')->name('submit.order');    
     Route::get('/order/success/{orderId}', 'orderSuccess')->name('order.success');
-    Route::get('/order/success/{orderId}', 'adminOrderSuccess')->name('admin.order.success');
+    Route::get('/admin-order/success/{orderId}', 'adminOrderSuccess')->name('admin.order.success');
 
     Route::get('/checkout/{id}', 'checkout')->name('razorpay.checkout');
     Route::get('/order/payment/{orderId}', 'paymentSuccess')->name('payment.success');
@@ -36,15 +36,16 @@ Route::controller(FrontController::class)->group(function() {
     Route::get('/cart/add/{id}', 'addToCart')->name('front.addCart');
     Route::get('/cart/increase/{id}', 'increaseCart')->name('cart.increase');
     Route::get('/cart/decrease/{id}', 'decreaseCart')->name('cart.decrease');
+    Route::get('/cart/increase-main/{id}', 'increaseMain')->name('cart.increase.main');
     Route::post('/cart/increase', 'increase')->name('cart.increase2');
     Route::post('/cart/decrease', 'decrease')->name('cart.decrease2');
     Route::get('/cart/remove/{id}', 'removeCart')->name('cart.removecart');
-    Route::get('/clear-cart', 'clearCart');
+    Route::get('/clear-cart', 'clearCart')->name('cart.clear');
 
     //add to wishlist
     Route::get('/wishlist/{id}', 'addToWish')->name('addwishlist');    
     Route::get('/favorites', 'wishlist')->name('front.wishlist');        
-    Route::get('/login', 'wishlist')->name('front.login');
+    Route::get('/login', 'login');
     Route::delete('/remove-from-wishlist', 'removeWish');
     Route::get('/wishlist/remove/{id}', 'removeWishlist')->name('remove_wishlist');     
 });
@@ -65,9 +66,7 @@ Route::group(['prefix' => 'admin'], function(){
             Route::post('/menus/{id}', 'menu_update')->name('menu.update');
             Route::get('/menus/{id}', 'menu_delete')->name('menu.delete');            
             Route::delete('/selected-menus', 'menu_deleteAll')->name('menuall.delete');
-        });  
-        
-        
+        });          
 
         //Product Route     
         Route::controller(ProductController::class)->group(function() {

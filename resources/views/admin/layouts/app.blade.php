@@ -17,16 +17,38 @@
 </head>
 
 <body data-sidebar-size="collapsed">
-<div class="topbar d-print-none">
+    
+<div class="topbar d-print-none {{ !request()->routeIs(['invoice.pos.order', 'invoice.branch.store']) ? '' : ' w-100' }}">
     <div class="container-xxl">
-        <nav class="topbar-custom d-flex justify-content-between nav-sticky" id="topbar-custom">    
-            <ul class="topbar-item list-unstyled d-inline-flex align-items-center">                        
-                <li>
-                    <button class="nav-link mobile-menu-btn nav-icon" id="togglemenu">
-                        <i class="iconoir-menu-scale"></i>
-                    </button>
-                </li>                   
-            </ul>
+        <nav class="topbar-custom d-flex justify-content-between nav-sticky" id="topbar-custom">                
+            @if(request()->routeIs(['invoice.pos.order', 'invoice.branch.store']))
+                <ul class="topbar-item list-unstyled d-inline-flex align-items-center">                        
+                    <li>
+                        <a href="{{ route('dashboard') }}" class="nav-link mobile-menu-btn nav-icon">
+                            Back
+                        </a>
+                    </li>
+                </ul>
+
+                @if(session('seat_id'))
+                    @php
+                        $seat = \App\Models\Seat::find(session('seat_id'));
+                    @endphp
+
+                    @if($seat)
+                        <div class="mt-3">Table: {{ $seat->table }}</div>
+                    @endif
+                @endif
+            @else   
+                <ul class="topbar-item list-unstyled d-inline-flex align-items-center">                        
+                    <li>
+                        <button class="nav-link mobile-menu-btn nav-icon" id="togglemenu">
+                            <i class="iconoir-menu-scale"></i>
+                        </button>
+                    </li>
+                </ul>                
+            @endif
+                
             <ul class="topbar-item list-unstyled d-inline-flex align-items-center mb-0">
                 <li class="hide-phone app-search">
                     <form role="search" action="#" method="get">
@@ -132,51 +154,14 @@
     </div>
 </div>
 
-<div class="startbar d-print-none">
-    <div class="brand">
-        <a href="{{ route('dashboard') }}" class="logo">
-            <span>
-                <img src="{{ asset('front-assets/images/logo_small.jpg') }}" alt="logo-small" class="logo-sm">
-            </span>
-            {{-- <span class="">
-                <img src="{{ asset('front-assets/images/logo.jpg') }}" alt="logo-large" class="logo-lg logo-light">
-                <img src="{{ asset('front-assets/images/logo.jpg') }}" alt="logo-large" class="logo-lg logo-dark">
-            </span> --}}
-        </a>
-    </div>
-    <div class="startbar-menu">
-        <div class="startbar-collapse simplebar-scrollable-y" id="startbarCollapse" data-simplebar="init">
-            <div class="simplebar-wrapper" style="margin: 0px -16px -16px;">
-                <div class="simplebar-height-auto-observer-wrapper">
-                    <div class="simplebar-height-auto-observer"></div>
-                </div>
-                <div class="simplebar-mask">
-                    <div class="simplebar-offset" style="right: 0px; bottom: 0px;">
-                        <div class="simplebar-content-wrapper" tabindex="0" role="region" aria-label="scrollable content" style="height: 100%; overflow: hidden scroll;">
-                            <div class="simplebar-content" style="padding: 0px 16px 16px;">
-                                <div class="d-flex align-items-start flex-column w-100">
-                                    @include('admin/layouts/sidebar')                                            
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="simplebar-placeholder" style="width: 70px; height: 657px;"></div>
-            </div>
-            <div class="simplebar-track simplebar-horizontal" style="visibility: hidden;">
-                <div class="simplebar-scrollbar" style="width: 0px; transform: translate3d(0px, 0px, 0px); display: none;"></div>
-            </div>
-            <div class="simplebar-track simplebar-vertical" style="visibility: visible;">
-                <div class="simplebar-scrollbar" style="height: 413px; transform: translate3d(0px, 0px, 0px); display: block;"></div>
-            </div>
-        </div>
-    </div>
-</div>
+@if(!request()->routeIs(['invoice.pos.order', 'invoice.branch.store']))    
+    @include('admin/layouts/sidebar')                                            
+@endif
 
 <div class="startbar-overlay d-print-none"></div>
 
 <div class="page-wrapper">
-    <div class="page-content">        
+    <div class="page-content {{ !request()->routeIs(['invoice.pos.order', 'invoice.branch.store']) ? '' : 'margin-left-0' }}">        
         @yield('content')        
         
         <footer class="footer text-center text-sm-start d-print-none">

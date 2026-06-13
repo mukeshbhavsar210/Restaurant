@@ -31,7 +31,8 @@
     @endphp
 
     <div class="text-center">
-        {!! QrCode::size(250)->generate($upiUrl) !!}
+        {!! \SimpleSoftwareIO\QrCode\Facades\QrCode::size(250)->generate($upiUrl) !!}
+        {{-- {!! QrCode::size(250)->generate($upiUrl) !!} --}}
         {{-- <button class="btn btn-primary mt-3" data-bs-toggle="modal" data-bs-target="#upiPaymentModal">
             Pay at Restaurant
         </button> --}}
