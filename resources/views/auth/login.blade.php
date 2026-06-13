@@ -53,7 +53,7 @@
                             </div>
                         </div>
                                                                 
-                        <button class="btn btn-primary">Log in <i class="fas fa-sign-in-alt ms-1"></i></button>
+                        <button class="btn btn-primary">Log in </button>
                     </form>  
                 </div>
             </div>

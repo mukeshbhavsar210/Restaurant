@@ -233,14 +233,10 @@ class InvoiceController extends Controller implements HasMiddleware {
 
 
     public function pos_order(Seat $seat) {
+        session(['seat_id' => $seat->id]);
         $categories = Category::with('products')->get();
         $config = Configuration::first();
         $seats = collect();
-        if (session('branch_id')) {
-            $seats = Seat::where('branch_id', session('branch_id'))->orderBy('table')->get();
-        }
-
-        $seats = Seat::where('area_id', session('area_id'))->orderBy('table_order', 'ASC')->get();
 
         if (!session()->has('area_id')) {
             $defaultArea = Area::where('area_name', 'Default')->first();
@@ -250,17 +246,15 @@ class InvoiceController extends Controller implements HasMiddleware {
                     'area_name' => $defaultArea->area_name,
                 ]);
             }
-        }
-        $seats = Seat::where('area_id', session('area_id'))->orderBy('table_order')->get();
+        }        
 
         //dd(session('cart'));
-        dd(session()->all());
+        //dd(session()->all());
 
         return view('admin.invoice.pos_order', compact(
             'seat', 'categories', 'config', 'seats'
         ));
     }
-
 
     public function branch_store(Request $request){
         $area = new Area();

@@ -18,6 +18,7 @@ use App\Models\Variant;
 use Illuminate\Support\Facades\DB;
 use Razorpay\Api\Api;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Support\Facades\Auth;
 
 class FrontController extends Controller {  
 
@@ -187,24 +188,45 @@ class FrontController extends Controller {
         // Unique cart key for variants
         $cartKey = $id . '_' . ($variantName ?? 'default');
 
-        $cart = session()->get('cart', []);
+        $cart = session()->get('cart', []);        
 
-        // If already exists        
-        if(isset($cart[$id])) {
-            $cart[$id]['quantity']++;
+        // If already exists     
+        if(isset($cart[$cartKey])) {
+            $cart[$cartKey]['quantity']++;
         } else {
-            $cart[$id] = [
+            $cart[$cartKey] = [
                 "product_id"    => $product->id,
                 "quantity"      => 1,
                 "name"          => $product->name,
                 "variant"       => $variantName,
                 "price"         => $variantPrice,                     
                 "area_id"       => session('area_id'),
-                "table_id"      => session('table_id'),
                 "area_name"     => session('area_name'),
-                "table"         => session('table'),                
+                "table_id"      => session('table_id'),
+                "seat_id"       => session('seat_id'),                
+                'role'          => session('role'),
             ];
+            
+            session()->put('cart', $cart);
         }
+
+        // if(isset($cart[$id])) {
+        //     $cart[$id]['quantity']++;
+        // } else {
+        //     $cart[$id] = [
+        //         "product_id"    => $product->id,
+        //         "quantity"      => 1,
+        //         "name"          => $product->name,
+        //         "variant"       => $variantName,
+        //         "price"         => $variantPrice,                     
+        //         "area_id"       => session('area_id'),
+        //         "table_id"      => session('table_id'),
+        //         "area_name"     => session('area_name'),
+        //         "seat_id"       => session('seat_id'),
+        //         "table"         => session('table'),
+        //         'role'          => session('role'),
+        //     ];
+        // }
 
         // if(isset($cart[$id])) {
         //     $cart[$id]['quantity']++;
@@ -414,7 +436,8 @@ class FrontController extends Controller {
     //Clear Cart
     public function clearCart(){
         session()->forget('cart');
-        return redirect()->back();
+        return back()->with('success', 'Cart cleared successfully.');
+        //return redirect()->back();
     }
 
     //Wishlist
@@ -500,6 +523,7 @@ class FrontController extends Controller {
 
         if ($request->order_type === 'Takeaway' || $request->order_type === 'Delivery') {            
             $order = Order::create([
+                'who'         => $request->who,
                 'order_type'  => $request->order_type,
                 'session_id'  => session('session_id'),
                 'notes'       => $request->notes,
@@ -525,12 +549,18 @@ class FrontController extends Controller {
             }
 
             Session::forget('cart');
+
+            if (session('role') == 1) {
+                return redirect()->back()->with('success', 'Order placed successfully.');
+            }  
+            
             Session::flush();
           
             return redirect()->route('razorpay.checkout', $order->id); 
 
         } elseif($request->order_type === 'Dinein' && $request->filled('seat_id')) {
             $order = Order::create([
+                'who'         => $request->who,
                 'order_type' => $request->order_type,
                 'session_id' => session('session_id'),
                 'area_id'  => session('area_id'),
@@ -559,16 +589,15 @@ class FrontController extends Controller {
                 ]);
             }
 
-            Session::forget('cart');
-            Session::flush();
+            Session::forget('cart');            
 
-            if (auth()->guard('admin')->check()) {
-                return redirect()
-                    ->route('admin.order.success', $order->id)
-                    ->with('success', 'Admin Order placed successfully');
-            }
-          
-            return redirect()->route('order.success', $order->id)->with('success','Order placed successfully');
+            if (session('role') == 1) {
+                return redirect()->back()->with('success', 'Order placed successfully.');
+            }            
+
+            return redirect()->route('order.success', $order->id)->with('success', 'Order placed successfully');
+
+            Session::flush();
         }               
     }
 
@@ -657,6 +686,19 @@ class FrontController extends Controller {
 
         return response()->json(['status' => true]);
     }
+
+
+    public function increaseMain($id) {
+        $cart = session()->get('cart', []);
+
+        $cartKey = $id . '_default';
+        
+        if (isset($cart[$cartKey])) {
+            $cart[$cartKey]['quantity']++;
+        }
+        session()->put('cart', $cart);
+        return response()->json(['status' => true]);        
+    }
     
 
     public function decrease(Request $request) {
@@ -689,4 +731,7 @@ class FrontController extends Controller {
             '.pdf'
         );
     }
+
+
+    
 }

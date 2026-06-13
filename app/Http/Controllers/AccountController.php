@@ -160,29 +160,29 @@ class AccountController extends Controller
         }
     }
 
-    // public function login(){
-    //     return view('front.layouts.app');
-    // }
+    public function login(){
+        return view('front.layouts.app');
+    }
 
-    // public function authenticate(Request $request){
-    //     $validator = Validator::make($request->all(),[
-    //         'email' => 'required|email',
-    //         'password' => 'required',
-    //     ]);
+    public function authenticate(Request $request){
+        $validator = Validator::make($request->all(),[
+            'email' => 'required|email',
+            'password' => 'required',
+        ]);
 
-    //     if ($validator->passes()) {
-    //         if(Auth::attempt([ 'email' => $request->email, 'password' => $request->password ])){
-    //             return redirect()->route('properties.index');
-    //         } else {
-    //             return redirect()->route('user.home')->with('error','Either Email/Password Incorrect');
-    //         }
+        if ($validator->passes()) {
+            if(Auth::attempt([ 'email' => $request->email, 'password' => $request->password ])){
+                return redirect()->route('properties.index');
+            } else {
+                return redirect()->route('user.home')->with('error','Either Email/Password Incorrect');
+            }
 
-    //     } else {
-    //         return redirect()->route('user.home')
-    //                          ->withErrors($validator)
-    //                          ->withInput($request->only('email'));
-    //     }
-    // }
+        } else {
+            return redirect()->route('user.home')
+                             ->withErrors($validator)
+                             ->withInput($request->only('email'));
+        }
+    }
 
     
     public function logout(){
