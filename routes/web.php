@@ -38,7 +38,7 @@ Route::controller(FrontController::class)->group(function() {
     Route::get('/cart/add/{id}', 'addToCart')->name('front.addCart');
     Route::get('/admin/cart/add/{id}', 'addToCartAdmin')->name('admin.cart.add'); 
     
-    Route::get('/cart/remove/{id}', 'removeCart')->name('cart.removecart');
+    Route::get('/cart/remove/{id}', 'customerRemoveCart')->name('customer.cart.removecart');
     
     Route::get('/cart/increase/{id}', 'increaseCart')->name('cart.increase');
     Route::get('/cart/decrease/{id}', 'decreaseCart')->name('cart.decrease');
@@ -122,7 +122,7 @@ Route::group(['prefix' => 'admin'], function(){
             Route::get('/invoice', 'index')->name('invoice.index');
             Route::get('/pos/order/{seat}', 'pos_order')->name('invoice.pos.order');
             Route::post('/invoice', 'branch_view')->name('invoice.branch.store');   
-            Route::get('/cart-admin/remove/{id}', 'adminRemoveCart')->name('admin.cart.removecart');   
+            //Route::get('/cart-admin/remove/{id}', 'adminRemoveCart')->name('admin.cart.removecart');   
 
             //Branch
             Route::post('/branch', 'branch_store')->name('branch.store');

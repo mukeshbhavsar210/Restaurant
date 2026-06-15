@@ -11,7 +11,12 @@
     foreach($cart as $item){
         $total += $item['price'] * $item['quantity'];
     }      
+
+    $cartItem = collect(session('cart', []))->firstWhere('product_id', $product->id);
+    $cartKey = collect(session('cart', []))->search(fn($item) => $item['product_id'] == $product->id);
+    $qty = $cartItem['quantity'] ?? 0;
 @endphp
+
 
 <div class="menu-product">
     <div class="menu-product__item">
@@ -133,23 +138,25 @@
     <div class="product-details">   
         <p class="mb-3">{{ \Illuminate\Support\Str::limit(strtolower($product->description), 50) }}</p>
 
-         @if($qty > 0)
-            <div class="add-controls modal-{{ $product->id }}">
-                <div class="qty-box flex align-items-center">
-                    <a href="javascript:0" class="sub-icon-big sub-icon-control-{{ $id }} {{ $qty <= 1 ? 'qty-remove' : 'qty-decrease' }}" data-id="{{ $product->id }}">
-                        <span class="sprites"></span>
-                    </a>                   
+        @if($cartItem)
+            <div class="add-controls cart-{{ $cartKey }}">                
+                <div class="flex-inner">     
+                    <div class="qty-box flex align-items-center">  
+                        <a href="javascript:0" class="remove-item-big subIconBig-{{ $cartKey }}" data-id="{{ $cartKey }}">
+                            <span class="sprites"></span>
+                        </a>                        
 
-                    <div class="manage-modal-qty">
-                        {{ $qty }}
-                        {{-- {{ getProductQty($product->id) }} --}}
-                    </div>
+                        <div class="manage-modal-qty">
+                            <span class="manage-qty-{{ $cartKey }}">{{ $qty }}</span>
+                        </div>
 
-                    <a href="javascript:void(0)" class="add-icon-big qty-increase" data-id="{{ $product->id }}">
-                        <span class="sprites"></span>
-                    </a>
-                </div>
-            </div>                
+                        <a href="javascript:0" class="qty-increase-big" data-id="{{ $cartKey }}">
+                            <span class="sprites"></span>
+                        </a>
+                    </div>                        
+                </div>                
+            </div>
+            <input type="hidden" name="variant_name" class="variant_name" value="{{ $cartItem['variant'] ?? '' }}">
         @else
             <form action="{{ route('front.addCart', $product->id) }}" method="GET" class="cart-form" data-id="{{ $product->id }}">
                 @if($product->variants->count() > 0)
@@ -159,11 +166,11 @@
                      <input type="hidden" name="variant_price" value="{{ $product->price }}"> --}}
                 @endif
 
-                <button type="submit" class="add-to-cart add-icon-big">
+                <button type="submit" class="add-to-cart qty-increase-big">
                     <span class="sprites"></span>
                 </button>
-            </form>                
-        @endif 
+            </form>      
+        @endif        
        
         <div class="variant-group mt-3" role="group">
             @if($product->variants->count() > 0)

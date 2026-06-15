@@ -55,13 +55,13 @@
                     
                     <div class="scroll-order">
                         <div class="basket-page__content__products">
-                            @foreach(session('cart', []) as $id => $item)    
+                            @foreach(session('cart', []) as $id => $item)
                                 @php
                                     $qty = $item['quantity'];
-                                @endphp
+                                @endphp                              
 
                                 <div class="cart-row cart-{{ $id }}">
-                                    <div class="item-name">
+                                    <div class="item-name">                                        
                                         <span class="manage-qty manage-qty-{{ $id }}">{{ $qty }}</span> x {{ $item['name'] }} 
                                         @if(!empty($item['variant']))
                                             ({{ $item['variant'] }})
@@ -70,17 +70,17 @@
                                     <div class="calculate">
                                         <div class="flex-inner">
                                             @if(getCartCount() > 0)
-                                                <div class="qty-box flex align-items-center">  
-                                                    <a href="javascript:0" class="sub-icon-control-{{ $id }} {{ $qty <= 1 ? 'remove-icon' : 'qty-decrease' }}" data-id="{{ $id }}">
+                                                <div class="qty-box flex align-items-center">
+                                                    <a href="javascript:0" class="remove-item-small subIconSmall-{{ $id }}" data-id="{{ $id }}">
                                                         <span class="sprites"></span>
                                                     </a>
                     
-                                                    <a href="javascript:0" class="add-icon qty-increase" data-id="{{ $id }}">
+                                                    <a href="javascript:0" class="qty-increase-small" data-id="{{ $id }}">
                                                         <span class="sprites"></span>
                                                     </a>
                                                 </div>
                                             @else
-                                                <a href="javascript:0" class="add-to-cart add-icon qty-increase" data-id="{{ $id }}">
+                                                <a href="javascript:0" class="add-to-cart" data-id="{{ $id }}">
                                                     <span class="sprites"></span>
                                                 </a>
                                             @endif

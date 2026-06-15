@@ -291,8 +291,8 @@ body.modal-open {
 .wishlist-icon-big:hover span { background-position:-30px -80px; }
 .back-icon span { background-position:0 -55px; height: 25px; width: 25px; }
 .back-icon:hover span { background-position:-26px -55px; }
-.remove-icon span { background-position:-126px -82px; height: 22px; width: 21px; }
-.delete-icon span { background-position:-151px -30px; height: 22px; width: 17px; }
+.remove-item-small span { background-position:-126px -82px; height: 22px; width: 21px; }
+.delete-icon-small span { background-position:-151px -30px; height: 22px; width: 17px; }
 .delete-icon:hover span { background-position:-173px -30px; }
 .clear-icon { background-color: var(--white); border-radius: 100px; padding: 4px;}
 .clear-icon span { background-position:-101px -59px; height: 18px; width: 18px; }
@@ -300,13 +300,13 @@ body.modal-open {
 .clear-big-icon span { background-position:-134px -56px; height: 22px; width: 24px; margin: 2px auto; }
 .clear-big-icon:hover span { background-position:-154px -56px; }
 
-.add-icon, .qty-decrease, .remove-icon {  border-radius: 100px; padding:5px; border:1px #ccc solid;}
-.qty-remove { background-color: #fff; border-radius: 100px; padding:5px; border:1px red solid;}
-.add-icon:hover, .qty-decrease:hover, .qty-remove:hover { background-color: #eeeeee; }
+.qty-increase-small, .qty-decrease-small, .remove-item-small {  border-radius: 100px; padding:5px; border:1px #ccc solid;}
+.qty-remove-small { background-color: #fff; border-radius: 100px; padding:5px; border:1px red solid;}
+.qty-increase-small:hover, .qty-decrease-small:hover, .qty-remove-small:hover { background-color: #eeeeee; }
 .remove-icon:hover { border:1px red solid; }
-.add-icon span { background-position:-108px -82px; height: 21px; width: 21px; }
-.qty-decrease span { background-position:-89px -82px; height: 21px; width: 21px; }
-.qty-remove span { background-position:-126px -82px; height: 21px; width: 21px; }
+.qty-increase-small span { background-position:-108px -82px; height: 21px; width: 21px; }
+.qty-decrease-small span { background-position:-89px -82px; height: 21px; width: 21px; }
+.qty-remove-small span { background-position:-126px -82px; height: 21px; width: 21px; }
 
 .tab1_icon { background-position: -148px -83px; height: 22px; width: 27px; }
 .tab2_icon { background-position: -177px -83px; height: 22px; width: 24px; }
@@ -476,8 +476,9 @@ body.modal-open {
 .custom-modal .product-details button { border-radius: 100px; text-align: center; padding:12px; display: block; width: 55px; height: 55px; color:#fff; background: #24ae43; box-shadow: 0 4px 4px #00000040; border: none;}
 .custom-modal .product-details .add-to-cart { position: absolute; right:20px; top:-9px; }
 .custom-modal .product-details .add-controls { position: absolute; right:20px; top:-9px; display: flex; column-gap: 10px; background: #24ae43; box-shadow: 0 2px 2px #00000040; border-radius: 100px; }
-.custom-modal .product-details .sub-icon-big .sprites { background-position: -110px -105px; height:30px; width: 30px; }
-.custom-modal .product-details .add-icon-big .sprites { background-position: -78px -105px; height:30px; width: 30px; }
+.custom-modal .product-details .qty-decrease-big .sprites { background-position: -110px -105px; height:30px; width: 30px; }
+.custom-modal .product-details .qty-increase-big .sprites { background-position: -78px -105px; height:30px; width: 30px; }
+.custom-modal .product-details .remove-item-big .sprites { background-position: -140px -105px; height:30px; width: 30px; }
 .custom-modal .product-details .manage-modal-qty { padding: 20px 5px; text-align: center; font-size: 14px; color: #fff;}
 
 .custom-modal { position: fixed; bottom: -100%; width: 100%; max-width: 450px; height: 100%; background: #fff; z-index: 99; opacity: 0; visibility: hidden; transition: all 0.4s ease; }
