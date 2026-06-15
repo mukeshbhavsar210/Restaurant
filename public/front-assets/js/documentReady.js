@@ -404,19 +404,47 @@ $(document).on('click', '.qty-decrease', function () {
 	});
 });
 
-$(document).on('click', '.qty-remove', function () {
-	flyToCart(this);
-	flyToCartTrash(this);
+
+$(document).on('click', '.remove-icon3', function () {
+    $.ajax({
+        url: $(this).data('url'),
+        type: 'GET',
+        success: function () {
+            location.reload();
+        }
+    });
+});
+
+ const removeCartUrl = "{{ route('cart.removecart', ':id') }}";
+
+$(document).on('click', '.qty-remove', function () {	
+	let productId = $(this).data('id');
+
+	$.ajax({
+		url: removeCartUrl.replace(':id', productId),
+		type: 'GET',
+		success: function () {
+			location.reload();
+		}
+	});
+});
+
+$(document).on('click', '.qty-remove2', function () {			
     let productId = $(this).data('id');
 
-    $.ajax({
-        url: '/cart/remove/' + productId,
-        type: 'GET',
-    });
+	console.log(productId);
 
-	setTimeout(function () {
-		location.reload();
-	}, 1800);
+    $.ajax({
+		url: '/cart/remove/' + productId,
+		type: 'GET',
+		// success: function () {
+		// 	location.reload();
+		// }
+	});
+
+	// setTimeout(function () {
+	// 	location.reload();
+	// }, 1800);
 });
 
 //Variant products

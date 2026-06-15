@@ -55,11 +55,15 @@ class FrontController extends Controller {
             }
             $seats = Seat::where('area_id', session('area_id'))->orderBy('table_order')->get();
 
-            // dd($config);
-            //dd(session('cart'));
-            //dd(session()->all());
+            $cart = session()->get('cart', []);
+            $qty = 0;
 
-            // dd($config);
+            foreach ($cart as $item) {
+                $qty += $item['quantity'];
+            }
+
+            //dd(session('cart'));            
+            //dd(session()->all());           
 
             return view('front.shop.index', [
                 'products' => $products,
@@ -71,6 +75,7 @@ class FrontController extends Controller {
                 'seats' => $seats,
                 //'menuSlug' => null,
                 'config' => $config,
+                'qty' => $qty,
                 'total' => getCartTotal(),
                 'cartCount' => getCartCount(),
             ]);
@@ -119,12 +124,16 @@ class FrontController extends Controller {
             $seats = Seat::where('area_id', session('area_id'))->orderBy('table_order', 'ASC')->get();
         }
         
+    
+        //dd(session('cart'));             
+        //dd(session()->all());
+        
         $cart = session()->get('cart', []);
+        $qty = 0;
 
-        //dd($seats);        
-        //dd(session('cart')); 
-
-    // dd($config);
+        foreach ($cart as $item) {
+            $qty += $item['quantity'];
+        }
 
        return view('front.shop.index', [
             'products' => $products,
@@ -134,13 +143,53 @@ class FrontController extends Controller {
             'menus' => $menus,
             'seats' => $seats,            
             'menuSlug' => $menuSlug,
-            'config' => $config,            
+            'config' => $config,
+            'qty' => $qty,
             'total' => getCartTotal(),
             'cartCount' => getCartCount(),
         ]);       
+    }    
+
+    private function handleCart(Request $request, $id, $sessionKey, $createdBy) {
+        $product = Product::findOrFail($id);
+
+        $variantName  = $request->variant_name ?? null;
+        $variantPrice = $request->variant_price ?? $product->price;
+
+        $itemKey = $id . '_' . ($variantName ?? 'default');
+
+        $cart = session()->get($sessionKey, []);
+
+        if (isset($cart[$itemKey])) {
+            $cart[$itemKey]['quantity']++;
+        } else {
+            $cart[$itemKey] = [
+                'product_id' => $product->id,
+                'quantity' => 1,
+                'name' => $product->name,
+                'variant' => $variantName,
+                'price' => $variantPrice,
+                'area_id' => session('area_id'),
+                'area_name' => session('area_name'),
+                'table_id' => session('table_id'),
+                'seat_id' => session('seat_id'),
+                'role' => $createdBy == 'admin' ? 1 : null,
+                'created_by' => $createdBy,
+            ];
+        }
+
+        session()->put($sessionKey, $cart);
+
+        return back()->with('success', 'Product added to cart.');
     }
 
+    public function addToCart(Request $request, $id) {
+        return $this->handleCart($request, $id, 'cart', 'customer');
+    }
 
+    public function addToCartAdmin(Request $request, $id) {
+        return $this->handleCart($request, $id, 'admin_cart', 'admin');
+    }
 
     public function tableQr($branchSlug, $table) {
         $branch = Area::where('area_slug', $branchSlug)->firstOrFail();
@@ -173,106 +222,7 @@ class FrontController extends Controller {
     //     return redirect()->route('front.menu');
     // }
 
-    //Add to Cart
-    public function addToCart(Request $request, $id) {
-        $product = Product::findOrFail($id);        
-
-        if (!$product) {
-            abort(404);
-        }
-
-        // Variant values
-        $variantName  = $request->variant_name ?? null;
-        $variantPrice = $request->variant_price ?? $product->price;
-
-        // Unique cart key for variants
-        $cartKey = $id . '_' . ($variantName ?? 'default');
-
-        $cart = session()->get('cart', []);        
-
-        // If already exists     
-        if(isset($cart[$cartKey])) {
-            $cart[$cartKey]['quantity']++;
-        } else {
-            $cart[$cartKey] = [
-                "product_id"    => $product->id,
-                "quantity"      => 1,
-                "name"          => $product->name,
-                "variant"       => $variantName,
-                "price"         => $variantPrice,                     
-                "area_id"       => session('area_id'),
-                "area_name"     => session('area_name'),
-                "table_id"      => session('table_id'),
-                "seat_id"       => session('seat_id'),                
-                'role'          => session('role'),
-            ];
-            
-            session()->put('cart', $cart);
-        }
-
-        // if(isset($cart[$id])) {
-        //     $cart[$id]['quantity']++;
-        // } else {
-        //     $cart[$id] = [
-        //         "product_id"    => $product->id,
-        //         "quantity"      => 1,
-        //         "name"          => $product->name,
-        //         "variant"       => $variantName,
-        //         "price"         => $variantPrice,                     
-        //         "area_id"       => session('area_id'),
-        //         "table_id"      => session('table_id'),
-        //         "area_name"     => session('area_name'),
-        //         "seat_id"       => session('seat_id'),
-        //         "table"         => session('table'),
-        //         'role'          => session('role'),
-        //     ];
-        // }
-
-        // if(isset($cart[$id])) {
-        //     $cart[$id]['quantity']++;
-        //     $cart[$id]['area_id'] = session('area_id');
-        //     $cart[$id]['table_id'] = session('table_id');
-        //     $cart[$id]['area_name'] = session('area_name');
-        //     $cart[$id]['table'] = session('table');
-        // } else {
-        //     $cart[$id] = [
-        //         "product_id" => $product->id,
-        //         "quantity"   => 1,
-        //         "name"       => $product->name,
-        //         "variant"    => $variantName,
-        //         "price"      => $variantPrice,
-        //         "area_id"    => session('area_id'),
-        //         "table_id"   => session('table_id'),
-        //         "area_name"  => session('area_name'),
-        //         "table" => session('table'),
-        //     ];
-        // }
-
-        session()->put('cart', $cart);
-
-        // total
-        $total = 0;
-
-        foreach($cart as $item){
-            $total += $item['price'] * $item['quantity'];
-        }
-
-        if ($request->wantsJson()) {
-            return response()->json([
-                'message' => 'Product added to cart successfully!'
-            ]);
-        }               
-
-        return back()->with('success', 'Product added to cart.');
-
-        // return response()->json([
-        //     'status' => true,
-        //     'qty' => $cart[$id]['quantity'] ?? 0,
-        //     'cartCount' => count($cart),
-        //     'cartTotal' => $total,
-        //     'message' => 'Added to cart'
-        // ]);
-    }
+   
 
     public function increaseCart($id) {
         $cart = session()->get('cart', []);
@@ -328,7 +278,23 @@ class FrontController extends Controller {
     }
 
 
-   public function removeCart($id) {
+    public function customerRemoveCart($id) {
+        $cart = session()->get('cart', []);
+
+        foreach ($cart as $key => $item) {
+            if ($item['product_id'] == $id) {
+                unset($cart[$key]);
+            }
+        }
+
+        session()->put('cart', $cart);
+
+        //return response()->json(['success' => true]);
+        return back()->with('success', 'Item deleted');
+    }
+
+
+    public function removeCart($id) {
         $cart = session()->get('cart', []);
 
         if (isset($cart[$id])) {
@@ -338,6 +304,31 @@ class FrontController extends Controller {
 
         return back()->with('success', 'Item deleted');
     }
+
+//    public function removeCart($id) {
+//         $cart = session()->get('cart', []);
+
+//         if (isset($cart[$id])) {
+//             unset($cart[$id]);
+//             session()->put('cart', $cart);
+//         }
+
+//         return back()->with('success', 'Item deleted');
+//     }
+
+    // public function customerRemoveCart($id) {
+    //     $cart = session()->get('admin_cart', []);
+
+    //     if (isset($cart[$id])) {
+    //         unset($cart[$id]);
+    //         session()->put('admin_cart', $cart);
+    //     }
+
+    //     return back()->with('success', 'Item deleted');
+    // }
+
+
+    
 
 //    public function removeCart($id) {
 //         $cart = session()->get('cart', []);

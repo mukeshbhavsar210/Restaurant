@@ -22,8 +22,8 @@
                 $tab2 = $businessTypes[1] ?? null;
                 $tab3 = $businessTypes[2] ?? null;
                 $icons = [ 'tab1_icon', 'tab2_icon', 'tab3_icon'];
-            @endphp
-                            
+            @endphp            
+            
             @if(getCartCount() > 0)
                 <div>
                     <span class="cart-count">{{ getCartCount() }} </span> for 
@@ -37,7 +37,7 @@
                 @endforeach
             @else
                 <span class="manage-qty">Order</span> 
-            @endif
+            @endif            
         </div>
 
         <div class="sheet-content">
@@ -60,7 +60,7 @@
                                     $qty = $item['quantity'];
                                 @endphp
 
-                                <div class="cart-row cart-{{ $id }}">                                
+                                <div class="cart-row cart-{{ $id }}">
                                     <div class="item-name">
                                         <span class="manage-qty manage-qty-{{ $id }}">{{ $qty }}</span> x {{ $item['name'] }} 
                                         @if(!empty($item['variant']))
@@ -71,7 +71,7 @@
                                         <div class="flex-inner">
                                             @if(getCartCount() > 0)
                                                 <div class="qty-box flex align-items-center">  
-                                                    <a href="javascript:0" class="sub-icon sub-icon-control-{{ $id }} {{ $qty <= 1 ? 'qty-remove' : 'qty-decrease' }}" data-id="{{ $id }}">
+                                                    <a href="javascript:0" class="sub-icon-control-{{ $id }} {{ $qty <= 1 ? 'remove-icon' : 'qty-decrease' }}" data-id="{{ $id }}">
                                                         <span class="sprites"></span>
                                                     </a>
                     
@@ -83,7 +83,7 @@
                                                 <a href="javascript:0" class="add-to-cart add-icon qty-increase" data-id="{{ $id }}">
                                                     <span class="sprites"></span>
                                                 </a>
-                                            @endif                                                                
+                                            @endif
                                             <div class="right">
                                                 <p class="item-name">₹{{ round($item['price']) }}</p>
                                             </div>     
@@ -93,7 +93,7 @@
 
                                 <input type="hidden" name="variant_name" class="variant_name" value="{{ $item['variant'] }}">
                                 {{-- <input type="text" name="variant_price" class="variant_price" value="{{ $item['price'] }}"> --}}
-                            @endforeach
+                            @endforeach                            
                         </div> 
             
                         <div class="basket-page__content__total">

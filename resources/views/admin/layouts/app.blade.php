@@ -24,7 +24,7 @@
             @if(request()->routeIs(['invoice.pos.order', 'invoice.branch.store']))
                 <ul class="topbar-item list-unstyled d-inline-flex align-items-center">                        
                     <li>
-                        <a href="{{ route('dashboard') }}" class="nav-link mobile-menu-btn nav-icon">
+                        <a href="{{ route('invoice.index') }}" class="nav-link mobile-menu-btn nav-icon">
                             Back
                         </a>
                     </li>

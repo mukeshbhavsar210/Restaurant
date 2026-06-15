@@ -15,6 +15,7 @@ use Illuminate\Routing\Controllers\HasMiddleware;
 use Illuminate\Routing\Controllers\Middleware;
 use Illuminate\Support\Facades\Validator;
 use App\Models\OrderItem;
+use App\Models\Product;
 use App\Models\TableType;
 use Spatie\Permission\Models\Role;
 use Spatie\Permission\Models\Permission;
@@ -360,8 +361,7 @@ class InvoiceController extends Controller implements HasMiddleware {
 
         $table->delete();
 
-        return redirect()->route('configurations.index')
-            ->with('success', 'Seat deleted successfully.');
+        return redirect()->route('invoice.index')->with('success', 'Table deleted successfully.');
     }
     
     public function table_destroy($id, Request $request){
@@ -429,6 +429,18 @@ class InvoiceController extends Controller implements HasMiddleware {
 
         return back()->with('success', 'Branch View set successfully.');
 
+    }
+
+
+    public function adminRemoveCart($id) {
+        $cart = session()->get('admin_cart', []);
+
+        if (isset($cart[$id])) {
+            unset($cart[$id]);
+            session()->put('admin_cart', $cart);
+        }
+
+        return back()->with('success', 'Item deleted');
     }
     
 }

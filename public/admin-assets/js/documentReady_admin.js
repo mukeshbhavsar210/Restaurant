@@ -1,4 +1,13 @@
 $(document).ready(function(){
+	$('.kot-card').hover(
+		function () {
+			$(this).addClass('active');
+		},
+		function () {
+			$(this).removeClass('active');
+		}
+	);
+
     function checkValue(element){
         if($(element).val() !== ''){
             $(element).closest('.form-group').addClass('active');
