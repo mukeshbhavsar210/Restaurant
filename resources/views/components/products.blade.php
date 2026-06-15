@@ -10,7 +10,7 @@
     $cart = session('cart', []);            
     foreach($cart as $item){
         $total += $item['price'] * $item['quantity'];
-    }
+    }      
 @endphp
 
 <div class="menu-product">
@@ -132,7 +132,8 @@
 
     <div class="product-details">   
         <p class="mb-3">{{ \Illuminate\Support\Str::limit(strtolower($product->description), 50) }}</p>
-        @if($qty > 0)
+
+         @if($qty > 0)
             <div class="add-controls modal-{{ $product->id }}">
                 <div class="qty-box flex align-items-center">
                     <a href="javascript:0" class="sub-icon-big sub-icon-control-{{ $id }} {{ $qty <= 1 ? 'qty-remove' : 'qty-decrease' }}" data-id="{{ $product->id }}">
@@ -162,8 +163,8 @@
                     <span class="sprites"></span>
                 </button>
             </form>                
-        @endif                                       
-        
+        @endif 
+       
         <div class="variant-group mt-3" role="group">
             @if($product->variants->count() > 0)
                 @foreach($product->variants as $key => $variant)

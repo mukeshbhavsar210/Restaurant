@@ -67,58 +67,77 @@
                     </div>            
                 </div>     
 
+                
+
                 @if($activeArea)                    
                     @foreach($tableTypes as $value)
                         <h5>{{ $value->name }}</h5>
                         @if($value->seats->count())                                
                             <div class="flex-2 mt-2 mb-2">
-                                @foreach($value->seats as $seat)                                
-                                <div class="kot-card 
-                                            {{ $seat->status == 'running' ? 'running' : '' }}
-                                            {{ $seat->status == 'available' ? 'available' : '' }}
-                                            {{ $seat->status == 'printed' ? 'printed' : '' }}
-                                            {{ $seat->status == 'kot-running' ? 'kot-running' : '' }}">
-                                        <a href="{{ route('invoice.pos.order', $seat->id) }}" class="text-decoration-none">
-                                            AC {{ $seat->table }}
-                                            <div class="dropdown">
-                                                <button class="btn btn-sm p-0 border-0" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                                    <i class="bi bi-three-dots-vertical">Dot</i>
-                                                </button>
-
-                                                <ul class="dropdown-menu dropdown-menu-end">
-                                                    <li>
-                                                        <div class="qr-code">                                                              
-                                                            @php
-                                                                $qrUrl = url('/table/'.$value->area_slug.'/'.$seat->table);
-                                                            @endphp
-
-                                                            {!! DNS2D::getBarcodeHTML($qrUrl, 'QRCODE', 6.5, 6.5) !!}                                                
-                                                        </div>  
-                                                    </li>
-                                                    <li>
-                                                        <form class="dineineStatus mt-1" data-id="{{ $seat->id }}">
-                                                            @csrf
-                                                            <div class="form-check form-switch">
-                                                                <input type="checkbox" class="form-check-input status-switch" {{ $seat->status == 'running' ? 'checked' : '' }} >                                                                            
-                                                            </div>
-                                                        </form>
-                                                    </li>
-                                                    <li>
-                                                        <a href="{{ route('qr.table', $seat->id) }}" class="download-icon mt-1">
-                                                            <span class="sprites"></span>
-                                                        </a>
-                                                    </li>
-                                                    <li>
-                                                        <a href="javascript:void(0)" class="btn btn-outline-danger btn-sm commonDeleteBtn"
-                                                            data-bs-toggle="modal" data-bs-target="#commonDeleteModal"
-                                                            data-url="{{ route('delete.table', $seat->id) }}" data-title="{{ $seat->table }}">
-                                                            Delete
-                                                        </a> 
-                                                    </li>
-                                                </ul>
-                                            </div>
+                                @foreach($value->seats as $seat)                                 
+                                    <div class="kot-card 
+                                        {{ $seat->status == 'running' ? 'running' : '' }}
+                                        {{ $seat->status == 'available' ? 'available' : '' }}
+                                        {{ $seat->status == 'printed' ? 'printed' : '' }}
+                                        {{ $seat->status == 'kot-running' ? 'kot-running' : '' }}">
+                                        
+                                        <div class="viewControl">
+                                            <a href="#" class="view-icon">
+                                                <span class="sprites"></span>
+                                            </a>
+                                        </div>
+                                        
+                                        <a href="{{ route('invoice.pos.order', $seat->id) }}" class="link">
+                                            AC {{ $seat->table }}                                            
                                         </a>
-                                    </div>                                    
+                                        
+                                        <div class="hover-content"> 
+                                            <a href="#" class="print-icon">
+                                                <span class="sprites"></span>
+                                            </a>                                            
+                                            <a href="#" class="edit-icon" data-bs-toggle="modal" data-bs-target="#qrModal_{{ strtolower(Str::limit($value->name, 2, '')) }}_{{ $seat->table }}">
+                                                <span class="sprites"></span>
+                                            </a>                                            
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="modal fade drawer right-align" id="qrModal_{{ strtolower(Str::limit($value->name, 2, '')) }}_{{ $seat->table }}" tabindex="-1">
+                                        <div class="modal-dialog">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title">Update Table </h5>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                                </div>
+
+                                                <div class="modal-body">
+                                                    <h4>Table {{ $seat->table }} ({{ $value->name }} )</h4>
+                                                    <div class="qr-code mt-3">                                                              
+                                                        @php
+                                                            $qrUrl = url('/table/'.$value->area_slug.'/'.$seat->table);
+                                                        @endphp
+
+                                                        {!! DNS2D::getBarcodeHTML($qrUrl, 'QRCODE', 13.5, 13.5) !!}                                                
+                                                    </div>
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <form class="dineineStatus mt-1" data-id="{{ $seat->id }}">
+                                                        @csrf
+                                                        <div class="form-check form-switch">
+                                                            <input type="checkbox" class="form-check-input status-switch" {{ $seat->status == 'running' ? 'checked' : '' }} >                                                                            
+                                                        </div>
+                                                    </form>   
+                                                    <a href="{{ route('qr.table', $seat->id) }}" class="btn btn-outline-primary">
+                                                        Download QR Code
+                                                    </a>
+                                                    <a href="javascript:void(0)" class="btn btn-outline-danger commonDeleteBtn"
+                                                        data-bs-toggle="modal" data-bs-target="#commonDeleteModal"
+                                                        data-url="{{ route('delete.table', $seat->id) }}" data-title="{{ $seat->table }}">
+                                                        Delete
+                                                    </a> 
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
                             @endforeach
                             </div>
                         @else

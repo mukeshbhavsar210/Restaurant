@@ -25,6 +25,10 @@ ul,li { padding: 0; margin: 0;}
 
 .download-icon span { background-position:-206px -30px; height: 22px; width: 22px; }
 .download-icon:hover span { background-position:-229px -30px; }
+.print-icon span { background-position:-212px -3px; height:20px; width: 20px; }
+.print-icon:hover span { background-position:-231px -3px;  }
+.view-icon span { background-position:-213px -58px; height:20px; width: 20px; }
+.view-icon:hover span { background-position:-231px -58px;  }
 .edit-icon span { background-position:-108px -30px; height:20px; width: 20px; }
 .edit-icon:hover span { background-position:-127px -30px;  }
 .delete-icon { background-color: var(--white); padding: 0 2px; border-radius: 100px; display: block; text-align: center; height: 22px; width: 22px;;}
@@ -102,8 +106,12 @@ ul,li { padding: 0; margin: 0;}
 .types-restaurant { text-transform: uppercase; border-radius: 5px; padding: 4px 10px 5px 10px; margin: 3px 0; font-weight: bold; display: inline;}
 
 .themeColor { display: block; height: 20px; width: 20px; border-radius: 100px;}
+.kot-card { border:1px #ccc solid; border-radius: 10px; text-align: center; padding: 30px 40px; font-size: 15px; position: relative; z-index: 2; overflow: hidden;  }
+.kot-card .link { color: var(--black);}
+.hover-content { position: absolute; left: 0; bottom: -55%; width: 100%; padding:3px 20px; transition: all 0.4s ease; display: flex; background-color: var(--white); border-radius: 0 0 5px 5px; border-top: 1px #ccc solid; z-index: 1; column-gap: 5px;  }
+.kot-card.active .hover-content { bottom: 0px; }
+.kot-card .viewControl { position: absolute; top:-12px; left:40%; background-color: var(--white); border-radius: 100px; padding: 3px; border: 1px #ccc solid;;}
 
-.kot-card { border:1px #ccc solid; border-radius: 15px; text-align: center; padding: 20px 40px; font-size: 15px;}
 .available { background-color: #ffffff;}
 .running { background-color: #c9ecfe;}
 .printed { background-color: #d8ece0;}
@@ -116,11 +124,12 @@ ul,li { padding: 0; margin: 0;}
 
 .tab-content-custom.active { display: block; }
 .tab-content-custom { display: none; }
-.custom-tabs { list-style: none; display: flex; justify-content: space-between;  margin: 15px 20px 10px 20px; padding-bottom: 10px; border-bottom: 3px dashed #eee; font-family: var(--roboto); font-weight: bold; font-size: 14px; }
-.custom-tabs li { padding: 13px 30px; cursor: pointer; text-transform: uppercase; border-radius: 5px; color: var(--gray);  }
+.custom-tabs { list-style: none; display: flex; justify-content: space-between;  padding-bottom: 10px; font-family: var(--roboto); font-weight: bold; font-size: 14px; }
+.custom-tabs li { padding: 8px 30px; cursor: pointer; text-transform: uppercase; border-radius: 5px; color: var(--gray); font-size: 12px;  }
 .custom-tabs li.active { color: var(--green-dark); background-color: var(--gray-light); }
 
-.product-card { border: 1px #ccc solid; display: flex; position: relative; border-radius: 5px; width: 24%; background-color: var(--white); cursor: pointer; transition: .2s;}
+.product-card {  border: 1px #ccc solid; display: flex; position: relative; border-radius: 5px; width: 24%; background-color: var(--white); cursor: pointer; transition: .2s;}
+.product-card .product-name { padding: 10px 20px; }
 .product-card:hover { border-color: var(--black); background-color: var(--gray-light);}
 .product-card .control-btn { background: none; border: none; padding: 10px 15px 10px 15px; font-size: 14px; position:relative; text-decoration:none; color:var(--black);}
 .product-card .line { width: 5px; border-radius: 3px 0 0 3px;}
@@ -128,25 +137,29 @@ ul,li { padding: 0; margin: 0;}
 .product-card .egg-card { background-color: red;}
 .product-card .non-veg-card { background-color: red;}
 .product-card .item-name { padding: 10px 15px 10px 15px; font-size: 14px; -webkit-box-align: center; -ms-flex-align: center; align-items: center; }
-.product-card .added { display: block !important; position: absolute; top:-7px; right:-7px; background-color: var(--white); padding: 2px; border-radius: 100px;}
+.product-card .added-details { display: none;}
+.added .added-details { display: block !important; position: absolute; top:-7px; right:-7px; background-color: var(--white); padding: 2px; border-radius: 100px;}
 .nav-pills .nav-link { text-align: left; margin-bottom: 5px; padding: 5px 10px; border-radius: 5px; }
+
+
 
 .margin-left-0 { margin-left:0 !important; }
 
 .add-icon, .sub-icon { background-color: #eeeeee; border-radius: 100px; padding:3px; border:1px #ccc solid; display: block; height: 30px; width: 30px;}
-.add-icon:hover, .sub-icon:hover, .remove-icon:hover { background-color: #ccc; }
+.add-icon:hover, .sub-icon:hover, .remove-icon:hover {  }
 .add-icon span { background-position:-108px -82px; height: 21px; width: 21px; }
 .sub-icon span { background-position:-89px -82px; height: 21px; width: 21px; }
-.remove-icon { background-color: #fff; border-radius: 100px; padding:3px; border:1px red solid; display: block; height: 30px; width: 30px; }
+.remove-icon { background-color: #fff; border-radius: 100px; padding:3px; border:1px #ccc solid; display: block; height: 30px; width: 30px; }
+.remove-icon:hover { border-color: red;  }
 .remove-icon span { background-position:-126px -82px; height: 21px; width: 21px; }
 
-.scroll-order .cart-row { display: flex; margin: 7px 0; -webkit-box-align: center;
+.scroll-order .cart-row { margin: 7px 0; -webkit-box-align: center; 
   -ms-flex-align: center;
   align-items: center; }
 .scroll-order .cart-row .item-name { width: 70%; display: flex; column-gap: 10px;}
 .scroll-order .cart-row .calculate { width: 20%; display: flex; column-gap: 10px; }
 .scroll-order .cart-row .calculate .qty { display: flex; column-gap: 10px;}
-.scroll-order .cart-row .price { width: 10%; text-align: right; }
+.scroll-order .cart-row .price { text-align: right; }
 
 .bar-container { flex: 1; overflow: hidden; position: relative; }
 .bar-container .overlap { position: absolute; top:0; text-align: center;}
@@ -629,6 +642,7 @@ input:checked + .slider { box-shadow:0 0 0 2px #007bff,0 0 2px #007bff; }
 .flex .img-group { width: 100px;}
 
 .flex-2 { display: flex; column-gap: 15px;}
+.flex-3 { display: flex; column-gap: 10px;}
 
 .white { color: var(--white);}
 

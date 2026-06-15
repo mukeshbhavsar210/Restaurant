@@ -67,12 +67,27 @@ use Illuminate\Support\Facades\Mail;
         }
     }
 
+    if (!function_exists('getAdminCartCount')) {
+        function getAdminCartCount() {
+            $cart = session()->get('admin_cart', []);
+            return array_sum(array_column($cart, 'quantity'));
+        }
+    }
+
+
     if (!function_exists('getProductQty')) {
         function getProductQty($productId) {
             $cart = session()->get('cart', []);
-            return isset($cart[$productId])
-                ? $cart[$productId]['quantity']
-                : 0;
+
+            $qty = 0;
+
+            foreach ($cart as $item) {
+                if (($item['product_id'] ?? null) == $productId) {
+                    $qty += $item['quantity'];
+                }
+            }
+
+            return $qty;
         }
     }
 

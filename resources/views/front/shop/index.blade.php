@@ -26,7 +26,9 @@
                         @php
                             $qty = getProductQty($product->id);
                             $type = $product->menu?->veg_nonveg;
-                        @endphp                        
+                        @endphp 
+                        
+                        {{ $qty }}
 
                         <x-products :product="$product" :variants="$product->variants" :qty="$qty" :type="$type" :config="$config" class="wishlist-icon-active" />
                     @endforeach

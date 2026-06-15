@@ -252,10 +252,10 @@ button, select {
 
 .custom-success-alert{
     position: fixed;
-    top: 171px; width: 427px;   
+    top: 10px; width: 427px;   
     margin:10px; text-align: center;
-    background: green;
-    color: #fff;
+    background: var(--black);
+    color: var(--white);
     padding: 14px 20px;
     border-radius: 6px;
     z-index: 99999;
@@ -291,6 +291,7 @@ body.modal-open {
 .wishlist-icon-big:hover span { background-position:-30px -80px; }
 .back-icon span { background-position:0 -55px; height: 25px; width: 25px; }
 .back-icon:hover span { background-position:-26px -55px; }
+.remove-icon span { background-position:-126px -82px; height: 22px; width: 21px; }
 .delete-icon span { background-position:-151px -30px; height: 22px; width: 17px; }
 .delete-icon:hover span { background-position:-173px -30px; }
 .clear-icon { background-color: var(--white); border-radius: 100px; padding: 4px;}
@@ -299,12 +300,13 @@ body.modal-open {
 .clear-big-icon span { background-position:-134px -56px; height: 22px; width: 24px; margin: 2px auto; }
 .clear-big-icon:hover span { background-position:-154px -56px; }
 
-.add-icon, .sub-icon { background-color: #eeeeee; border-radius: 100px; padding:5px; border:1px #ccc solid;}
-.remove-icon { background-color: #fff; border-radius: 100px; padding:5px; border:1px red solid;}
-.add-icon:hover, .sub-icon:hover, .remove-icon:hover { background-color: #ccc; }
+.add-icon, .qty-decrease, .remove-icon {  border-radius: 100px; padding:5px; border:1px #ccc solid;}
+.qty-remove { background-color: #fff; border-radius: 100px; padding:5px; border:1px red solid;}
+.add-icon:hover, .qty-decrease:hover, .qty-remove:hover { background-color: #eeeeee; }
+.remove-icon:hover { border:1px red solid; }
 .add-icon span { background-position:-108px -82px; height: 21px; width: 21px; }
-.sub-icon span { background-position:-89px -82px; height: 21px; width: 21px; }
-.remove-icon span { background-position:-126px -82px; height: 21px; width: 21px; }
+.qty-decrease span { background-position:-89px -82px; height: 21px; width: 21px; }
+.qty-remove span { background-position:-126px -82px; height: 21px; width: 21px; }
 
 .tab1_icon { background-position: -148px -83px; height: 22px; width: 27px; }
 .tab2_icon { background-position: -177px -83px; height: 22px; width: 24px; }
