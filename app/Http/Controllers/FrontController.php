@@ -55,12 +55,7 @@ class FrontController extends Controller {
             }
             $seats = Seat::where('area_id', session('area_id'))->orderBy('table_order')->get();
 
-            $cart = session()->get('cart', []);
-            $qty = 0;
-
-            foreach ($cart as $item) {
-                $qty += $item['quantity'];
-            }
+           
 
             //dd(session('cart'));            
             //dd(session()->all());           
@@ -74,8 +69,7 @@ class FrontController extends Controller {
                 'menus' => collect(),
                 'seats' => $seats,
                 //'menuSlug' => null,
-                'config' => $config,
-                'qty' => $qty,
+                'config' => $config,                
                 'total' => getCartTotal(),
                 'cartCount' => getCartCount(),
             ]);
@@ -123,18 +117,12 @@ class FrontController extends Controller {
         if (session('area_id')) {            
             $seats = Seat::where('area_id', session('area_id'))->orderBy('table_order', 'ASC')->get();
         }
-        
-    
+
+        $cart = session()->get('cart', []);
+            
         //dd(session('cart'));             
         //dd(session()->all());
         
-        $cart = session()->get('cart', []);
-        $qty = 0;
-
-        foreach ($cart as $item) {
-            $qty += $item['quantity'];
-        }
-
        return view('front.shop.index', [
             'products' => $products,
             'popularProducts' => $popularCategory?->products ?? collect(),
@@ -143,8 +131,7 @@ class FrontController extends Controller {
             'menus' => $menus,
             'seats' => $seats,            
             'menuSlug' => $menuSlug,
-            'config' => $config,
-            'qty' => $qty,
+            'config' => $config,            
             'total' => getCartTotal(),
             'cartCount' => getCartCount(),
         ]);       
@@ -281,20 +268,18 @@ class FrontController extends Controller {
     public function customerRemoveCart($id) {
         $cart = session()->get('cart', []);
 
-        foreach ($cart as $key => $item) {
-            if ($item['product_id'] == $id) {
-                unset($cart[$key]);
-            }
+        if (isset($cart[$id])) {
+            unset($cart[$id]);
+            session()->put('cart', $cart);
         }
 
-        session()->put('cart', $cart);
-
-        //return response()->json(['success' => true]);
-        return back()->with('success', 'Item deleted');
+        return response()->json([
+            'success' => true
+        ]);
     }
 
 
-    public function removeCart($id) {
+    public function customerRemoveCart2($id) {
         $cart = session()->get('cart', []);
 
         if (isset($cart[$id])) {

@@ -76,18 +76,17 @@ use Illuminate\Support\Facades\Mail;
 
 
     if (!function_exists('getProductQty')) {
-        function getProductQty($productId) {
-            $cart = session()->get('cart', []);
-
-            $qty = 0;
+        function getProductQty($productId)
+        {
+            $cart = session('cart', []);
 
             foreach ($cart as $item) {
-                if (($item['product_id'] ?? null) == $productId) {
-                    $qty += $item['quantity'];
+                if ($item['product_id'] == $productId) {
+                    return $item['quantity'];
                 }
             }
 
-            return $qty;
+            return 0;
         }
     }
 
