@@ -128,7 +128,7 @@ ul,li { padding: 0; margin: 0;}
 .custom-tabs li { padding: 8px 30px; cursor: pointer; text-transform: uppercase; border-radius: 5px; color: var(--gray); font-size: 12px;  }
 .custom-tabs li.active { color: var(--green-dark); background-color: var(--gray-light); }
 
-.product-card {  border: 1px #ccc solid; display: flex; position: relative; border-radius: 5px; width: 24%; background-color: var(--white); cursor: pointer; transition: .2s;}
+.product-card { border: 1px #ccc solid; display: flex; position: relative; border-radius: 5px; width: 24%; background-color: var(--white); cursor: pointer; transition: .2s;}
 .product-card .product-name { padding: 10px 20px; }
 .product-card:hover { border-color: var(--black); background-color: var(--gray-light);}
 .product-card .control-btn { background: none; border: none; padding: 10px 15px 10px 15px; font-size: 14px; position:relative; text-decoration:none; color:var(--black);}
@@ -137,10 +137,19 @@ ul,li { padding: 0; margin: 0;}
 .product-card .egg-card { background-color: red;}
 .product-card .non-veg-card { background-color: red;}
 .product-card .item-name { padding: 10px 15px 10px 15px; font-size: 14px; -webkit-box-align: center; -ms-flex-align: center; align-items: center; }
-.product-card .added-details { display: none;}
-.added .added-details { display: block !important; position: absolute; top:-7px; right:-7px; background-color: var(--white); padding: 2px; border-radius: 100px;}
+.product-card .added-details { display: none; border:1px red solid;}
+.product-card.added .added-details { display: block !important; position: absolute; top:-7px; right:-7px; background-color: var(--white); padding: 2px; border-radius: 100px;}
 .nav-pills .nav-link { text-align: left; margin-bottom: 5px; padding: 5px 10px; border-radius: 5px; }
 
+.qty-increase-small, .qty-decrease-small, .remove-item-small {  border-radius: 100px; padding:5px; border:1px #ccc solid; display: block;}
+.kot-qty-remove-small { background-color: #fff; border-radius: 100px; padding:5px; border:1px red solid;}
+.qty-increase-small:hover, .qty-decrease-small:hover, .qty-remove-small:hover { background-color: #eeeeee; }
+.remove-item-small:hover { border:1px red solid; background-color: #eeeeee; }
+.remove-icon:hover { border:1px red solid; }
+.qty-increase-small span { background-position:-108px -82px; height: 21px; width: 21px; }
+.qty-increase-small span { background-position:-108px -82px; height: 21px; width: 21px; }
+.qty-decrease-small span { background-position:-89px -82px; height: 21px; width: 21px; }
+.qty-remove-small span { background-position:-126px -82px; height: 21px; width: 21px; }
 
 
 .margin-left-0 { margin-left:0 !important; }

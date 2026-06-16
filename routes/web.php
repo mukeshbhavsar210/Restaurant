@@ -34,21 +34,29 @@ Route::controller(FrontController::class)->group(function() {
     //add to cart
     Route::get('/cart', 'showCartTable');    
     //Route::get('/cart/add/{id}', 'addToCart')->name('front.addCart');
-
     Route::get('/cart/add/{id}', 'addToCart')->name('front.addCart');
-    Route::get('/admin/cart/add/{id}', 'addToCartAdmin')->name('admin.cart.add'); 
     
+    //Admin KOT    
+    Route::get('/kot/{seat_id}/increase/{product_id}', 'increaseKotQty')->name('admin.kot.increase');
+    Route::get('/kot/{seat_id}/decrease/{product_id}', 'decreaseKotQty')->name('admin.kot.decrease');
+    Route::get('/kot/{seat_id}/remove/{product_id}', 'removeKotItem')->name('admin.kot.remove');
+    Route::get('/kot/remove/{id}', 'KotRemoveCart')->name('kot.cart.removecart');
+    Route::get('/clear-kot', 'clearKOT')->name('cart.kot');
+    Route::get('/kot/add/{id}', 'addToKOT')->name('admin.kot');
+    Route::get('/kot/{seat_id}/increase/{product_id}', 'increaseKotCart')->name('admin.kot.increase');
+    Route::get('/kot/{seat_id}/decrease/{product_id}', 'decreaseKotCart')->name('admin.kot.decrease');   
+        
     Route::get('/cart/remove/{id}', 'customerRemoveCart')->name('customer.cart.removecart');
-    
     Route::get('/cart/increase/{id}', 'increaseCart')->name('cart.increase');
     Route::get('/cart/decrease/{id}', 'decreaseCart')->name('cart.decrease');
+
     Route::get('/cart/increase-main/{id}', 'increaseMain')->name('cart.increase.main');
     Route::post('/cart/increase', 'increase')->name('cart.increase2');
     Route::post('/cart/decrease', 'decrease')->name('cart.decrease2');
     //Route::get('/cart/remove/{id}', 'customerRemoveCart')->name('customer.cart.removecart');
      
     Route::get('/clear-cart', 'clearCart')->name('cart.clear');
-
+    
     //add to wishlist
     Route::get('/wishlist/{id}', 'addToWish')->name('addwishlist');    
     Route::get('/favorites', 'wishlist')->name('front.wishlist');        
@@ -122,7 +130,7 @@ Route::group(['prefix' => 'admin'], function(){
             Route::get('/invoice', 'index')->name('invoice.index');
             Route::get('/pos/order/{seat}', 'pos_order')->name('invoice.pos.order');
             Route::post('/invoice', 'branch_view')->name('invoice.branch.store');   
-            //Route::get('/cart-admin/remove/{id}', 'adminRemoveCart')->name('admin.cart.removecart');   
+            Route::get('/cart-admin/remove/{id}', 'adminRemoveCart')->name('admin.cart.removecart');   
 
             //Branch
             Route::post('/branch', 'branch_store')->name('branch.store');
@@ -133,6 +141,8 @@ Route::group(['prefix' => 'admin'], function(){
             //Table
             Route::post('/table', 'table_store')->name('table.store');            
             Route::get('/table/delete/{id}', 'table_delete')->name('delete.table');   
+                       
+            
         });
         
         //Permissions
@@ -157,8 +167,6 @@ Route::group(['prefix' => 'admin'], function(){
 
             Route::post("/updateWebsiteLogo", 'update_logo')->name('website.logo');
             
-           
-
             //Pages            
             Route::post('/page', 'page_store')->name('pages.store');            
             Route::put('/page/{page}', 'page_update')->name('pages.update');

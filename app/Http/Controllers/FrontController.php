@@ -55,8 +55,6 @@ class FrontController extends Controller {
             }
             $seats = Seat::where('area_id', session('area_id'))->orderBy('table_order')->get();
 
-           
-
             //dd(session('cart'));            
             //dd(session()->all());           
 
@@ -156,11 +154,10 @@ class FrontController extends Controller {
                 'name' => $product->name,
                 'variant' => $variantName,
                 'price' => $variantPrice,
-                'area_id' => session('area_id'),
-                'area_name' => session('area_name'),
-                'table_id' => session('table_id'),
+                'area_id' => session('area_id'),                
                 'seat_id' => session('seat_id'),
-                'role' => $createdBy == 'admin' ? 1 : null,
+                'area_name' => session('area_name'),                
+                //'role' => $createdBy == 'admin' ? 1 : null,
                 'created_by' => $createdBy,
             ];
         }
@@ -173,10 +170,11 @@ class FrontController extends Controller {
     public function addToCart(Request $request, $id) {
         return $this->handleCart($request, $id, 'cart', 'customer');
     }
-
-    public function addToCartAdmin(Request $request, $id) {
-        return $this->handleCart($request, $id, 'admin_cart', 'admin');
+    
+    public function addToKOT(Request $request, $id) {
+        return $this->handleCart($request, $id, 'kot_cart', 'admin');
     }
+  
 
     public function tableQr($branchSlug, $table) {
         $branch = Area::where('area_slug', $branchSlug)->firstOrFail();
@@ -209,8 +207,6 @@ class FrontController extends Controller {
     //     return redirect()->route('front.menu');
     // }
 
-   
-
     public function increaseCart($id) {
         $cart = session()->get('cart', []);
 
@@ -227,22 +223,23 @@ class FrontController extends Controller {
 
         foreach($cart as $item){
             $total += $item['price'] * $item['quantity'];
-        }
+        }        
 
         return response()->json([
             'status' => true,
             'qty' => $cart[$id]['quantity'],
             'cartCount' => getCartCount(),
             'cartTotal' => getCartTotal(),
+            'activeCart' => session('activeCart'),
         ]);
     }
+
+    
 
     public function decreaseCart($id) {
         $cart = session()->get('cart', []);
 
         if (isset($cart[$id])) {
-
-            // stop at 1
             if ($cart[$id]['quantity'] <= 1) {
 
                 return response()->json([
@@ -254,6 +251,8 @@ class FrontController extends Controller {
             $cart[$id]['quantity']--;
 
             session()->put('cart', $cart);
+
+            session()->put('activeCart', $id);
 
             return response()->json([
                 'status' => true,
@@ -273,65 +272,10 @@ class FrontController extends Controller {
             session()->put('cart', $cart);
         }
 
-        return response()->json([
-            'success' => true
-        ]);
+        return back()->with('success', 'Item deleted from cart');
     }
 
-
-    public function customerRemoveCart2($id) {
-        $cart = session()->get('cart', []);
-
-        if (isset($cart[$id])) {
-            unset($cart[$id]);
-            session()->put('cart', $cart);
-        }
-
-        return back()->with('success', 'Item deleted');
-    }
-
-//    public function removeCart($id) {
-//         $cart = session()->get('cart', []);
-
-//         if (isset($cart[$id])) {
-//             unset($cart[$id]);
-//             session()->put('cart', $cart);
-//         }
-
-//         return back()->with('success', 'Item deleted');
-//     }
-
-    // public function customerRemoveCart($id) {
-    //     $cart = session()->get('admin_cart', []);
-
-    //     if (isset($cart[$id])) {
-    //         unset($cart[$id]);
-    //         session()->put('admin_cart', $cart);
-    //     }
-
-    //     return back()->with('success', 'Item deleted');
-    // }
-
-
-    
-
-//    public function removeCart($id) {
-//         $cart = session()->get('cart', []);
-
-//         if(isset($cart[$id])){
-//             unset($cart[$id]);
-//             session()->put('cart', $cart);
-//         }
-
-//         return response()->json([
-//             'status' => true,
-//             'cartCount' => getCartCount(),
-//             'cartTotal' => getCartTotal(),
-//         ]);
-
-//         return back()->with('success', 'Item deleted');
-//     }    
-
+   
     //Wishlist page
     public function wishlist() {
         $wishlistIds = array_keys(session('wishlist', []));
@@ -412,10 +356,9 @@ class FrontController extends Controller {
     //Clear Cart
     public function clearCart(){
         session()->forget('cart');
-        return back()->with('success', 'Cart cleared successfully.');
-        //return redirect()->back();
+        return back()->with('success', 'Cart cleared successfully.');        
     }
-
+    
     //Wishlist
     public function addToWish($id) {
         $product = Product::findOrFail($id);
@@ -525,6 +468,7 @@ class FrontController extends Controller {
             }
 
             Session::forget('cart');
+            Session::forget('kot_cart');
 
             if (session('role') == 1) {
                 return redirect()->back()->with('success', 'Order placed successfully.');
@@ -545,7 +489,7 @@ class FrontController extends Controller {
                 'seat_id' => $request->seat_id ?? session('seat_id'),
                 'notes' => $request->notes,
                 'phone' => $request->phone,
-                'total' => $total,
+                'total' => $request->total,
                 'payment_method' => 'Pay at table',
                 'payment_status' => 'Pending',
                 'status' => 'running',
@@ -566,6 +510,7 @@ class FrontController extends Controller {
             }
 
             Session::forget('cart');            
+            Session::forget('kot_cart');
 
             if (session('role') == 1) {
                 return redirect()->back()->with('success', 'Order placed successfully.');
@@ -709,5 +654,78 @@ class FrontController extends Controller {
     }
 
 
+    public function increaseKotCart($seatId, $productId) {
+        $cart = session()->get('kot_cart', []);
+
+        // increase qty
+        if(isset($cart[$productId])) {
+            $cart[$productId]['quantity']++;
+        }
+
+        // total
+        $qty = 0;
+        $total = 0;
+
+        foreach ($cart as $key => $item) {
+            if (
+                $item['seat_id'] == $seatId &&
+                $item['product_id'] == $productId
+            ) {
+                $cart[$key]['quantity']++;
+                $qty = $cart[$key]['quantity'];
+                break;
+            }
+        }
+
+        session()->put('kot_cart', $cart);          
+
+        return response()->json([            
+            'qty' => $cart[$productId]['quantity'],
+            'kotCount' => collect($cart)->sum('quantity'),
+            'kotTotal' => collect($cart)->sum(fn($item) => $item['price'] * $item['quantity']),
+        ]);
+    }
+
+
+    public function decreaseKotCart($seatId, $productId) {
+        $cart = session()->get('kot_cart', []);        
+       
+        if (isset($cart[$productId])) {
+            if ($cart[$productId]['quantity'] <= 1) {
+
+                return response()->json([
+                    'status' => false,
+                    'qty' => 1
+                ]);
+            }
+
+            $cart[$productId]['quantity']--;
+
+            session()->put('kot_cart', $cart);            
+
+            return response()->json([                
+                'qty' => $cart[$productId]['quantity'],
+                'kotCount' => collect($cart)->sum('quantity'),
+                'kotTotal' => collect($cart)->sum(fn($item) => $item['price'] * $item['quantity']),                 
+            ]);
+        }
+    }
+    
+
+     public function KotRemoveCart($id) {
+        $kot_cart = session()->get('kot_cart', []);
+
+        if (isset($kot_cart[$id])) {
+            unset($kot_cart[$id]);
+            session()->put('kot_cart', $kot_cart);
+        }
+
+        return back()->with('success', 'Item deleted from cart');
+    }
+
+    public function clearKOT(){
+        session()->forget('kot_cart');
+        return back()->with('success', 'KOT cleared successfully.');        
+    }
     
 }

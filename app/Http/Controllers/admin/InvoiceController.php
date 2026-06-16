@@ -431,16 +431,4 @@ class InvoiceController extends Controller implements HasMiddleware {
 
     }
 
-
-    public function adminRemoveCart($id) {
-        $cart = session()->get('admin_cart', []);
-
-        if (isset($cart[$id])) {
-            unset($cart[$id]);
-            session()->put('admin_cart', $cart);
-        }
-
-        return back()->with('success', 'Item deleted');
-    }
-    
 }
