@@ -138,25 +138,24 @@ $('.tab-link').on('click', function () {
 checkFields();
 
 
-$(document).on('click', '.qty-increase-small', function () {	    	
+$(document).on('click', '.qty-increase-small, .added', function () {	    	
     let productId = $(this).data('id');
 	let seatId = $(this).data('seat');
 
     $.ajax({
-		url: '/kot/' + seatId + '/increase/' + productId,
-        //url: '/kot/increase/' + productId,
+		url: '/kot/' + seatId + '/increase/' + productId,        
         type: 'GET',
 
         success: function (response) {
             let qty = parseInt(response.qty);					
-            
             $('.manage-qty-' + productId).text(qty);  				
-
-            //$('.cart-count').show().text(response.cartCount);
+            
 			$('.cart-count').text(response.kotCount);
             $('.cart-total').text('₹' + response.kotTotal);
 			$('#baseTotal').val(response.kotTotal);
 			$('#baseTotal').val(response.kotTotal).trigger('change');
+
+			//alert(response.message);
         }
     });
 });
@@ -180,29 +179,3 @@ $(document).on('click', '.qty-decrease-small', function () {
 });
 
 
-$(document).on('click', '.qty-decrease-small2', function () {	
-	   		
-    let productId = $(this).data('id');
-	let seatId = $(this).data('seat');
-
-    $.ajax({
-        //url: '/kot/decrease/' + productId,
-		url: '/kot/' + seatId + '/decrease/' + productId,
-        type: 'GET',
-
-        success: function (response) {
-            let qty = parseInt(response.qty);					
-            
-            $('.manage-qty-' + productId).text(qty);  
-			
-			if (response.qty <= 0) {
-                $('.subIcon-' + productId).removeClass('activeCart');
-            }
-
-			$('.cart-count').text(response.kotCount);
-            $('.cart-total').text('₹' + response.kotTotal);
-			$('#baseTotal').val(response.kotTotal);
-			$('#baseTotal').val(response.kotTotal).trigger('change');
-        }
-    });
-});

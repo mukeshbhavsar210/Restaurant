@@ -4,7 +4,7 @@
 
 @include('admin.layouts.message')
 
-@php
+@php    
     $businessTypes = explode(',', $config->business_types);                    
     $tab1 = $businessTypes[0] ?? null;
     $tab2 = $businessTypes[1] ?? null;
@@ -12,10 +12,10 @@
     $icons = [ 'tab1_icon', 'tab2_icon', 'tab3_icon'];
 @endphp
 
-<div class="row">
-    <div class="col-md-8 col-12">        
-        <div class="card">
-            <div class="card-body mobile-padd">
+<div class="card">
+    <div class="card-body mobile-padd p-0">
+        <div class="row">
+            <div class="col-md-8 col-12 grey-back">                
                 <div class="row">
                     <div class="col-md-2">
                         <div class="nav flex-column nav-pills" id="category-tab" role="tablist">
@@ -23,6 +23,7 @@
                                 <button class="nav-link {{ $key == 0 ? 'active' : '' }}"
                                     id="tab-{{ $category->id }}" data-bs-toggle="pill"
                                     data-bs-target="#category-{{ $category->id }}" type="button">
+                                   
                                     {{ $category->name }}
                                 </button>
                             @endforeach
@@ -33,27 +34,17 @@
                         <div class="tab-content">
                             @foreach($categories as $key => $category)
                                 <div class="tab-pane fade {{ $key == 0 ? 'show active' : '' }}" id="category-{{ $category->id }}">
-                                    <div class="flex-2">
+                                    <div class="product-grid">
                                         @foreach($category->products as $product)                                                                                
                                             @php
                                                 $type = $product->menu?->veg_nonveg;   
                                                 $cart = session('cart', []);
                                                 $cartKey = $product->id . '_default';
                                                 $qty = $cart[$cartKey]['quantity'] ?? 0;                                  
-                                            @endphp
+                                                $cartProductIds = collect(session('kot_cart', []))->pluck('product_id')->toArray();
+                                            @endphp                                            
 
-                                            @php
-                                                $cartProductIds = collect(session('kot_cart', []))
-                                                    ->pluck('product_id')
-                                                    ->toArray();
-                                            @endphp
-
-                                            @if($qty > 0)       
-                                                @php
-                                                    $cart = session('cart', []);
-                                                    $cartKey = $product->id . '_default';
-                                                @endphp
-
+                                            @if($qty > 0)
                                                 {{-- <a href="{{ route('admin.cart.add', $product->id) }}" class="product-card {{ in_array($product->id, $cartProductIds) ? 'added-cart' : '' }}">
                                                     <div class="product-name">{{ $product->name }} </div>
                                                 </a> --}}
@@ -69,14 +60,21 @@
                                                     </div>
                                                 </a>                                             --}}
                                             @else
-                                                <a href="{{ route('admin.kot', $product->id) }}" class="product-card {{ in_array($product->id, $cartProductIds) ? 'added' : '' }}">
-                                                    <div class="line {{ $type == 'Non-veg' ? 'non-veg-card' : ($type == 'Egg' ? 'egg-veg-card' : ($type == 'Veg' ? 'veg-card' : '')) }}"></div>
-                                                    <span class="product-name">{{ $product->name }}</span>
-                                                    <div class="added-details">
-                                                        <span class="sprites green-tick-icon"></span>
-                                                        <a href="#" class="clear-icon">
-                                                            <span class="sprites"></span>
-                                                        </a>
+                                               @php
+                                                    $productImage = $product->product_images->first();                                                        
+                                                @endphp
+
+                                                <a href="{{ route('admin.kot', $product->id) }}" class="product-card {{ in_array($product->id, $cartProductIds) ? 'added' : '' }}">                                                    
+                                                    <div class="details">
+                                                        <div class="photo {{ $type == 'Non-veg' ? 'non-veg-card' : ($type == 'Egg' ? 'egg-veg-card' : ($type == 'Veg' ? 'veg-card' : '')) }}">
+                                                            @if (!empty($productImage->image))                                                            
+                                                                <img src="{{ asset('uploads/product/small/'.$productImage->image) }}" alt="{{ $product->name }}" class="rounded-circle" />                                                            
+                                                            @else
+                                                                <img src="{{ asset('admin-assets/images/default-150x150.png') }}" alt="{{ $product->name }}" class="rounded-circle" />
+                                                            @endif
+                                                        </div>
+                                                        
+                                                        <span class="product-name">{{ \Illuminate\Support\Str::limit($product->name, 12) }}</span>                                                                                                            
                                                     </div>
                                                 </a>                                                
                                             @endif                                            
@@ -88,26 +86,20 @@
                     </div>
                 </div>
             </div>
-        </div>
-    </div>
-
-    <div class="col-md-4 col-12">
-        @php
-            $total = 0;
-            $deliveryFee = 50;
-            $id = $product->id;    
-            $productImage = $product->product_images->first();    
-            $wishlist = session('wishlist', []);
-            $wishlistIds = array_keys($wishlist);
-            $kot_cart = session('kot_cart', []);            
-            foreach($kot_cart as $item){
-                $total += $item['price'] * $item['quantity'];
-            }
-        @endphp
-
-        <div class="card">
-            <div class="card-body">
-                <ul class="custom-tabs">
+        
+            <div class="col-md-4 col-12">
+                @php
+                    $total = 0;
+                    $deliveryFee = 50;
+                    $id = $product->id;    
+                    $productImage = $product->product_images->first();    
+                    $kot_cart = session('kot_cart', []);
+                    foreach($kot_cart as $item){
+                        $total += $item['price'] * $item['quantity'];
+                    }
+                @endphp
+               
+                <ul class="custom-tabs mt-2">
                     @foreach ($businessTypes as $type)
                         <li class="tab-link {{ $loop->first ? 'active' : '' }}" data-tab="tab{{ $loop->iteration }}" data-type="{{ $type }}">
                             {{ trim($type) }}
@@ -115,17 +107,15 @@
                     @endforeach
                 </ul>  
 
-                @if(getAdminCartCount() > 0)
-                    <form method="POST" action="{{ route('submit.order') }}">
-                        @csrf                                            
+                <form method="POST" action="{{ route('submit.order') }}">
+                    @csrf  
+                        @if(getAdminCartCount() > 0)                                                              
                         
-                        <div class="scroll-order">
-                            {{-- @foreach(session('kot_cart', []) as $id => $item) --}}
+                        <div class="scroll-order">                            
                             @foreach($kot_cart as $id => $item)
                                 @php
                                     $qty = $item['quantity'];
                                 @endphp                                
-
                                 <div class="cart-row cart-{{ $id }}" >
                                     <div class="row">
                                         <div class="col-7">
@@ -134,7 +124,7 @@
                                                     <span class="sprites"></span>
                                                 </a>
 
-                                                <p>{{ $item['name'] }}</p>
+                                                {{ $item['name'] }}
                                                 {{-- @if(!empty($item['variant']))
                                                     ({{ $item['variant'] }})
                                                 @endif --}}   
@@ -163,7 +153,7 @@
                                     {{-- <input type="text" name="variant_price" class="variant_price" value="{{ $item['price'] }}"> --}}
                                 </div>
                             @endforeach
-                        </div> 
+                        
                                                                                                             
                         @if($tab1)
                             <div class="tab-content-custom {{ $tab1 }} {{ $tab1 ? 'active' : '' }}">
@@ -174,12 +164,18 @@
                         
                         @if($tab2)
                             <div class="tab-content-custom {{ $tab2 }} {{ !$tab1 && $tab2 ? 'active' : '' }}">
-                                <div class="form-group mb-2">                                                                    
-                                    <input type="text" class="form-control field" data-name="name" name="name" placeholder="Name..." >
-                                </div>
-                                <div class="form-group mb-2">
-                                    <input type="email" class="form-control field" data-name="email" name="email" placeholder="Email..." >
-                                </div>                                
+                                <div class="row">
+                                    <div class="col-6">
+                                        <div class="form-group mb-2">                                                                    
+                                            <input type="text" class="form-control field" data-name="name" name="name" placeholder="Name..." >
+                                        </div>
+                                    </div>
+                                    <div class="col-6">
+                                        <div class="form-group mb-2">
+                                            <input type="email" class="form-control field" data-name="email" name="email" placeholder="Email..." >
+                                        </div>           
+                                    </div>
+                                </div>                     
                                 <div class="form-group mb-2">
                                     <select class="form-select field" data-name="outlet_id" name="outlet_id" >
                                         <option value="">Select Outlet</option>
@@ -200,7 +196,7 @@
                                 <div class="form-group mb-2">
                                     <input type="text" class="form-control field" data-name="name" name="name" placeholder="Name..." >
                                 </div>
-                              
+                            
                                 <div class="form-group mb-2">
                                     <input type="email" class="form-control field" data-name="email" name="email" placeholder="Email..." >
                                 </div>
@@ -214,33 +210,39 @@
                                     </select>
                                 </div> 
                             </div>    
-                        @endif
+                        @endif    
+                        </div>                                             
+                    @else                    
+                        <div class="emptyBag">                        
+                            <h5>No item Selected</h5>
+                            <p class="font-13">Please select item from left Menu items</p>
+                        </div>
+                    @endif 
 
-                        <hr />
-                        <div class="flex-justify">
+                    <div class="total-wrapper">
+                        <div class="row-total">
                             <div>
-                                <span class="cart-count"></span>
+                                @if(session()->has('kot_cart') && count(session('kot_cart')) > 0)
+                                    <a href="{{ route('cart.kot') }}" class="btn btn-danger">R</a>
+                                @endif
                             </div>
-                            <div>                                
-                                <h5>Total: <b><span class="cart-total grandTotal">₹0</span></b></h5>                                
-                                <input type="text" name="total" id="baseTotal" value="{{ $total }}">
+                            <div>
+                                <h5>Total: <b><span class="cart-total grandTotal"></span></b></h5>                                
+                                <input type="hidden" name="total" id="baseTotal" value="{{ $total }}">
                                 <input type="hidden" name="order_type" id="order_type" value="{{ $tab1 }}" class="form-control">
                             </div>
+                        </div>                    
+                        <div class="row-bottom">
+                            <button class="btn btn-primary w-100 mt-2">Save</button>
+                            <a href="#" class="btn btn-primary">Save & Print</a>
+                            <a href="#" class="btn btn-primary">Save & eBill</a>
+                            <a href="#" class="btn btn-secondary">KOT</a>
+                            <a href="#" class="btn btn-secondary">KOT & Print</a>
+                            {{-- <a href="#" class="btn btn-outline-secondary">Hold</a> --}}                            
                         </div>
-
-                        <button class="btn btn-primary w-100 mt-2">Save Order</button>
-                    </form>                                
-                @else                    
-                    <div class="emptyBag">
-                        <img src="{{ asset('front-assets/images/empty_bag.png') }}" alt="empty bag" />
-                        <p>Nothing to order</p>
                     </div>
-                @endif    
-
-                @if(session()->has('kot_cart') && count(session('kot_cart')) > 0)
-                    <a href="{{ route('cart.kot') }}" class="btn btn-danger mt-2">Reset</a>
-                @endif
-            </div>                                   
+                </form>                                
+            </div>
         </div>
     </div>
 </div>

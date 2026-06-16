@@ -32,12 +32,10 @@ class InvoiceController extends Controller implements HasMiddleware {
         return [
                 
             ];
-        }
-
+        }    
 
     public function index(Request $request){
-        $areas = Area::orderBy('area_name','ASC')->get();
-        //$seats = Seat::where('area_id',NULL)->with('seat')->orderBy('table_order', 'ASC')->get();
+        $areas = Area::orderBy('area_name','ASC')->get();        
         $tableRunning = OrderItem::with('seat')->get();
 
         $totalTable = DB::table('seats')
@@ -232,8 +230,7 @@ class InvoiceController extends Controller implements HasMiddleware {
         return view('admin.invoice.index', $data);        
     }
 
-
-    public function pos_order(Seat $seat) {
+    private function getInvoiceData2(Seat $seat) {
         session(['seat_id' => $seat->id]);
         $categories = Category::with('products')->get();
         $config = Configuration::first();
@@ -247,14 +244,111 @@ class InvoiceController extends Controller implements HasMiddleware {
                     'area_name' => $defaultArea->area_name,
                 ]);
             }
-        }        
+        }                
+
+        return view('admin.invoice.pos_order', compact(
+            'seat', 'categories', 'config', 'seats'
+        ));
+    }
+
+
+    private function getInvoiceData(Seat $seat) {
+        session(['seat_id' => $seat->id]);
+
+        $categories = Category::with('products')->get();
+        $config = Configuration::first();
+        $seats = collect();
+
+        if (!session()->has('area_id')) {
+            $defaultArea = Area::where('area_name', 'Default')->first();
+
+            if ($defaultArea) {
+                session([
+                    'area_id' => $defaultArea->id,
+                    'area_name' => $defaultArea->area_name,
+                ]);
+            }
+        }
+
+        return compact(
+            'seat',
+            'categories',
+            'config',
+            'seats'
+        );
+    }
+
+    public function pos_order2(Seat $seat) {
+        //$data = $this->getInvoiceData($seat);        
+    }
+
+
+    public function pos_order(Seat $seat) {
+        session(['seat_id' => $seat->id]);
+
+        $categories = Category::with('products')->get();
+        $config = Configuration::first();
+        $seats = collect();
+
+        if (!session()->has('area_id')) {
+            $defaultArea = Area::where('area_name', 'Default')->first();
+
+            if ($defaultArea) {
+                session([
+                    'area_id' => $defaultArea->id,
+                    'area_name' => $defaultArea->area_name,
+                ]);
+            }
+        }
+
+        $kotItems = collect(session('kot_cart', []))
+            ->filter(function ($item) use ($seat) {
+                return $item['seat_id'] == $seat->id;
+            })
+            ->toArray();
 
         //dd(session('cart'));
         //dd(session()->all());
 
         return view('admin.invoice.pos_order', compact(
-            'seat', 'categories', 'config', 'seats'
+            'seat',
+            'categories',
+            'config',
+            'seats',
+            'kotItems'
         ));
+    }
+
+    // public function pos_order(Seat $seat) {
+    //     session(['seat_id' => $seat->id]);
+    //     $categories = Category::with('products')->get();
+    //     $config = Configuration::first();
+    //     $seats = collect();
+
+    //     if (!session()->has('area_id')) {
+    //         $defaultArea = Area::where('area_name', 'Default')->first();
+    //         if ($defaultArea) {
+    //             session([
+    //                 'area_id' => $defaultArea->id,
+    //                 'area_name' => $defaultArea->area_name,
+    //             ]);
+    //         }
+    //     }        
+
+    //     //dd(session('cart'));
+    //     //dd(session()->all());
+
+    //     return view('admin.invoice.pos_order', compact(
+    //         'seat', 'categories', 'config', 'seats'
+    //     ));
+    // }
+
+    public function editKot(Seat $seat) {
+        $data = $this->getInvoiceData($seat);
+
+        $data['kotItems'] = session('kot_cart', []);
+
+        return view('admin.invoice.pos_order', $data);
     }
 
     public function branch_store(Request $request){
@@ -430,5 +524,6 @@ class InvoiceController extends Controller implements HasMiddleware {
         return back()->with('success', 'Branch View set successfully.');
 
     }
+
 
 }

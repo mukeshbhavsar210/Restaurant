@@ -68,10 +68,9 @@
                     <table class="table mb-0">
                         <thead class="table-light">
                             <tr>
-                                <th class="border-top-0" width="170"><b>Order#</b></th>
-                                <th class="border-top-0" width="400"><b>Products name</b></th>
-                                <th class="border-top-0" width="130"><b>Table/Outlet</b></th>
-                                <th class="border-top-0 text-end" width="50"><b>Qty</b></th>                                
+                                <th class="border-top-0" width="80"><b>Order#</b></th>
+                                <th class="border-top-0" width="500"><b>Products name</b></th>
+                                <th class="border-top-0" width="130"><b>Table/Outlet</b></th>                                
                                 <th class="border-top-0 text-end" width="100"><b>Total</b></th>
                                 <th class="border-top-0 text-end" width="130"><b>Order On</b></th>
                                 <th class="border-top-0 text-end" width="80"><b>Action</b></th>
@@ -87,34 +86,31 @@
                                     $sgstAmount = ($subtotal * $config->sgst) / 100;
                                     $cgstAmount = ($subtotal * $config->cgst) / 100;
                                     $grandTotal = $subtotal + $gstAmount + $sgstAmount + $cgstAmount;
+                                    $firstItem = $order->items->first();                                                    
+                                    $productImage = optional($firstItem?->product?->product_images->first());
                                 @endphp
                                 <tr>
                                     <td>
                                         <div class="product-row">
-                                            <div class="show-tooltip2 me-3">
-                                                @foreach($order->items as $item)
-                                                    @php
-                                                        $productImage = optional($item->product?->product_images->first());
-                                                    @endphp
-                                                    
-                                                    <a href="{{ route('orders.detail', $order->id) }}" class="user-avatar position-relative d-inline-block ms-n2">
-                                                        @if (!empty($productImage->image))
-                                                            <img src="{{ asset('uploads/product/small/'.$productImage->image) }}" height="60" class="rounded-circle" alt="{{ $item->name }}" />
+                                            <div class="show-tooltip2 me-3">                                                
+                                                @if($firstItem)
+                                                    <a href="{{ route('orders.detail', $order->id) }}" class="user-avatar position-relative d-inline-block">
+                                                        @if(!empty($productImage->image))
+                                                            <img src="{{ asset('uploads/product/small/'.$productImage->image) }}" height="60" class="rounded-circle" alt="{{ $firstItem->product_name ?? '' }}">
                                                         @else
-                                                            <img src="{{ asset('admin-assets/img/default-150x150.png') }}" height="60" class="rounded-circle" />
+                                                            <img src="{{ asset('admin-assets/img/default-150x150.png') }}" height="60" class="rounded-circle">
                                                         @endif
-
-                                                        <span class="order-product-qty">{{ $item->quantity }}</span>
-                                                    </a>                                                    
-                                                @endforeach
+                                                        <span class="order-product-qty">{{ $firstItem->quantity }}</span>
+                                                    </a>
+                                                @endif
                                             </div>                                                 
                                         </div>
                                     </td>      
                                     <td>                                        
-                                        <div class="flex-grow-1 text-truncate">
-                                            @foreach($order->items as $item)
-                                                <span class="product-title">{{ $item->product_name }},</span>
-                                            @endforeach    
+                                        <div class="flex-grow-1 text-truncate">                                            
+                                            @if($firstItem)
+                                                <span class="product-title">{{ $firstItem->product_name }}</span>
+                                            @endif   
                                             <p>{{ $order->notes }}</p>
                                         </div>
                                     </td>                              
@@ -128,7 +124,7 @@
                                                     <div class="dot-status red"></div>                                                
                                                 @endif
                                             </div>
-                                            <p class="text-muted">{{ $order->seat?->area?->area_name }}</p>
+                                            <p class="text-muted">{{ $order->seat?->area?->area_name }} ({{ $order->who }})</p>                                            
                                         </td>
                                     @elseif($type == 'Takeaway' || $type == 'Delivery')
                                         <td>
@@ -149,14 +145,14 @@
                                                 <span class="badge bg-danger">Cancelled</span>
                                             @endif
                                         </td>
-                                    @endif
-                                    <td class="text-end">{{ $order->items->sum('quantity') }}</td>                                    
-                                    <td class="text-end">
+                                    @endif                                    
+                                    <td class="text-end">                                        
                                         @if($type == 'Delivery')
                                             {{ round($grandTotal + $shipping) }}                                            
                                         @else    
                                             ₹{{ round($grandTotal) }}
                                         @endif
+                                        x {{ $order->items->sum('quantity') }}
                                     </td>
                                     <td class="text-end">{{ \Carbon\Carbon::parse($order->created_at)->format('d M, Y') }}</td>
                                     <td class="text-end float-end">   

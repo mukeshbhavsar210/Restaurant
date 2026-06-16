@@ -343,31 +343,6 @@ $(document).on('click', '.add-to-cart', function () {
 });
 
 
-// Increase
-$(document).on('click', '.kot-qty-increase-small2', function () {		
-    let productId = $(this).data('id');
-    let seatId = $(this).data('seat');
-
-    $.ajax({
-        url: '/kot/' + seatId + '/increase/' + productId,
-        type: 'GET',
-
-        success: function (response) {
-            let qty = parseInt(response.qty);            
-
-            $('.manage-qty-' + productId).text(qty);
-            
-            if (response.cartCount !== undefined) {
-                $('.cart-count').show().text(response.cartCount);
-            }
-
-            if (response.cartTotal !== undefined) {
-                $('.cart-total').text('₹' + response.cartTotal);
-            }
-        }
-    });	
-});
-
 
 $(document).on('click', '.qty-increase-small, .qty-increase-big', function () {	
     if ($(this).hasClass('qty-increase-big')) {
