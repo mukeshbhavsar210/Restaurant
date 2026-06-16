@@ -161,22 +161,8 @@
 <div class="startbar-overlay d-print-none"></div>
 
 <div class="page-wrapper">
-    <div class="page-content {{ !request()->routeIs(['invoice.pos.order', 'invoice.branch.store']) ? '' : 'margin-left-0' }}">        
-        @yield('content')        
-        
-        <footer class="footer text-center text-sm-start d-print-none">
-            <div class="container-xxl">
-                <div class="row">
-                    <div class="col-12">
-                        <div class="card mb-0 rounded-bottom-0">
-                            <div class="card-body">
-                                <p class="text-muted mb-0"> © <script> document.write(new Date().getFullYear()) </script> Online Shopping </p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </footer>
+    <div class="page-content {{ !request()->routeIs(['invoice.pos.order', 'invoice.branch.store']) ? '' : 'margin-left-0' }}">
+        @yield('content')                
     </div>
 </div>	
 

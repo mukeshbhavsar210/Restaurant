@@ -56,7 +56,7 @@ class FrontController extends Controller {
             $seats = Seat::where('area_id', session('area_id'))->orderBy('table_order')->get();
 
             //dd(session('cart'));            
-            //dd(session()->all());           
+            //dd(session()->all());
 
             return view('front.shop.index', [
                 'products' => $products,
@@ -135,6 +135,7 @@ class FrontController extends Controller {
         ]);       
     }    
 
+    
     private function handleCart(Request $request, $id, $sessionKey, $createdBy) {
         $product = Product::findOrFail($id);
 
@@ -438,7 +439,7 @@ class FrontController extends Controller {
         // Add delivery charge
         if ($request->order_type == 'Delivery') {
             $total += 50;
-        }
+        }        
 
         if ($request->order_type === 'Takeaway' || $request->order_type === 'Delivery') {            
             $order = Order::create([
@@ -451,10 +452,13 @@ class FrontController extends Controller {
                 'name'        => $request->active_name,
                 'email'       => $request->active_email,
                 'address'     => $request->address,                
-                'total'       => $total,
+                'total'       => $request->total,
                 'payment_status' => 'Pending',
                 'status'      => 'pending',
-            ]);
+            ]);     
+            
+            // $cartKey = session('role') == 1 ? 'kot_cart' : 'cart';
+            // $cart = session($cartKey, []);
 
             foreach ($cart as $item) {
                 OrderItem::create([
@@ -468,9 +472,9 @@ class FrontController extends Controller {
             }
 
             Session::forget('cart');
-            Session::forget('kot_cart');
-
+        
             if (session('role') == 1) {
+                Session::forget('kot_cart');
                 return redirect()->back()->with('success', 'Order placed successfully.');
             }  
             
@@ -493,11 +497,12 @@ class FrontController extends Controller {
                 'payment_method' => 'Pay at table',
                 'payment_status' => 'Pending',
                 'status' => 'running',
-            ]);
+            ]);        
+            
+            $cartKey = session('role') == 1 ? 'kot_cart' : 'cart';
+            $cart = session($cartKey, []);
 
-            //Seat status changed
-            Seat::where('id', $request->seat_id)->update(['status' => 'running']);
-
+            // Order Items
             foreach ($cart as $item) {
                 OrderItem::create([
                     'order_id'      => $order->id,
@@ -509,16 +514,16 @@ class FrontController extends Controller {
                 ]);
             }
 
-            Session::forget('cart');            
+            //Seat status changed
+            Seat::where('id', $request->seat_id)->update(['status' => 'running']);
+
+            Session::forget('cart');
             Session::forget('kot_cart');
 
-            if (session('role') == 1) {
-                return redirect()->back()->with('success', 'Order placed successfully.');
-            }            
-
-            return redirect()->route('order.success', $order->id)->with('success', 'Order placed successfully');
-
-            Session::flush();
+            return session('role') == 1
+                    ? redirect()->back()->with('success', 'Order placed successfully.')
+                    : redirect()->route('order.success', $order->id)->with('success', 'Order placed successfully.');
+                        
         }               
     }
 
@@ -660,11 +665,7 @@ class FrontController extends Controller {
         // increase qty
         if(isset($cart[$productId])) {
             $cart[$productId]['quantity']++;
-        }
-
-        // total
-        $qty = 0;
-        $total = 0;
+        }        
 
         foreach ($cart as $key => $item) {
             if (
@@ -679,11 +680,13 @@ class FrontController extends Controller {
 
         session()->put('kot_cart', $cart);          
 
-        return response()->json([            
-            'qty' => $cart[$productId]['quantity'],
+        return response()->json([       
+            'success' => true,
+            'message' => 'Quantity updated',     
+            'qty' => $cart[$productId]['quantity'],            
             'kotCount' => collect($cart)->sum('quantity'),
             'kotTotal' => collect($cart)->sum(fn($item) => $item['price'] * $item['quantity']),
-        ]);
+        ]);        
     }
 
 
@@ -727,5 +730,5 @@ class FrontController extends Controller {
         session()->forget('kot_cart');
         return back()->with('success', 'KOT cleared successfully.');        
     }
-    
+
 }

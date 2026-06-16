@@ -37,14 +37,12 @@ Route::controller(FrontController::class)->group(function() {
     Route::get('/cart/add/{id}', 'addToCart')->name('front.addCart');
     
     //Admin KOT    
-    Route::get('/kot/{seat_id}/increase/{product_id}', 'increaseKotQty')->name('admin.kot.increase');
-    Route::get('/kot/{seat_id}/decrease/{product_id}', 'decreaseKotQty')->name('admin.kot.decrease');
+    Route::get('/kot/{seat_id}/increase/{product_id}', 'increaseKotCart')->name('admin.kot.increase');
+    Route::get('/kot/{seat_id}/decrease/{product_id}', 'decreaseKotCart')->name('admin.kot.decrease');   
     Route::get('/kot/{seat_id}/remove/{product_id}', 'removeKotItem')->name('admin.kot.remove');
     Route::get('/kot/remove/{id}', 'KotRemoveCart')->name('kot.cart.removecart');
     Route::get('/clear-kot', 'clearKOT')->name('cart.kot');
-    Route::get('/kot/add/{id}', 'addToKOT')->name('admin.kot');
-    Route::get('/kot/{seat_id}/increase/{product_id}', 'increaseKotCart')->name('admin.kot.increase');
-    Route::get('/kot/{seat_id}/decrease/{product_id}', 'decreaseKotCart')->name('admin.kot.decrease');   
+    Route::get('/kot/add/{id}', 'addToKOT')->name('admin.kot');    
         
     Route::get('/cart/remove/{id}', 'customerRemoveCart')->name('customer.cart.removecart');
     Route::get('/cart/increase/{id}', 'increaseCart')->name('cart.increase');
@@ -141,7 +139,9 @@ Route::group(['prefix' => 'admin'], function(){
             //Table
             Route::post('/table', 'table_store')->name('table.store');            
             Route::get('/table/delete/{id}', 'table_delete')->name('delete.table');   
-                       
+            
+            Route::get('/kot/{seat_id}/edit', 'editKot')->name('admin.kot.edit');
+            Route::post('/kot/{seat_id}/update', 'updateKot')->name('admin.kot.update');
             
         });
         
