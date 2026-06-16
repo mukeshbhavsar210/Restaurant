@@ -43,7 +43,7 @@
                                             @endphp
 
                                             @php
-                                                $cartProductIds = collect(session('admin_cart', []))
+                                                $cartProductIds = collect(session('kot_cart', []))
                                                     ->pluck('product_id')
                                                     ->toArray();
                                             @endphp
@@ -69,26 +69,16 @@
                                                     </div>
                                                 </a>                                             --}}
                                             @else
-                                                <a href="{{ route('admin.cart.add', $product->id) }}" class="product-card {{ in_array($product->id, $cartProductIds) ? 'added' : '' }}">
+                                                <a href="{{ route('admin.kot', $product->id) }}" class="product-card {{ in_array($product->id, $cartProductIds) ? 'added' : '' }}">
                                                     <div class="line {{ $type == 'Non-veg' ? 'non-veg-card' : ($type == 'Egg' ? 'egg-veg-card' : ($type == 'Veg' ? 'veg-card' : '')) }}"></div>
-                                                    <div class="product-name">{{ $product->name }} </div>
+                                                    <span class="product-name">{{ $product->name }}</span>
                                                     <div class="added-details">
                                                         <span class="sprites green-tick-icon"></span>
                                                         <a href="#" class="clear-icon">
                                                             <span class="sprites"></span>
                                                         </a>
                                                     </div>
-                                                </a>
-                                                {{-- <a href="{{ route('admin.cart.add', $product->id) }}" class="product-card">
-                                                    <div class="line {{ $type == 'Non-veg' ? 'non-veg-card' : ($type == 'Egg' ? 'egg-veg-card' : ($type == 'Veg' ? 'veg-card' : '')) }}"></div>
-                                                    <div class="product-name">{{ $product->name }}</div>
-                                                </a> --}}
-
-                                                    {{-- <form action="{{ route('admin.cart.add', $product->id) }}" method="POST" class="cart-form" data-id="{{ $product->id }}">
-                                                        <button type="submit" class="control-btn">
-                                                            {{ $product->name }}                                                                                                                
-                                                        </button>                                               
-                                                    </form> --}}
+                                                </a>                                                
                                             @endif                                            
                                         @endforeach
                                     </div>
@@ -109,8 +99,8 @@
             $productImage = $product->product_images->first();    
             $wishlist = session('wishlist', []);
             $wishlistIds = array_keys($wishlist);
-            $admin_cart = session('admin_cart', []);            
-            foreach($admin_cart as $item){
+            $kot_cart = session('kot_cart', []);            
+            foreach($kot_cart as $item){
                 $total += $item['price'] * $item['quantity'];
             }
         @endphp
@@ -130,16 +120,17 @@
                         @csrf                                            
                         
                         <div class="scroll-order">
-                            @foreach(session('admin_cart', []) as $id => $item)    
+                            {{-- @foreach(session('kot_cart', []) as $id => $item) --}}
+                            @foreach($kot_cart as $id => $item)
                                 @php
                                     $qty = $item['quantity'];
-                                @endphp
+                                @endphp                                
 
-                                <div class="cart-row cart-{{ $id }}">
+                                <div class="cart-row cart-{{ $id }}" >
                                     <div class="row">
                                         <div class="col-7">
                                             <div class="flex-3">
-                                                <a href="{{ route('admin.cart.removecart', $id) }}" class="remove-icon">
+                                                <a href="{{ route('kot.cart.removecart', $id) }}" class="remove-icon">
                                                     <span class="sprites"></span>
                                                 </a>
 
@@ -151,14 +142,14 @@
                                         </div>
                                         <div class="col-3">
                                             <div class="calculate">                                                                                                                                        
-                                                <div class="qty">
-                                                    <a href="javascript:void(0)" class="sub-icon decrease-cart" data-id="{{ $id }}">
+                                                <div class="qty align-items-center">
+                                                    <a href="javascript:0" class="qty-decrease-small" data-id="{{ $id }}" data-seat="{{ $item['seat_id'] }}">
                                                         <span class="sprites"></span>
-                                                    </a>
+                                                    </a>                                                    
 
-                                                    <span class="manage-qty manage-qty-{{ $id }}">{{ $qty }}</span>                                                   
-
-                                                    <a href="javascript:void(0)" class="add-icon increase-cart" data-id="{{ $id }}">
+                                                    <span class="manage-qty manage-qty-{{ $id }}">{{ $qty }}</span>
+                    
+                                                    <a href="javascript:0" class="qty-increase-small" data-id="{{ $id }}" data-seat="{{ $item['seat_id'] }}">
                                                         <span class="sprites"></span>
                                                     </a>
                                                 </div>
@@ -227,11 +218,13 @@
 
                         <hr />
                         <div class="flex-justify">
-                            <div>1</div>
                             <div>
-                                <h5>Total: <b>₹{{ $total }}</b></h5>
+                                <span class="cart-count"></span>
+                            </div>
+                            <div>                                
+                                <h5>Total: <b><span class="cart-total grandTotal">₹0</span></b></h5>                                
+                                <input type="text" name="total" id="baseTotal" value="{{ $total }}">
                                 <input type="hidden" name="order_type" id="order_type" value="{{ $tab1 }}" class="form-control">
-                                <input type="hidden" name="total" id="baseTotal" value="{{ $total }}">
                             </div>
                         </div>
 
@@ -244,8 +237,8 @@
                     </div>
                 @endif    
 
-                @if(session()->has('admin_cart') && count(session('admin_cart')) > 0)
-                    <a href="{{ route('cart.clear') }}" class="btn btn-danger mt-2">Reset</a>
+                @if(session()->has('kot_cart') && count(session('kot_cart')) > 0)
+                    <a href="{{ route('cart.kot') }}" class="btn btn-danger mt-2">Reset</a>
                 @endif
             </div>                                   
         </div>
@@ -266,6 +259,7 @@
     });
 
     $(document).on('click', '.increase-cart', function(){
+        alert("Hi");
         let id = $(this).data('id');
 
         $.get('/cart/increase/' + id, function(response){

@@ -344,7 +344,32 @@ $(document).on('click', '.add-to-cart', function () {
 
 
 // Increase
-$(document).on('click', '.qty-increase-small, .qty-increase-big', function () {
+$(document).on('click', '.kot-qty-increase-small2', function () {		
+    let productId = $(this).data('id');
+    let seatId = $(this).data('seat');
+
+    $.ajax({
+        url: '/kot/' + seatId + '/increase/' + productId,
+        type: 'GET',
+
+        success: function (response) {
+            let qty = parseInt(response.qty);            
+
+            $('.manage-qty-' + productId).text(qty);
+            
+            if (response.cartCount !== undefined) {
+                $('.cart-count').show().text(response.cartCount);
+            }
+
+            if (response.cartTotal !== undefined) {
+                $('.cart-total').text('₹' + response.cartTotal);
+            }
+        }
+    });	
+});
+
+
+$(document).on('click', '.qty-increase-small, .qty-increase-big', function () {	
     if ($(this).hasClass('qty-increase-big')) {
         flyToCart(this);
         flyToCartBottom(this);
@@ -357,18 +382,15 @@ $(document).on('click', '.qty-increase-small, .qty-increase-big', function () {
         type: 'GET',
 
         success: function (response) {
-            let qty = parseInt(response.qty);
-			let qtyBtnSmall = $('.subIconSmall-' + productId);
-			let qtyBtnBig = $('.subIconBig-' + productId);
+            let qty = parseInt(response.qty);		
+			let qtyBtn = $('.subIcon-' + productId);			
             
             $('.manage-qty-' + productId).text(qty);                    
 
-            if (qty < 1) {
-                qtyBtnSmall.removeClass('qty-decrease-small').addClass('remove-item-small');
-				qtyBtnSmall.removeClass('qty-decrease-big').addClass('remove-item-big');
-            } else {
-                qtyBtnSmall.removeClass('remove-item-small').addClass('qty-decrease-small');
-				qtyBtnBig.removeClass('remove-item-big').addClass('qty-decrease-big');
+            if (qty < 1) {                
+				qtyBtn.removeClass('activeCart');								
+            } else {                
+				qtyBtn.addClass('activeCart');				
             }
             
             $('.cart-count').show().text(response.cartCount);
@@ -377,9 +399,12 @@ $(document).on('click', '.qty-increase-small, .qty-increase-big', function () {
     });
 });
 
-
 // Decrease
 $(document).on('click', '.qty-decrease-small, .qty-decrease-big', function () {
+	if ($(this).hasClass('qty-decrease-big')) {        
+        flyToCartBottom(this);
+    }
+	
 	let productId = $(this).data('id');
 	let button = $(this);
 
@@ -391,43 +416,20 @@ $(document).on('click', '.qty-decrease-small, .qty-decrease-big', function () {
 			let qty = parseInt(response.qty);
 
 			$('.cart-section-' + productId)
-			let qtyBig = parseInt(response.qty);
-
 			$('.manage-qty-' + productId).text(response.qty);	
 			
-			let qtyBtnSmall = $('.subIconSmall-' + productId);
-			let qtyBtnBig = $('.subIconBig-' + productId);
+			let qtyBtn = $('.subIcon-' + productId);			
 
             if (qty > 1) {
-                qtyBtnSmall.removeClass('remove-item-small').addClass('qty-decrease-small');
-				qtyBtnBig.removeClass('remove-item-big').addClass('qty-decrease-big');
+				qtyBtn.addClass('activeCart');				
             } else {
-                qtyBtnSmall.removeClass('qty-decrease-small').addClass('remove-item-small');
-				qtyBtnBig.removeClass('qty-decrease-big').addClass('remove-item-big');
+				qtyBtn.removeClass('activeCart');				
             }						
 
 			$('.cart-count').show().text(response.cartCount);
 			$('.cart-total').text('₹' + response.cartTotal);				
 		}
 	});
-});
-
-
-const removeCartUrl = "{{ route('customer.cart.removecart', ':id') }}";
-$(document).on('click', '.remove-item-small, .remove-item-big', function () {	
-    let productId = $(this).data('id');
-
-    $.ajax({
-        url: removeCartUrl.replace(':id', productId),
-        type: 'GET',
-
-		
-
-        success: function (response) {
-            location.reload();
-			console.log(productId);
-        }
-    });
 });
 
 //Variant products

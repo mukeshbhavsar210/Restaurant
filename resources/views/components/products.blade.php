@@ -142,9 +142,15 @@
             <div class="add-controls cart-{{ $cartKey }}">                
                 <div class="flex-inner">     
                     <div class="qty-box flex align-items-center">  
-                        <a href="javascript:0" class="remove-item-big subIconBig-{{ $cartKey }}" data-id="{{ $cartKey }}">
-                            <span class="sprites"></span>
-                        </a>                        
+                        <div class="subIcon-{{ $cartKey }} {{ ($cartItem['quantity'] ?? 0) > 1 ? 'activeCart' : '' }}">
+                            <a href="javascript:0" class="qty-decrease-big" data-id="{{ $cartKey }}">
+                                <span class="sprites"></span>
+                            </a>
+
+                            <a href="{{ route('customer.cart.removecart', $cartKey) }}" class="remove-item-big">
+                                <span class="sprites"></span>
+                            </a>
+                        </div>
 
                         <div class="manage-modal-qty">
                             <span class="manage-qty-{{ $cartKey }}">{{ $qty }}</span>

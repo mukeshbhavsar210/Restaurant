@@ -1,4 +1,8 @@
 $(document).ready(function(){
+
+	
+
+
 	$('.kot-card').hover(
 		function () {
 			$(this).addClass('active');
@@ -132,3 +136,73 @@ $('.tab-link').on('click', function () {
 
 // Initial check
 checkFields();
+
+
+$(document).on('click', '.qty-increase-small', function () {	    	
+    let productId = $(this).data('id');
+	let seatId = $(this).data('seat');
+
+    $.ajax({
+		url: '/kot/' + seatId + '/increase/' + productId,
+        //url: '/kot/increase/' + productId,
+        type: 'GET',
+
+        success: function (response) {
+            let qty = parseInt(response.qty);					
+            
+            $('.manage-qty-' + productId).text(qty);  				
+
+            //$('.cart-count').show().text(response.cartCount);
+			$('.cart-count').text(response.kotCount);
+            $('.cart-total').text('₹' + response.kotTotal);
+			$('#baseTotal').val(response.kotTotal);
+			$('#baseTotal').val(response.kotTotal).trigger('change');
+        }
+    });
+});
+
+$(document).on('click', '.qty-decrease-small', function () {
+    let productId = $(this).data('id');
+    let seatId = $(this).data('seat');
+
+    $.ajax({
+        url: '/kot/' + seatId + '/decrease/' + productId,
+        type: 'GET',
+
+        success: function (response) {
+            $('.manage-qty-' + productId).text(response.qty);
+			$('.cart-count').text(response.kotCount);
+            $('.cart-total').text('₹' + response.kotTotal);
+			$('#baseTotal').val(response.kotTotal);
+			$('#baseTotal').val(response.kotTotal).trigger('change');
+        }
+    });
+});
+
+
+$(document).on('click', '.qty-decrease-small2', function () {	
+	   		
+    let productId = $(this).data('id');
+	let seatId = $(this).data('seat');
+
+    $.ajax({
+        //url: '/kot/decrease/' + productId,
+		url: '/kot/' + seatId + '/decrease/' + productId,
+        type: 'GET',
+
+        success: function (response) {
+            let qty = parseInt(response.qty);					
+            
+            $('.manage-qty-' + productId).text(qty);  
+			
+			if (response.qty <= 0) {
+                $('.subIcon-' + productId).removeClass('activeCart');
+            }
+
+			$('.cart-count').text(response.kotCount);
+            $('.cart-total').text('₹' + response.kotTotal);
+			$('#baseTotal').val(response.kotTotal);
+			$('#baseTotal').val(response.kotTotal).trigger('change');
+        }
+    });
+});

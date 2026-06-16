@@ -71,9 +71,15 @@
                                         <div class="flex-inner">
                                             @if(getCartCount() > 0)
                                                 <div class="qty-box flex align-items-center">
-                                                    <a href="javascript:0" class="remove-item-small subIconSmall-{{ $id }}" data-id="{{ $id }}">
-                                                        <span class="sprites"></span>
-                                                    </a>
+                                                    <div class="subIcon-{{ $id }} {{ ($qty ?? 0) > 1 ? 'activeCart' : '' }}">
+                                                        <a href="javascript:0" class="qty-decrease-small" data-id="{{ $id }}">
+                                                            <span class="sprites"></span>
+                                                        </a>
+
+                                                        <a href="{{ route('customer.cart.removecart', $id) }}" class="remove-item-small">
+                                                            <span class="sprites"></span>
+                                                        </a>
+                                                    </div>
                     
                                                     <a href="javascript:0" class="qty-increase-small" data-id="{{ $id }}">
                                                         <span class="sprites"></span>
@@ -98,7 +104,7 @@
             
                         <div class="basket-page__content__total">
                             <p>Total:</p>                        
-                            <input type="hidden" id="baseTotal" value="{{ $total }}">                        
+                            <input type="hidden" id="baseTotal" value="{{ $total }}">
                             <span class="cart-total grandTotal">₹0</span>
                         </div>
 

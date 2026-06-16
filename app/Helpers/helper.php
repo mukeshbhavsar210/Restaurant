@@ -69,7 +69,7 @@ use Illuminate\Support\Facades\Mail;
 
     if (!function_exists('getAdminCartCount')) {
         function getAdminCartCount() {
-            $cart = session()->get('admin_cart', []);
+            $cart = session()->get('kot_cart', []);
             return array_sum(array_column($cart, 'quantity'));
         }
     }
@@ -100,9 +100,23 @@ use Illuminate\Support\Facades\Mail;
         return $total;
     }
 
+    function getKotCartTotal() {
+        $kot_cart = session()->get('kot_cart', []);
+        $total = 0;
+        foreach ($kot_cart as $item) {
+            $total += $item['price'] * $item['quantity'];
+        }
+
+        return $total;
+    }
+
 
     function getCartCount() {
         return count(session()->get('cart', []));
+    }
+
+    function getKotCartCount() {
+        return count(session()->get('kot_cart', []));
     }
 
 
