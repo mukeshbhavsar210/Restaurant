@@ -1,7 +1,4 @@
 $(document).ready(function(){   
-
-	
-
     // Open modal
     $('.sheet-handle').on('click', function () {
 		$('.modal-cart').toggleClass('active_bottom');		

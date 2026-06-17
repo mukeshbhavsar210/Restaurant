@@ -4,68 +4,85 @@
 
 @include('admin.layouts.message')
 
-<div class="card">
-    <div class="card-body mobile-padd">                              
+<div class="card mb-1">
+    <div class="card-body mobile-padd">
         <div class="row">
-            <div class="col-md-7 col-5">
-                <div class="page-title">
-                    <h4>{{ $outlets->firstWhere('view', 1)?->area_name }}</h4> 
-                    <span class="counts">{{ $outlets->firstWhere('view', 1)?->total_seats }}</span>
-                </div>
-            </div>
-            
-            <div class="col-md-5 col-7">
-                <div class="flex float-end">
-                    {{-- <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#{{ $branchForm['modal_id'] }}">{{ $branchForm['title'] }}</button>
-                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#{{ $tableForm['modal_id'] }}">{{ $tableForm['title'] }}</button> --}}
-
+            <div class="col-md-3 col-5">
+                <div class="flex">
                     <form method="POST" action="{{ route('invoice.branch.store') }}" id="outletForm">
                         @csrf
-
-                        <select name="outlet_id" class="form-select" id="outletSelect" required>
-                            <option value="">Select Outlet</option>
+                        <select name="outlet_id" class="form-select" style="width: 150px" id="outletSelect" required>
+                            <option value="">Select Outlet </option>
                             @foreach($outlets as $outlet)
                                 <option value="{{ $outlet->id }}"
                                     {{ $selectedOutletId == $outlet->id ? 'selected' : '' }}>
-                                    {{ $outlet->area_name }}
+                                    {{ $outlet->area_name }} - {{ $outlet->total_seats }}
                                 </option>
                             @endforeach
-                        </select>
+                        </select>                        
                     </form>
+                    {{-- <span class="counts">{{ $outlets->firstWhere('view', 1)?->total_seats }}</span> --}}
                 </div>
-            </div>            
-        </div>     
+            </div>
+            
+            <div class="col-md-9 col-7">
+                <div class="flex float-end">
+                    <ul class="table-details">
+                        <li><span class="blank-tb"></span> Blank Table</li>
+                        <li><span class="running-tb"></span> Running Table</li>
+                        <li><span class="printed-tb"></span> Printed Table</li>
+                        <li><span class="paid-tb"></span> Paid Table</li>
+                        <li><span class="running-kot-tb"></span> Running KOT Table</li>
+                    </ul>
+
+                    <a href="#" class="btn btn-outline-primary">Table Reservation</a>
+
+                    {{-- <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#{{ $branchForm['modal_id'] }}">{{ $branchForm['title'] }}</button>
+                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#{{ $tableForm['modal_id'] }}">{{ $tableForm['title'] }}</button> --}}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>     
+        
+<div class="card py-0">
+    <div class="card-body mobile-padd">
         @if($activeArea)                    
-            @foreach($tableTypes as $value)
-                <h5 class="mt-2">{{ $value->name }}</h5>
+            @foreach($tableTypes as $value)                
+                <h5>{{ $value->name }}</h5>
                 @if($value->seats->count())                                
-                    <div class="flex-2 mt-1 mb-2">
+                    <div class="flex-2 mb-4">
                         @foreach($value->seats as $seat)                                 
-                            <div class="kot-card 
-                                {{ $seat->status == 'running' ? 'running' : '' }}
-                                {{ $seat->status == 'available' ? 'available' : '' }}
-                                {{ $seat->status == 'printed' ? 'printed' : '' }}
-                                {{ $seat->status == 'kot-running' ? 'kot-running' : '' }}">
-                                
+                            <div class="kot-card">
                                 <div class="viewControl">
-                                    <a href="{{ route('admin.kot.edit', $seat->id) }}" class="view-icon">
-                                        <span class="sprites"></span>
-                                    </a>
+                                    @if($seat->status == 'running')
+                                        <a href="#" class="print-icon">
+                                            <span class="sprites"></span>
+                                        </a>
+                                    @elseif($seat->status == 'kot-running')
+                                        <a href="{{ route('admin.kot.edit', $seat->id) }}" class="view-icon">
+                                            <span class="sprites"></span>
+                                        </a>
+                                        <a href="#" class="print-icon">
+                                            <span class="sprites"></span>
+                                        </a>
+                                    @endif
                                 </div>
                                 
-                                <a href="{{ route('invoice.pos.order', $seat->id) }}" class="link">
-                                    AC {{ $seat->table }}                                            
-                                </a>
-                                
-                                <div class="hover-content"> 
-                                    <a href="#" class="print-icon">
-                                        <span class="sprites"></span>
-                                    </a>                                            
-                                    <a href="#" class="edit-icon" data-bs-toggle="modal" data-bs-target="#qrModal_{{ strtolower(Str::limit($value->name, 2, '')) }}_{{ $seat->table }}">
-                                        <span class="sprites"></span>
-                                    </a>                                            
+                                <div class="link {{ $seat->status == 'running' ? 'running' : '' }}
+                                        {{ $seat->status == 'available' ? 'available' : '' }}
+                                        {{ $seat->status == 'printed' ? 'printed' : '' }}
+                                        {{ $seat->status == 'kot-running' ? 'kot-running' : '' }}">
+                                         
+                                    <a href="{{ route('invoice.pos.order', $seat->id) }}">AC {{ $seat->table }}</a>                                    
+                                    <div class="hover-content">
+                                        <a href="#" class="edit-icon" data-bs-toggle="modal" data-bs-target="#qrModal_{{ strtolower(Str::limit($value->name, 2, '')) }}_{{ $seat->table }}">
+                                            <span class="sprites"></span>
+                                        </a>                                            
+                                    </div>
                                 </div>
                             </div>
+                            
                             
                             <div class="modal fade drawer right-align" id="qrModal_{{ strtolower(Str::limit($value->name, 2, '')) }}_{{ $seat->table }}" tabindex="-1">
                                 <div class="modal-dialog">
@@ -103,12 +120,13 @@
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-                    @endforeach
+                            </div>                            
+                    @endforeach                    
                     </div>
                 @else
                     <p>No seats found.</p>
                 @endif
+                
             @endforeach                    
         @endif
     </div>
@@ -142,8 +160,5 @@
         url.searchParams.set('open', id);
         window.history.replaceState({}, '', url);
     });    
-
-
-    
 </script>
 @endsection

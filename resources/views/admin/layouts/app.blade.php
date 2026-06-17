@@ -154,14 +154,12 @@
     </div>
 </div>
 
-@if(!request()->routeIs(['invoice.pos.order', 'invoice.branch.store']))    
-    @include('admin/layouts/sidebar')                                            
-@endif
+@include('admin/layouts/sidebar')
 
 <div class="startbar-overlay d-print-none"></div>
 
 <div class="page-wrapper">
-    <div class="page-content {{ !request()->routeIs(['invoice.pos.order', 'invoice.branch.store']) ? '' : 'margin-left-0' }}">
+    <div class="page-content {{ request()->routeIs(['invoice.pos.order', 'invoice.branch.store', 'invoice.index']) ? 'mtControl' : '' }}">
         @yield('content')                
     </div>
 </div>	
