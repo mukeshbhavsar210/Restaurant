@@ -16,7 +16,7 @@ use Intervention\Image\Drivers\Gd\Driver;
 class CategoryController extends Controller {
 
     public function index(Request $request) {
-        $categories = Category::withCount(['menus'])->orderBy('order_list', 'ASC')->latest();
+        $categories = Category::withCount(['menus'])->orderBy('id', 'ASC')->latest();
         $totalCategories = Category::count();        
 
         if (!empty($request->get('keyword'))) {
@@ -76,14 +76,14 @@ class CategoryController extends Controller {
                         'required' => true,
                         'id'    => 'slug',
                         'col' => 'd-none'
-                    ],
+                    ],                   
                     [
                         'type' => 'file',
                         'name' => 'image',
                         'label' => 'Image',
-                        'required' => true,
+                        'required' => false,
                         'col' => 'col-md-12 col-12'
-                    ],
+                    ]  
                 ]
             ]
         ];  
@@ -152,7 +152,10 @@ class CategoryController extends Controller {
     public function store(Request $request){
         $validator = Validator::make($request->all(), [
             'name' => 'required',
+            'image' => 'required|image|mimes:jpg,jpeg,png|max:2048',
         ]);
+
+        //dd($request->all());        
 
         if ($validator->passes()) {
             $data = new Category();
@@ -160,15 +163,18 @@ class CategoryController extends Controller {
             $data->slug = $request->slug;
 
             //Image upload
-            $file = $request->file('image');
-            $extenstion = $file->getClientOriginalExtension();
-            $fileName = $data->slug.'_'.time().'.'.$extenstion;
-            $path = public_path().'/uploads/category/'.$fileName;
-            $manager = new ImageManager(new Driver());
-            $image = $manager->read($file);
-            $image->toJpeg(100)->save($path);
-            $image->cover(300,300)->save($path);
-            $data->image = $fileName;
+            if ($request->hasFile('image')) {
+                $file = $request->file('image');
+                $extension = $file->getClientOriginalExtension();
+                $fileName = $data->slug.'.'.$extension;
+                $path = public_path('uploads/category/'.$fileName);
+                $manager = new ImageManager(new Driver());
+                $image = $manager->read($file);
+                $image->cover(300, 300);
+                $image->save($path);
+                $data->image = $fileName;
+            }
+
             $data->save();
 
             return redirect()->route('categories.index')->with('success','Category added successfully.');
@@ -176,9 +182,6 @@ class CategoryController extends Controller {
             return redirect()->route('categories.index')->withInput()->withErrors($validator);
         }            
     }
-
-
-
 
     public function store_menu(Request $request){
         $validator = Validator::make($request->all(), [ 

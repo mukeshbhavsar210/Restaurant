@@ -25,7 +25,7 @@ class Seat extends Model {
 
     public function type() {
         return $this->belongsTo(TableType::class, 'type_id');
-    }
+    }    
 
     public function area(){
         return $this->belongsTo(Area::class);
@@ -37,6 +37,14 @@ class Seat extends Model {
 
     public function orders(){
         return $this->hasMany(Order::class);
+    }
+
+    public function kotOrders() {
+        return $this->hasMany(KotOrder::class, 'seat_id');
+    }
+
+    public function latestKotOrder() {
+        return $this->hasOne(KotOrder::class, 'seat_id')->latestOfMany();
     }
 
     public function assigned_seat(){

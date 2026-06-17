@@ -44,46 +44,21 @@
                                     @foreach($category->products as $product)                                                                                
                                         @php
                                             $type = $product->menu?->veg_nonveg;   
-                                            $cart = session('cart', []);
+                                            $cart = session('kot_cart', []);
                                             $cartKey = $product->id . '_default';
                                             $qty = $cart[$cartKey]['quantity'] ?? 0;                                  
                                             $cartProductIds = collect(session('kot_cart', []))->pluck('product_id')->toArray();
-                                        @endphp                                            
-
-                                        @if($qty > 0)
-                                            {{-- <a href="{{ route('admin.cart.add', $product->id) }}" class="product-card {{ in_array($product->id, $cartProductIds) ? 'added-cart' : '' }}">
-                                                <div class="product-name">{{ $product->name }} </div>
-                                            </a> --}}
+                                        @endphp  
                                         
-                                            {{-- <a href="#" class="product-card control-btn " data-id="{{ $product->id }}">
+                                        <a href="{{ route('admin.kot', $product->id) }}" class="product-card {{ in_array($product->id, $cartProductIds) ? 'added' : '' }}">                                                    
+                                            @if($qty)
+                                                <div class="qty-counts">{{ $qty }}</div>
+                                            @endif                                            
+                                            <div class="details">
                                                 <div class="line {{ $type == 'Non-veg' ? 'non-veg-card' : ($type == 'Egg' ? 'egg-veg-card' : ($type == 'Veg' ? 'veg-card' : '')) }}"></div>
-                                                <div class="product-name">{{ $product->name }}</div>
-                                                <div class="added">
-                                                    <span class="sprites green-tick-icon"></span>
-                                                    <a href="#" class="clear-icon">
-                                                        <span class="sprites"></span>
-                                                    </a>
-                                                </div>
-                                            </a>                                             --}}
-                                        @else
-                                        @php
-                                                $productImage = $product->product_images->first();                                                        
-                                            @endphp
-
-                                            <a href="{{ route('admin.kot', $product->id) }}" class="product-card {{ in_array($product->id, $cartProductIds) ? 'added' : '' }}">                                                    
-                                                <div class="details">
-                                                    <div class="photo {{ $type == 'Non-veg' ? 'non-veg-card' : ($type == 'Egg' ? 'egg-veg-card' : ($type == 'Veg' ? 'veg-card' : '')) }}">
-                                                        @if (!empty($productImage->image))                                                            
-                                                            <img src="{{ asset('uploads/product/small/'.$productImage->image) }}" alt="{{ $product->name }}" class="rounded-circle" />                                                            
-                                                        @else
-                                                            <img src="{{ asset('admin-assets/images/default-150x150.png') }}" alt="{{ $product->name }}" class="rounded-circle" />
-                                                        @endif
-                                                    </div>
-                                                    
-                                                    <span class="product-name">{{ \Illuminate\Support\Str::limit($product->name, 15) }}</span>                                                                                                            
-                                                </div>
-                                            </a>                                                
-                                        @endif                                            
+                                                <div class="product-name">{{ \Illuminate\Support\Str::limit($product->name, 15) }}</div>                                                
+                                            </div>
+                                        </a>
                                     @endforeach
                                 </div>
                             </div>
@@ -112,7 +87,7 @@
                     @endforeach
                 </ul>  
             
-                <form method="POST" action="{{ route('submit.order') }}">
+                <form method="POST" action="{{ route('submit.kot.order') }}">
                     @csrf  
                         @if(getAdminCartCount() > 0)
                             <div class="scroll-order">
@@ -132,7 +107,7 @@
                                                 @endphp                                
                                                 <tr class="cart-{{ $id }}" >                                        
                                                     <td>
-                                                        <div class="flex-2">
+                                                        <div class="flex-3">
                                                             <a href="{{ route('kot.cart.removecart', $id) }}" class="remove-icon">
                                                                 <span class="sprites"></span>
                                                             </a>                                                   
@@ -158,7 +133,7 @@
                                                     <td class="text-end">
                                                         <div class="price">₹{{ round($item['price']) }}</div>
                                                     </td>
-                                                <input type="hidden" name="variant_name" class="variant_name" value="{{ $item['variant'] }}">
+                                                {{-- <input type="hidden" name="variant_name" class="variant_name" value="{{ $item['variant'] }}"> --}}
                                                 {{-- <input type="text" name="variant_price" class="variant_price" value="{{ $item['price'] }}"> --}}
                                             </tr>
                                         @endforeach

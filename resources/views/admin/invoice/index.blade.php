@@ -7,7 +7,7 @@
 <div class="card mb-1">
     <div class="card-body mobile-padd">
         <div class="row">
-            <div class="col-md-3 col-5">
+            <div class="col-md-2 col-5">
                 <div class="flex">
                     <form method="POST" action="{{ route('invoice.branch.store') }}" id="outletForm">
                         @csrf
@@ -25,7 +25,7 @@
                 </div>
             </div>
             
-            <div class="col-md-9 col-7">
+            <div class="col-md-10 col-7">
                 <div class="flex float-end">
                     <ul class="table-details">
                         <li><span class="blank-tb"></span> Blank Table</li>
@@ -37,8 +37,8 @@
 
                     <a href="#" class="btn btn-outline-primary">Table Reservation</a>
 
-                    {{-- <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#{{ $branchForm['modal_id'] }}">{{ $branchForm['title'] }}</button>
-                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#{{ $tableForm['modal_id'] }}">{{ $tableForm['title'] }}</button> --}}
+                    <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#{{ $branchForm['modal_id'] }}">{{ $branchForm['title'] }}</button>
+                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#{{ $tableForm['modal_id'] }}">{{ $tableForm['title'] }}</button>
                 </div>
             </div>
         </div>
@@ -55,12 +55,13 @@
                         @foreach($value->seats as $seat)                                 
                             <div class="kot-card">
                                 <div class="viewControl">
-                                    @if($seat->status == 'running')
-                                        <a href="#" class="print-icon">
-                                            <span class="sprites"></span>
-                                        </a>
-                                    @elseif($seat->status == 'kot-running')
-                                        <a href="{{ route('admin.kot.edit', $seat->id) }}" class="view-icon">
+                                    @php
+                                        $kotOrder = \App\Models\KotOrder::where('seat_id', $seat->id)
+                                            ->whereIn('status', ['draft', 'running'])->latest()->first();                                                                                
+                                    @endphp
+
+                                    @if($kotOrder)
+                                        <a href="{{ route('kot.edit', [$seat->id, $kotOrder->id]) }}" class="view-icon">
                                             <span class="sprites"></span>
                                         </a>
                                         <a href="#" class="print-icon">
@@ -73,16 +74,29 @@
                                         {{ $seat->status == 'available' ? 'available' : '' }}
                                         {{ $seat->status == 'printed' ? 'printed' : '' }}
                                         {{ $seat->status == 'kot-running' ? 'kot-running' : '' }}">
-                                         
-                                    <a href="{{ route('invoice.pos.order', $seat->id) }}">AC {{ $seat->table }}</a>                                    
+
+
+                                    @if($seat->latestKotOrder)
+                                        <div class="kot-order-details">
+                                            <p class="time">{{ $seat->latestKotOrder->created_at->diffForHumans() }}</p>
+                                        </div>
+                                    @endif
+
+                                    <a href="{{ route('invoice.pos.order', $seat->id) }}">{{ strtoupper(substr($seat->type->name, 0, 3)) }} {{ $seat->table }}</a>
+
+                                    @if($seat->latestKotOrder)
+                                        <div class="kot-order-details">
+                                            <p class="total">₹{{ $seat->latestKotOrder->total }}</p>                                    
+                                        </div>
+                                    @endif
+
                                     <div class="hover-content">
                                         <a href="#" class="edit-icon" data-bs-toggle="modal" data-bs-target="#qrModal_{{ strtolower(Str::limit($value->name, 2, '')) }}_{{ $seat->table }}">
                                             <span class="sprites"></span>
                                         </a>                                            
                                     </div>
                                 </div>
-                            </div>
-                            
+                            </div>                            
                             
                             <div class="modal fade drawer right-align" id="qrModal_{{ strtolower(Str::limit($value->name, 2, '')) }}_{{ $seat->table }}" tabindex="-1">
                                 <div class="modal-dialog">

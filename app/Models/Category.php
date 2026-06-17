@@ -8,6 +8,8 @@ use Illuminate\Database\Eloquent\Model;
 class Category extends Model {
     use HasFactory;
 
+    protected $fillable = [ 'name', 'slug', 'image',];
+
     // public function category_menu(){
     //     return $this->hasMany(Menu::class);
     // }

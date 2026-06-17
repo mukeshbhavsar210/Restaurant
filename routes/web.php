@@ -130,6 +130,9 @@ Route::group(['prefix' => 'admin'], function(){
             Route::post('/invoice', 'branch_view')->name('invoice.branch.store');   
             Route::get('/cart-admin/remove/{id}', 'adminRemoveCart')->name('admin.cart.removecart');   
 
+            Route::post('/kot', 'placeKOTOrder')->name('submit.kot.order');
+            Route::get('/kot/{seat}/{kotOrder}/edit', 'kotEdit')->name('kot.edit');            
+
             //Branch
             Route::post('/branch', 'branch_store')->name('branch.store');
             Route::get('/branch/{branch}/edit', 'branch_edit')->name('branch.edit');

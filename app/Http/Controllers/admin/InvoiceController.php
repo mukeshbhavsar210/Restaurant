@@ -7,6 +7,8 @@ use App\Models\Area;
 use App\Models\Branch;
 use App\Models\Category;
 use App\Models\Configuration;
+use App\Models\KotOrder;
+use App\Models\KotOrderItem;
 use App\Models\Menu;
 use App\Models\Payment;
 use App\Models\Seat;
@@ -16,12 +18,14 @@ use Illuminate\Routing\Controllers\Middleware;
 use Illuminate\Support\Facades\Validator;
 use App\Models\OrderItem;
 use App\Models\Product;
+use App\Models\Order;
 use App\Models\TableType;
 use Spatie\Permission\Models\Role;
 use Spatie\Permission\Models\Permission;
 //use Intervention\Image\ImageManagerStatic as Image;
 use Intervention\Image\Laravel\Facades\Image;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Hash;
 use Barryvdh\DomPDF\Facade\Pdf;
@@ -63,11 +67,11 @@ class InvoiceController extends Controller implements HasMiddleware {
         
         $selectedOutletId = $outlets->where('view', 1)->first()?->id;
         $activeArea = Area::where('view', 1)->first();
-        $tableTypes = TableType::with(['seats' => function ($query) use ($activeArea) {
+        $tableTypes = TableType::with(['seats.latestKotOrder','seats' => function ($query) use ($activeArea) {
             $query->where('area_id', $activeArea?->id);
         }])->get();
 
-        $payments = Payment::get();                            
+        $payments = Payment::get();         
 
         $data = [
             'outlets'          => $outlets,
@@ -252,7 +256,7 @@ class InvoiceController extends Controller implements HasMiddleware {
     }
 
 
-    private function getInvoiceData(Seat $seat) {
+    private function getKOTData(Seat $seat) {
         session(['seat_id' => $seat->id]);
 
         $categories = Category::with('products')->get();
@@ -270,20 +274,44 @@ class InvoiceController extends Controller implements HasMiddleware {
             }
         }
 
-        return compact(
-            'seat',
-            'categories',
-            'config',
-            'seats'
-        );
+        return compact('seat','categories','config','seats');
     }
 
-    public function pos_order2(Seat $seat) {
-        //$data = $this->getInvoiceData($seat);        
-    }
-
+    
 
     public function pos_order(Seat $seat) {
+        $data = $this->getKOTData($seat);
+
+        return view('admin.invoice.pos_order', $data);
+    }
+
+
+    public function kotEdit(Seat $seat, KotOrder $kotOrder) {
+        $data = $this->getKOTData($seat);
+        
+        $cart = [];
+
+        foreach ($kotOrder->items as $item) {
+            $cart[$item->product_id] = [
+                'product_id' => $item->product_id,
+                'name'       => $item->product_name,
+                'quantity'   => $item->quantity,
+                'price'      => $item->price,
+                'seat_id'    => $kotOrder->seat_id,
+            ];
+        }
+
+        session(['kot_cart' => $cart]);
+        session(['editing_kot_id' => $kotOrder->id]);
+
+        return view('admin.invoice.pos_order', $data);
+
+        //return redirect()->route('invoice.pos.order', $seat->id);
+    }
+
+
+
+    public function pos_order3(Seat $seat) {
         session(['seat_id' => $seat->id]);
 
         $categories = Category::with('products')->get();
@@ -318,6 +346,8 @@ class InvoiceController extends Controller implements HasMiddleware {
             'kotItems'
         ));
     }
+
+    
 
     // public function pos_order(Seat $seat) {
     //     session(['seat_id' => $seat->id]);
@@ -525,5 +555,108 @@ class InvoiceController extends Controller implements HasMiddleware {
 
     }
 
+
+
+    public function placeKOTOrder(Request $request) {
+        $validator = Validator::make($request->all(), [
+            'order_type' => 'required|in:Dinein,Takeaway,Delivery',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'status' => false,
+                'errors' => $validator->errors()
+            ]);
+        }
+
+        $session_id = mt_rand(1000000000, 9999999999);
+
+        Session::put('session_id', $session_id);
+
+        $cart = Session::get('cart', []);
+        $total = 0;
+
+        foreach ($cart as $item) {
+            $total += $item['price'] * $item['quantity'];
+        }
+
+        // Add delivery charge
+        if ($request->order_type == 'Delivery') {
+            $total += 50;
+        }        
+
+        if ($request->order_type === 'Takeaway' || $request->order_type === 'Delivery') {            
+            $order = KotOrder::create([                
+                'order_type'  => $request->order_type,
+                'session_id'  => session('session_id'),
+                'notes'       => $request->notes,
+                'phone'       => $request->phone,
+                'area_id'     => $request->active_outlet_id,
+                'name'        => $request->active_name,
+                'email'       => $request->active_email,
+                'address'     => $request->address,                
+                'total'       => $request->total,
+                'payment_status' => 'Pending',
+                'status'      => 'pending',
+            ]);     
+                      
+            foreach ($cart as $item) {
+                OrderItem::create([
+                    'order_id'      => $order->id,
+                    'product_id'    => $item['product_id'],
+                    'product_name'  => $item['name'],
+                    'quantity'      => $item['quantity'],
+                    'price'         => $item['price'],
+                    'total'         => $item['quantity'] * $item['price'],
+                ]);
+            }
+
+            Session::forget('cart');
+        
+            if (session('role') == 1) {
+                Session::forget('kot_cart');
+                return redirect()->back()->with('success', 'Order placed successfully.');
+            }  
+            
+            Session::flush();
+          
+            return redirect()->route('razorpay.checkout', $order->id); 
+
+        } elseif($request->order_type === 'Dinein' && $request->filled('seat_id')) {
+            $kot_order = KotOrder::create([                
+                'order_type' => $request->order_type,
+                'session_id' => session('session_id'),
+                'area_id'  => session('area_id'),
+                'seat_id' => $request->seat_id ?? session('seat_id'),                
+                'total' => $request->total,
+                'status' => 'draft',
+            ]);        
+            
+            $cartKey = session('role') == 1 ? 'kot_cart' : 'cart';
+            $cart = session($cartKey, []);
+
+            // Order Items
+            foreach ($cart as $item) {
+                KotOrderItem::create([
+                    'kot_order_id'      => $kot_order->id,
+                    'product_id'    => $item['product_id'],
+                    'product_name'  => $item['name'],
+                    'quantity'      => $item['quantity'],
+                    'price'         => $item['price'],
+                    'total'         => $item['quantity'] * $item['price'],
+                ]);
+            }
+
+            //Seat status changed
+            Seat::where('id', $request->seat_id)->update(['status' => 'kot-running']);
+            
+            Session::forget('kot_cart');            
+
+            return redirect()->route('invoice.index', $kot_order->id)->with('success', 'KOT Order saved.');
+        }               
+    }
+
+
+    
 
 }

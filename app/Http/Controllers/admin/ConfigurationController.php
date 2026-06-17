@@ -604,8 +604,7 @@ class ConfigurationController extends Controller implements HasMiddleware {
         
         $data->save();
 
-        return redirect()->back()
-            ->with('success', 'Restaurant details updated successfully.');
+        return redirect()->back()->with('success', 'Restaurant details updated successfully.');
     }
 
     public function branch_store(Request $request){

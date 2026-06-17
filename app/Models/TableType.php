@@ -13,4 +13,8 @@ class TableType extends Model
     public function seats() {
         return $this->hasMany(Seat::class, 'type_id');
     }
+
+    public function kot() {
+        return $this->hasMany(KotOrder::class);
+    }
 }

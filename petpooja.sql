@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jun 04, 2026 at 09:47 AM
+-- Generation Time: Jun 17, 2026 at 05:03 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -29,12 +29,13 @@ SET time_zone = "+00:00";
 
 CREATE TABLE `areas` (
   `id` bigint(20) UNSIGNED NOT NULL,
-  `manager_name` varchar(50) DEFAULT NULL,
   `area_name` varchar(50) NOT NULL,
   `area_slug` varchar(50) NOT NULL,
+  `manager_name` varchar(50) DEFAULT NULL,
   `phone` varchar(10) DEFAULT NULL,
   `mobile` varchar(10) DEFAULT NULL,
-  `address` text DEFAULT NULL,
+  `address` varchar(100) DEFAULT NULL,
+  `view` int(5) DEFAULT 0,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -43,11 +44,11 @@ CREATE TABLE `areas` (
 -- Dumping data for table `areas`
 --
 
-INSERT INTO `areas` (`id`, `manager_name`, `area_name`, `area_slug`, `phone`, `mobile`, `address`, `created_at`, `updated_at`) VALUES
-(5, 'Sona', 'Chandkheda', 'chandkheda', '9538135005', '9978812345', 'Chandkheda', '2025-01-09 06:51:01', '2025-01-09 06:51:01'),
-(6, 'Dhruv', 'Prahladnagar', 'prahladnagar', '9538135005', '9978812345', 'Prahladnagar', '2025-01-10 23:50:03', '2025-01-10 23:50:03'),
-(7, 'Priyanka', 'Shahibaug', 'shahibaug', '9538135005', '9978812345', 'Shahibaug', '2025-01-16 08:47:47', '2025-01-16 08:47:47'),
-(28, 'Dhruv Bhavsar', 'Default', 'default', '9978835005', '9978835005', 'Jagatpur', '2026-05-28 07:05:42', '2026-05-28 07:05:42');
+INSERT INTO `areas` (`id`, `area_name`, `area_slug`, `manager_name`, `phone`, `mobile`, `address`, `view`, `created_at`, `updated_at`) VALUES
+(5, 'Chandkheda', 'chandkheda', 'Sona', '9538135005', '9978812345', 'Chandkheda', 0, '2025-01-09 06:51:01', '2026-06-17 00:56:41'),
+(6, 'Prahladnagar', 'prahladnagar', 'Priyanka', '9538135005', '9978812345', 'Prahladnagar', 0, '2025-01-10 23:50:03', '2026-06-17 00:56:41'),
+(7, 'Shahibaug', 'shahibaug', 'Dhruv', '9538135005', '9978812345', 'Shahibaug', 0, '2025-01-16 08:47:47', '2026-06-17 00:56:41'),
+(28, 'Default', 'default', 'Ratilal', '9978835005', '9978835005', 'Jagatpur', 1, '2026-05-28 07:05:42', '2026-06-17 00:56:41');
 
 -- --------------------------------------------------------
 
@@ -110,7 +111,7 @@ CREATE TABLE `cache` (
 --
 
 INSERT INTO `cache` (`key`, `value`, `expiration`) VALUES
-('laravel_cache_spatie.permission.cache', 'a:3:{s:5:\"alias\";a:4:{s:1:\"a\";s:2:\"id\";s:1:\"b\";s:4:\"name\";s:1:\"c\";s:10:\"guard_name\";s:1:\"r\";s:5:\"roles\";}s:11:\"permissions\";a:13:{i:0;a:4:{s:1:\"a\";i:8;s:1:\"b\";s:18:\"delete permissions\";s:1:\"c\";s:3:\"web\";s:1:\"r\";a:1:{i:0;i:8;}}i:1;a:4:{s:1:\"a\";i:9;s:1:\"b\";s:18:\"create permissions\";s:1:\"c\";s:3:\"web\";s:1:\"r\";a:2:{i:0;i:2;i:1;i:8;}}i:2;a:4:{s:1:\"a\";i:10;s:1:\"b\";s:16:\"edit permissions\";s:1:\"c\";s:3:\"web\";s:1:\"r\";a:1:{i:0;i:8;}}i:3;a:4:{s:1:\"a\";i:11;s:1:\"b\";s:16:\"view permissions\";s:1:\"c\";s:3:\"web\";s:1:\"r\";a:1:{i:0;i:8;}}i:4;a:4:{s:1:\"a\";i:12;s:1:\"b\";s:10:\"view users\";s:1:\"c\";s:3:\"web\";s:1:\"r\";a:2:{i:0;i:8;i:1;i:13;}}i:5;a:4:{s:1:\"a\";i:13;s:1:\"b\";s:10:\"edit users\";s:1:\"c\";s:3:\"web\";s:1:\"r\";a:1:{i:0;i:8;}}i:6;a:4:{s:1:\"a\";i:14;s:1:\"b\";s:12:\"create users\";s:1:\"c\";s:3:\"web\";s:1:\"r\";a:2:{i:0;i:2;i:1;i:8;}}i:7;a:4:{s:1:\"a\";i:15;s:1:\"b\";s:12:\"delete users\";s:1:\"c\";s:3:\"web\";s:1:\"r\";a:1:{i:0;i:8;}}i:8;a:4:{s:1:\"a\";i:16;s:1:\"b\";s:10:\"view roles\";s:1:\"c\";s:3:\"web\";s:1:\"r\";a:1:{i:0;i:8;}}i:9;a:4:{s:1:\"a\";i:18;s:1:\"b\";s:12:\"delete roles\";s:1:\"c\";s:3:\"web\";s:1:\"r\";a:1:{i:0;i:8;}}i:10;a:4:{s:1:\"a\";i:20;s:1:\"b\";s:12:\"create roles\";s:1:\"c\";s:3:\"web\";s:1:\"r\";a:1:{i:0;i:8;}}i:11;a:4:{s:1:\"a\";i:21;s:1:\"b\";s:13:\"view articles\";s:1:\"c\";s:3:\"web\";s:1:\"r\";a:2:{i:0;i:2;i:1;i:8;}}i:12;a:4:{s:1:\"a\";i:22;s:1:\"b\";s:13:\"edit articles\";s:1:\"c\";s:3:\"web\";s:1:\"r\";a:2:{i:0;i:2;i:1;i:8;}}}s:5:\"roles\";a:3:{i:0;a:3:{s:1:\"a\";i:8;s:1:\"b\";s:7:\"manager\";s:1:\"c\";s:3:\"web\";}i:1;a:3:{s:1:\"a\";i:2;s:1:\"b\";s:6:\"waiter\";s:1:\"c\";s:3:\"web\";}i:2;a:3:{s:1:\"a\";i:13;s:1:\"b\";s:8:\"engineer\";s:1:\"c\";s:3:\"web\";}}}', 1780558087);
+('laravel_cache_spatie.permission.cache', 'a:3:{s:5:\"alias\";a:4:{s:1:\"a\";s:2:\"id\";s:1:\"b\";s:4:\"name\";s:1:\"c\";s:10:\"guard_name\";s:1:\"r\";s:5:\"roles\";}s:11:\"permissions\";a:13:{i:0;a:4:{s:1:\"a\";i:8;s:1:\"b\";s:18:\"delete permissions\";s:1:\"c\";s:3:\"web\";s:1:\"r\";a:1:{i:0;i:8;}}i:1;a:4:{s:1:\"a\";i:9;s:1:\"b\";s:18:\"create permissions\";s:1:\"c\";s:3:\"web\";s:1:\"r\";a:2:{i:0;i:2;i:1;i:8;}}i:2;a:4:{s:1:\"a\";i:10;s:1:\"b\";s:16:\"edit permissions\";s:1:\"c\";s:3:\"web\";s:1:\"r\";a:1:{i:0;i:8;}}i:3;a:4:{s:1:\"a\";i:11;s:1:\"b\";s:16:\"view permissions\";s:1:\"c\";s:3:\"web\";s:1:\"r\";a:1:{i:0;i:8;}}i:4;a:4:{s:1:\"a\";i:12;s:1:\"b\";s:10:\"view users\";s:1:\"c\";s:3:\"web\";s:1:\"r\";a:2:{i:0;i:8;i:1;i:13;}}i:5;a:4:{s:1:\"a\";i:13;s:1:\"b\";s:10:\"edit users\";s:1:\"c\";s:3:\"web\";s:1:\"r\";a:1:{i:0;i:8;}}i:6;a:4:{s:1:\"a\";i:14;s:1:\"b\";s:12:\"create users\";s:1:\"c\";s:3:\"web\";s:1:\"r\";a:2:{i:0;i:2;i:1;i:8;}}i:7;a:4:{s:1:\"a\";i:15;s:1:\"b\";s:12:\"delete users\";s:1:\"c\";s:3:\"web\";s:1:\"r\";a:1:{i:0;i:8;}}i:8;a:4:{s:1:\"a\";i:16;s:1:\"b\";s:10:\"view roles\";s:1:\"c\";s:3:\"web\";s:1:\"r\";a:1:{i:0;i:8;}}i:9;a:4:{s:1:\"a\";i:18;s:1:\"b\";s:12:\"delete roles\";s:1:\"c\";s:3:\"web\";s:1:\"r\";a:1:{i:0;i:8;}}i:10;a:4:{s:1:\"a\";i:20;s:1:\"b\";s:12:\"create roles\";s:1:\"c\";s:3:\"web\";s:1:\"r\";a:1:{i:0;i:8;}}i:11;a:4:{s:1:\"a\";i:21;s:1:\"b\";s:13:\"view articles\";s:1:\"c\";s:3:\"web\";s:1:\"r\";a:2:{i:0;i:2;i:1;i:8;}}i:12;a:4:{s:1:\"a\";i:22;s:1:\"b\";s:13:\"edit articles\";s:1:\"c\";s:3:\"web\";s:1:\"r\";a:2:{i:0;i:2;i:1;i:8;}}}s:5:\"roles\";a:3:{i:0;a:3:{s:1:\"a\";i:8;s:1:\"b\";s:7:\"manager\";s:1:\"c\";s:3:\"web\";}i:1;a:3:{s:1:\"a\";i:2;s:1:\"b\";s:6:\"waiter\";s:1:\"c\";s:3:\"web\";}i:2;a:3:{s:1:\"a\";i:13;s:1:\"b\";s:8:\"engineer\";s:1:\"c\";s:3:\"web\";}}}', 1781787517);
 
 -- --------------------------------------------------------
 
@@ -145,12 +146,13 @@ CREATE TABLE `categories` (
 --
 
 INSERT INTO `categories` (`id`, `name`, `slug`, `image`, `order_list`, `created_at`, `updated_at`) VALUES
-(187, 'Dosa', 'dosa', 'lunch.webp', 3, '2025-01-11 05:06:23', '2025-01-11 05:06:23'),
-(188, 'Biriyani', 'biriyani', 'dinner.jpg', 4, '2025-01-11 05:06:33', '2025-01-11 05:06:33'),
-(189, 'Desserts', 'desserts', 'dessert.jpg', 5, '2025-01-11 05:06:42', '2025-01-11 05:06:43'),
-(197, 'Popular', 'popular', 'popular.png', 1, '2025-01-11 05:06:42', '2025-01-11 05:06:43'),
-(198, 'Roti', 'roti', 'roti.jpg', 2, '2026-05-08 00:55:40', '2026-05-08 00:55:40'),
-(200, 'Tea', 'tea', 'tea.jpg', 2, '2026-05-08 00:55:40', '2026-05-08 00:55:40');
+(187, 'Dosa', 'dosa', 'lunch.webp', NULL, '2025-01-11 05:06:23', '2025-01-11 05:06:23'),
+(188, 'Biriyani', 'biriyani', 'dinner.jpg', NULL, '2025-01-11 05:06:33', '2025-01-11 05:06:33'),
+(189, 'Desserts', 'desserts', 'dessert.jpg', NULL, '2025-01-11 05:06:42', '2025-01-11 05:06:43'),
+(197, 'Popular', 'popular', 'popular.png', NULL, '2025-01-11 05:06:42', '2025-01-11 05:06:43'),
+(198, 'Roti', 'roti', 'roti.jpg', NULL, '2026-05-08 00:55:40', '2026-05-08 00:55:40'),
+(200, 'Tea', 'tea', 'tea.jpg', NULL, '2026-05-08 00:55:40', '2026-05-08 00:55:40'),
+(208, 'Beverages', 'beverages', 'beverages.jpg', NULL, '2026-06-17 07:45:49', '2026-06-17 07:45:49');
 
 -- --------------------------------------------------------
 
@@ -627,6 +629,61 @@ CREATE TABLE `job_batches` (
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `kot_orders`
+--
+
+CREATE TABLE `kot_orders` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `session_id` varchar(10) DEFAULT NULL,
+  `seat_id` bigint(20) UNSIGNED NOT NULL,
+  `area_id` bigint(20) UNSIGNED NOT NULL,
+  `order_no` varchar(255) DEFAULT NULL,
+  `subtotal` decimal(10,2) NOT NULL DEFAULT 0.00,
+  `cgst` decimal(10,2) NOT NULL DEFAULT 0.00,
+  `sgst` decimal(10,2) NOT NULL DEFAULT 0.00,
+  `total` decimal(10,2) NOT NULL DEFAULT 0.00,
+  `status` enum('draft','running','billed','completed','cancelled') NOT NULL DEFAULT 'draft',
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `kot_orders`
+--
+
+INSERT INTO `kot_orders` (`id`, `session_id`, `seat_id`, `area_id`, `order_no`, `subtotal`, `cgst`, `sgst`, `total`, `status`, `created_at`, `updated_at`) VALUES
+(9, '1641465807', 61, 28, NULL, 0.00, 0.00, 0.00, 40.00, 'draft', '2026-06-17 08:52:26', '2026-06-17 08:52:26'),
+(10, '3012920556', 61, 28, NULL, 0.00, 0.00, 0.00, 40.00, 'draft', '2026-06-17 08:57:56', '2026-06-17 08:57:56');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `kot_order_items`
+--
+
+CREATE TABLE `kot_order_items` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `kot_order_id` bigint(20) UNSIGNED NOT NULL,
+  `product_id` bigint(20) UNSIGNED NOT NULL,
+  `product_name` varchar(255) NOT NULL,
+  `quantity` int(11) NOT NULL DEFAULT 1,
+  `price` decimal(10,2) NOT NULL,
+  `total` decimal(10,2) NOT NULL DEFAULT 0.00,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `kot_order_items`
+--
+
+INSERT INTO `kot_order_items` (`id`, `kot_order_id`, `product_id`, `product_name`, `quantity`, `price`, `total`, `created_at`, `updated_at`) VALUES
+(15, 9, 15, 'Plain Dosa', 1, 40.00, 40.00, '2026-06-17 08:52:26', '2026-06-17 08:52:26'),
+(16, 10, 15, 'Plain Dosa', 1, 40.00, 40.00, '2026-06-17 08:57:56', '2026-06-17 08:57:56');
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `menus`
 --
 
@@ -748,7 +805,11 @@ INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES
 (57, '2026_05_07_120813_create_variants_table', 49),
 (58, '2026_05_08_055754_create_category_menu_table', 50),
 (59, '2026_05_18_132433_create_configurations_table', 51),
-(60, '2026_05_28_070513_add_area_id_to_orders_table', 52);
+(60, '2026_05_28_070513_add_area_id_to_orders_table', 52),
+(61, '2026_06_12_060353_create_table_types_table', 53),
+(62, '2026_06_12_061023_add_type_id_to_seats_table', 54),
+(63, '2026_06_17_133000_create_kot_orders_table', 55),
+(64, '2026_06_17_134647_create_kot_order_items_table', 56);
 
 -- --------------------------------------------------------
 
@@ -793,16 +854,23 @@ INSERT INTO `model_has_roles` (`role_id`, `model_type`, `model_id`) VALUES
 
 CREATE TABLE `orders` (
   `id` bigint(20) UNSIGNED NOT NULL,
+  `who` varchar(10) NOT NULL DEFAULT 'customer',
   `order_type` enum('Dinein','Takeaway','Delivery') NOT NULL DEFAULT 'Dinein',
   `session_id` varchar(10) DEFAULT NULL,
   `seat_id` bigint(20) UNSIGNED DEFAULT NULL,
   `area_id` bigint(20) UNSIGNED DEFAULT NULL,
+  `branch` varchar(50) DEFAULT NULL,
+  `table` varchar(50) DEFAULT NULL,
   `name` varchar(50) DEFAULT NULL,
   `phone` varchar(11) DEFAULT NULL,
   `email` varchar(50) DEFAULT NULL,
   `address` text DEFAULT NULL,
   `notes` text DEFAULT NULL,
   `total` double(10,2) DEFAULT NULL,
+  `payment_method` varchar(50) DEFAULT NULL,
+  `payment_status` varchar(50) DEFAULT NULL,
+  `razorpay_order_id` varchar(50) DEFAULT NULL,
+  `razorpay_payment_id` varchar(50) DEFAULT NULL,
   `payment` enum('paid','not paid') NOT NULL DEFAULT 'not paid',
   `shipped_date` date DEFAULT NULL,
   `status` enum('placed','available','running','pending','shipped','delivered') NOT NULL DEFAULT 'available',
@@ -814,16 +882,11 @@ CREATE TABLE `orders` (
 -- Dumping data for table `orders`
 --
 
-INSERT INTO `orders` (`id`, `order_type`, `session_id`, `seat_id`, `area_id`, `name`, `phone`, `email`, `address`, `notes`, `total`, `payment`, `shipped_date`, `status`, `created_at`, `updated_at`) VALUES
-(71, 'Takeaway', '7932341717', NULL, NULL, '', '9978835005', 'test@gmail.com', NULL, 'test', 500.00, 'not paid', NULL, 'placed', '2026-05-27 01:42:09', '2026-05-27 01:42:09'),
-(73, 'Delivery', '6773485786', NULL, NULL, '', NULL, NULL, 'B-1003, Shlok Heights', 'Need', 1207.00, 'not paid', NULL, 'placed', '2026-05-27 01:45:21', '2026-05-27 01:45:21'),
-(121, 'Dinein', '1953102614', 58, 5, '', NULL, NULL, NULL, 'test', 55.00, 'not paid', NULL, 'running', '2026-05-28 23:39:26', '2026-05-28 23:39:26'),
-(123, 'Dinein', '7678406937', 58, 6, '', NULL, NULL, NULL, 'test', 55.00, 'not paid', NULL, 'running', '2026-05-29 00:20:02', '2026-05-29 00:20:02'),
-(124, 'Takeaway', '1537327767', NULL, 6, '', '11111', 'test@gmail.com', NULL, 'test', 55.00, 'not paid', NULL, 'placed', '2026-05-29 00:21:35', '2026-05-29 00:21:35'),
-(125, 'Delivery', '5671578874', NULL, 28, '', NULL, NULL, 'B-1003, Shlok Heights', 'test', 55.00, 'not paid', NULL, 'placed', '2026-05-29 00:23:17', '2026-05-29 00:23:17'),
-(126, 'Takeaway', '7094630321', NULL, 5, 'Macmohan', '09978812345', 'mac@gmail.com', 'B-1003, Shlok Heights', 'Test', 55.00, 'not paid', NULL, 'available', '2026-05-29 00:44:47', '2026-05-29 00:44:47'),
-(127, 'Delivery', '7391516860', NULL, 7, 'Macmohan', '09978812345', 'mac@gmail.com', NULL, 'test', 55.00, 'not paid', NULL, 'available', '2026-05-29 00:45:30', '2026-05-29 00:45:30'),
-(128, 'Dinein', '7689989882', 58, NULL, NULL, NULL, NULL, NULL, 'test', 55.00, 'not paid', NULL, 'running', '2026-06-01 00:49:51', '2026-06-01 00:49:51');
+INSERT INTO `orders` (`id`, `who`, `order_type`, `session_id`, `seat_id`, `area_id`, `branch`, `table`, `name`, `phone`, `email`, `address`, `notes`, `total`, `payment_method`, `payment_status`, `razorpay_order_id`, `razorpay_payment_id`, `payment`, `shipped_date`, `status`, `created_at`, `updated_at`) VALUES
+(209, 'customer', 'Dinein', '8373637693', 66, 28, 'Default', NULL, NULL, '1111111111', NULL, NULL, 'test', 555.00, 'Pay at table', 'Pending', NULL, NULL, 'not paid', NULL, 'running', '2026-06-16 07:56:38', '2026-06-16 07:56:38'),
+(210, 'admin', 'Dinein', '6646231264', 58, 28, 'Default', NULL, NULL, NULL, NULL, NULL, NULL, 1500.00, 'Pay at table', 'Pending', NULL, NULL, 'not paid', NULL, 'running', '2026-06-16 07:57:38', '2026-06-16 07:57:38'),
+(211, 'admin', 'Dinein', '8271191050', 66, 28, 'Default', NULL, NULL, NULL, NULL, NULL, NULL, 2022.00, 'Pay at table', 'Pending', NULL, NULL, 'not paid', NULL, 'running', '2026-06-16 09:02:13', '2026-06-16 09:02:13'),
+(212, 'admin', 'Dinein', '3312635191', 66, 28, 'Default', NULL, NULL, NULL, NULL, NULL, NULL, 695.00, 'Pay at table', 'Pending', NULL, NULL, 'not paid', NULL, 'running', '2026-06-16 09:03:11', '2026-06-16 09:03:11');
 
 -- --------------------------------------------------------
 
@@ -848,16 +911,25 @@ CREATE TABLE `order_items` (
 --
 
 INSERT INTO `order_items` (`id`, `order_id`, `product_id`, `product_name`, `quantity`, `price`, `total`, `created_at`, `updated_at`) VALUES
-(122, 71, 12, 'Veg Biriyani', 1, 500.00, 500.00, '2026-05-27 01:42:09', '2026-05-27 01:42:09'),
-(124, 73, 16, 'Masala Dosa', 2, 190.00, 380.00, '2026-05-27 01:45:21', '2026-05-27 01:45:21'),
-(125, 73, 29, 'Mysore Masala Dosa 777', 1, 777.00, 777.00, '2026-05-27 01:45:21', '2026-05-27 01:45:21'),
-(165, 121, 28, 'Poha', 1, 55.00, 55.00, '2026-05-28 23:39:26', '2026-05-28 23:39:26'),
-(167, 123, 28, 'Poha', 1, 55.00, 55.00, '2026-05-29 00:20:02', '2026-05-29 00:20:02'),
-(168, 124, 28, 'Poha', 1, 55.00, 55.00, '2026-05-29 00:21:36', '2026-05-29 00:21:36'),
-(169, 125, 28, 'Poha', 1, 55.00, 55.00, '2026-05-29 00:23:17', '2026-05-29 00:23:17'),
-(170, 126, 28, 'Poha', 1, 55.00, 55.00, '2026-05-29 00:44:47', '2026-05-29 00:44:47'),
-(171, 127, 28, 'Poha', 1, 55.00, 55.00, '2026-05-29 00:45:30', '2026-05-29 00:45:30'),
-(172, 128, 28, 'Poha', 1, 55.00, 55.00, '2026-06-01 00:49:51', '2026-06-01 00:49:51');
+(230, 209, 11, 'Mutton Biriyani', 1, 500.00, 500.00, '2026-06-16 07:56:38', '2026-06-16 07:56:38'),
+(231, 209, 28, 'Poha', 1, 55.00, 55.00, '2026-06-16 07:56:38', '2026-06-16 07:56:38'),
+(232, 210, 11, 'Mutton Biriyani', 3, 500.00, 1500.00, '2026-06-16 07:57:38', '2026-06-16 07:57:38'),
+(233, 210, 16, 'Masala Dosa', 1, 0.00, 0.00, '2026-06-16 07:57:38', '2026-06-16 07:57:38'),
+(234, 211, 15, 'Plain Dosa', 1, 40.00, 40.00, '2026-06-16 09:02:14', '2026-06-16 09:02:14'),
+(235, 211, 16, 'Masala Dosa', 3, 0.00, 0.00, '2026-06-16 09:02:14', '2026-06-16 09:02:14'),
+(236, 211, 29, 'Mysore Masala Dosa 777', 1, 777.00, 777.00, '2026-06-16 09:02:14', '2026-06-16 09:02:14'),
+(237, 211, 46, 'Plain Dosa 3', 1, 50.00, 50.00, '2026-06-16 09:02:14', '2026-06-16 09:02:14'),
+(238, 211, 11, 'Mutton Biriyani', 1, 500.00, 500.00, '2026-06-16 09:02:14', '2026-06-16 09:02:14'),
+(239, 211, 12, 'Veg Biriyani', 1, 500.00, 500.00, '2026-06-16 09:02:14', '2026-06-16 09:02:14'),
+(240, 211, 28, 'Poha', 1, 55.00, 55.00, '2026-06-16 09:02:14', '2026-06-16 09:02:14'),
+(241, 211, 26, 'Butter Roti', 1, 45.00, 45.00, '2026-06-16 09:02:14', '2026-06-16 09:02:14'),
+(242, 211, 24, 'Lemon Tea', 1, 55.00, 55.00, '2026-06-16 09:02:14', '2026-06-16 09:02:14'),
+(243, 212, 15, 'Plain Dosa', 1, 40.00, 40.00, '2026-06-16 09:03:11', '2026-06-16 09:03:11'),
+(244, 212, 16, 'Masala Dosa', 3, 0.00, 0.00, '2026-06-16 09:03:11', '2026-06-16 09:03:11'),
+(245, 212, 12, 'Veg Biriyani', 1, 500.00, 500.00, '2026-06-16 09:03:11', '2026-06-16 09:03:11'),
+(246, 212, 28, 'Poha', 1, 55.00, 55.00, '2026-06-16 09:03:11', '2026-06-16 09:03:11'),
+(247, 212, 26, 'Butter Roti', 1, 45.00, 45.00, '2026-06-16 09:03:11', '2026-06-16 09:03:11'),
+(248, 212, 24, 'Lemon Tea', 1, 55.00, 55.00, '2026-06-16 09:03:11', '2026-06-16 09:03:11');
 
 -- --------------------------------------------------------
 
@@ -1009,7 +1081,7 @@ CREATE TABLE `products` (
 INSERT INTO `products` (`id`, `name`, `slug`, `category_id`, `menu_id`, `product_id`, `description`, `price`, `status`, `created_at`, `updated_at`) VALUES
 (11, 'Mutton Biriyani', 'mutton-biriyani', 188, 31, NULL, 'test', 500.00, 1, '2026-04-30 07:57:36', '2026-04-30 07:57:36'),
 (12, 'Veg Biriyani', 'veg-biriyani', 188, 30, NULL, 'test', 500.00, 1, '2026-04-30 07:57:36', '2026-04-30 07:57:36'),
-(15, 'Plain Dosa', 'plain-dosa', 187, 44, NULL, 'South indian dosa', 0.00, 1, '2026-05-07 06:43:34', '2026-05-07 06:43:34'),
+(15, 'Plain Dosa', 'plain-dosa', 187, 44, NULL, 'South indian dosa', 40.00, 1, '2026-05-07 06:43:34', '2026-05-07 06:43:34'),
 (16, 'Masala Dosa', 'masala-dosa', 187, 43, NULL, 'South indian dosa', 0.00, 1, '2026-05-07 06:43:34', '2026-05-07 06:43:34'),
 (22, 'Roti', 'roti', 198, 40, NULL, 'best roti', NULL, 1, '2026-05-08 08:45:30', '2026-05-08 08:45:30'),
 (24, 'Lemon Tea', 'lemon-tea', 200, 41, NULL, 'best', 55.00, 1, '2026-05-09 00:33:56', '2026-05-09 00:33:56'),
@@ -1018,7 +1090,8 @@ INSERT INTO `products` (`id`, `name`, `slug`, `category_id`, `menu_id`, `product
 (28, 'Poha', 'poha', 197, NULL, NULL, 'Awesome Poha', 55.00, 1, '2026-05-09 08:38:41', '2026-05-09 08:38:41'),
 (29, 'Mysore Masala Dosa 777', 'mysore-masala-dosa-777', 187, NULL, NULL, 'Awesome', 777.00, 1, '2026-05-09 08:40:41', '2026-06-03 07:01:47'),
 (44, 'Rajbhog', 'rajbhog', 189, NULL, NULL, 'test awesome 3', 199.00, 1, '2026-06-02 02:14:55', '2026-06-02 09:13:11'),
-(45, 'Vanila', 'vanila', 189, NULL, NULL, 'Best Vanila awesome', 190.00, 1, '2026-06-02 02:23:19', '2026-06-02 09:07:35');
+(45, 'Vanila', 'vanila', 189, NULL, NULL, 'Best Vanila awesome', 190.00, 1, '2026-06-02 02:23:19', '2026-06-02 09:07:35'),
+(46, 'Plain Dosa 3', 'plain-dosa', 187, 44, NULL, 'South indian dosa', 50.00, 1, '2026-05-07 06:43:34', '2026-05-07 06:43:34');
 
 -- --------------------------------------------------------
 
@@ -1174,10 +1247,11 @@ INSERT INTO `role_has_permissions` (`permission_id`, `role_id`) VALUES
 
 CREATE TABLE `seats` (
   `id` bigint(20) UNSIGNED NOT NULL,
-  `table_name` varchar(50) NOT NULL,
-  `table_slug` varchar(50) NOT NULL,
+  `table` varchar(50) NOT NULL,
+  `type_id` bigint(20) UNSIGNED DEFAULT NULL,
   `area_id` bigint(10) UNSIGNED DEFAULT NULL,
-  `status` enum('available','running') NOT NULL DEFAULT 'available',
+  `status` enum('available','running','kot-running') NOT NULL DEFAULT 'available',
+  `table_order` int(10) DEFAULT NULL,
   `capacity` int(11) DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
@@ -1187,11 +1261,15 @@ CREATE TABLE `seats` (
 -- Dumping data for table `seats`
 --
 
-INSERT INTO `seats` (`id`, `table_name`, `table_slug`, `area_id`, `status`, `capacity`, `created_at`, `updated_at`) VALUES
-(44, 'Table 3', 'table-3', 5, 'available', 6, '2025-01-28 05:44:55', '2025-01-28 05:44:55'),
-(57, 'Table 2', 'table-2', 5, 'available', 2, '2026-05-20 08:17:33', '2026-05-20 08:17:33'),
-(58, 'Table 1', 'table-1', 28, 'available', 1, '2026-05-28 07:06:39', '2026-05-28 07:06:39'),
-(59, 'Table 2', 'table-2', 28, 'running', 2, '2026-05-28 07:13:03', '2026-05-28 07:13:03');
+INSERT INTO `seats` (`id`, `table`, `type_id`, `area_id`, `status`, `table_order`, `capacity`, `created_at`, `updated_at`) VALUES
+(44, '3', 1, 5, 'available', NULL, 6, '2025-01-28 05:44:55', '2025-01-28 05:44:55'),
+(57, '2', 1, 5, 'available', NULL, 2, '2026-05-20 08:17:33', '2026-05-20 08:17:33'),
+(58, '1', 1, 28, 'available', 1, 1, '2026-05-28 07:06:39', '2026-06-16 07:57:38'),
+(59, '2', 1, 28, 'running', 2, 2, '2026-05-28 07:13:03', '2026-06-16 07:55:17'),
+(61, '3', 1, 28, 'kot-running', 3, 4, '2026-06-08 01:18:40', '2026-06-17 08:57:56'),
+(64, '1', 2, 28, 'running', 1, 1, '2026-06-12 01:30:13', '2026-06-16 07:34:31'),
+(65, '1', 3, 28, 'available', 1, 2, '2026-06-12 01:30:57', '2026-06-12 01:30:57'),
+(66, '4', 1, 28, 'kot-running', 4, 4, '2026-06-13 06:12:51', '2026-06-17 08:35:52');
 
 -- --------------------------------------------------------
 
@@ -1232,6 +1310,28 @@ INSERT INTO `shipping_charges` (`id`, `country_id`, `amount`, `created_at`, `upd
 (16, '2', 50.00, '2023-11-28 02:47:32', '2023-11-28 02:47:32'),
 (17, 'rest_of_world', 100.00, '2023-11-28 03:11:04', '2023-11-28 03:11:04'),
 (18, '8', 80.00, '2024-12-28 01:38:55', '2024-12-28 01:38:55');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `table_types`
+--
+
+CREATE TABLE `table_types` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `name` varchar(50) NOT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `table_types`
+--
+
+INSERT INTO `table_types` (`id`, `name`, `created_at`, `updated_at`) VALUES
+(1, 'AC Premium', NULL, NULL),
+(2, 'Garden', NULL, NULL),
+(3, 'Bar', NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -1595,7 +1695,28 @@ INSERT INTO `temp_images` (`id`, `name`, `created_at`, `updated_at`) VALUES
 (517, '1780410505.JPG', '2026-06-02 08:58:25', '2026-06-02 08:58:25'),
 (518, '1780410505.JPG', '2026-06-02 08:58:25', '2026-06-02 08:58:25'),
 (519, '1780410505.JPG', '2026-06-02 08:58:25', '2026-06-02 08:58:25'),
-(520, '1780411339.JPG', '2026-06-02 09:12:19', '2026-06-02 09:12:19');
+(520, '1780411339.JPG', '2026-06-02 09:12:19', '2026-06-02 09:12:19'),
+(521, '1781698957.jpg', '2026-06-17 06:52:37', '2026-06-17 06:52:37'),
+(522, '1781699015.jpg', '2026-06-17 06:53:35', '2026-06-17 06:53:35'),
+(523, '1781699827.jpg', '2026-06-17 07:07:07', '2026-06-17 07:07:07'),
+(524, '1781699880.jpg', '2026-06-17 07:08:00', '2026-06-17 07:08:00'),
+(525, '1781699972.jpg', '2026-06-17 07:09:32', '2026-06-17 07:09:32'),
+(526, '1781700010.jpg', '2026-06-17 07:10:10', '2026-06-17 07:10:10'),
+(527, '1781700036.jpg', '2026-06-17 07:10:36', '2026-06-17 07:10:36'),
+(528, '1781700104.jpg', '2026-06-17 07:11:44', '2026-06-17 07:11:44'),
+(529, '1781700182.jpg', '2026-06-17 07:13:02', '2026-06-17 07:13:02'),
+(530, '1781700252.jpg', '2026-06-17 07:14:12', '2026-06-17 07:14:12'),
+(531, '1781700394.jpg', '2026-06-17 07:16:34', '2026-06-17 07:16:34'),
+(532, '1781700655.jpg', '2026-06-17 07:20:55', '2026-06-17 07:20:55'),
+(533, '1781700691.jpg', '2026-06-17 07:21:31', '2026-06-17 07:21:31'),
+(534, '1781700726.jpg', '2026-06-17 07:22:06', '2026-06-17 07:22:06'),
+(535, '1781700763.jpg', '2026-06-17 07:22:43', '2026-06-17 07:22:43'),
+(536, '1781701049.JPG', '2026-06-17 07:27:29', '2026-06-17 07:27:29'),
+(537, '1781701055.JPG', '2026-06-17 07:27:35', '2026-06-17 07:27:35'),
+(538, '1781701172.JPG', '2026-06-17 07:29:32', '2026-06-17 07:29:32'),
+(539, '1781701220.JPG', '2026-06-17 07:30:20', '2026-06-17 07:30:20'),
+(540, '1781701358.JPG', '2026-06-17 07:32:38', '2026-06-17 07:32:38'),
+(541, '1781701738.JPG', '2026-06-17 07:38:58', '2026-06-17 07:38:58');
 
 -- --------------------------------------------------------
 
@@ -1636,7 +1757,7 @@ CREATE TABLE `users` (
 INSERT INTO `users` (`id`, `name`, `mobile`, `email`, `image`, `role`, `status`, `email_verified_at`, `password`, `remember_token`, `created_at`, `updated_at`) VALUES
 (1, 'admin', NULL, 'admin@gmail.com', NULL, 2, 1, NULL, 'admin123', NULL, NULL, NULL),
 (3, 'Priyanka Bhavsar', '9538135005', 'p.bhavsar2610@gmail.com', NULL, 2, 1, NULL, '$2y$12$NwV1.yyYZPIkbrKa0ksq2uIKkgWRS1zEtJJK7WnM0Yo9X.PL9uiW6', NULL, '2023-11-25 00:32:42', '2026-05-25 00:37:01'),
-(7, 'Mukesh Bhavsar', '9978835005', 'mukeshbhavsar210@gmail.com', 'mukesh-bhavsar.png', 2, 1, NULL, '$2y$12$2uy1KNJhEsqz7.yttCShZu1z2ZJpHGBwMLvpwdm.SX18zM7IDPpmG', NULL, '2023-12-19 07:11:37', '2026-06-01 01:05:15'),
+(7, 'Mukesh Bhavsar', '9978835005', 'mukeshbhavsar210@gmail.com', 'mukesh-bhavsar.png', 1, 1, NULL, '$2y$12$2uy1KNJhEsqz7.yttCShZu1z2ZJpHGBwMLvpwdm.SX18zM7IDPpmG', NULL, '2023-12-19 07:11:37', '2026-06-01 01:05:15'),
 (16, 'superadmin', NULL, 'superadmin@gmail.com', NULL, 1, 1, NULL, '$2y$12$M80M9LEps37doFNM8HC1O.KSViFTKd2mmzVeIambMhwFpjwSIjCna', NULL, '2026-05-22 08:28:31', '2026-05-22 08:28:31'),
 (18, 'Dhruv', NULL, 'dhruvbhavsar210@gmail.com', 'Dhruv.webp', 1, 1, NULL, '$2y$12$qu/XHbVD.hIH7Da8MD0qVefhAnDTO16DaQwkS3xSvf//uNXrtvtHe', NULL, '2026-05-25 07:51:12', '2026-05-25 07:51:12');
 
@@ -1804,6 +1925,21 @@ ALTER TABLE `job_batches`
   ADD PRIMARY KEY (`id`);
 
 --
+-- Indexes for table `kot_orders`
+--
+ALTER TABLE `kot_orders`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `kot_orders_seat_id_index` (`seat_id`);
+
+--
+-- Indexes for table `kot_order_items`
+--
+ALTER TABLE `kot_order_items`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `kot_order_items_kot_order_id_foreign` (`kot_order_id`),
+  ADD KEY `kot_order_items_product_id_foreign` (`product_id`);
+
+--
 -- Indexes for table `menus`
 --
 ALTER TABLE `menus`
@@ -1932,7 +2068,8 @@ ALTER TABLE `role_has_permissions`
 --
 ALTER TABLE `seats`
   ADD PRIMARY KEY (`id`),
-  ADD KEY `tables_area_id_foreign` (`area_id`);
+  ADD KEY `tables_area_id_foreign` (`area_id`),
+  ADD KEY `seats_type_id_foreign` (`type_id`);
 
 --
 -- Indexes for table `sessions`
@@ -1946,6 +2083,12 @@ ALTER TABLE `sessions`
 -- Indexes for table `shipping_charges`
 --
 ALTER TABLE `shipping_charges`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `table_types`
+--
+ALTER TABLE `table_types`
   ADD PRIMARY KEY (`id`);
 
 --
@@ -2008,7 +2151,7 @@ ALTER TABLE `branches`
 -- AUTO_INCREMENT for table `categories`
 --
 ALTER TABLE `categories`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=203;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=209;
 
 --
 -- AUTO_INCREMENT for table `category_menu`
@@ -2065,6 +2208,18 @@ ALTER TABLE `jobs`
   MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
+-- AUTO_INCREMENT for table `kot_orders`
+--
+ALTER TABLE `kot_orders`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+
+--
+-- AUTO_INCREMENT for table `kot_order_items`
+--
+ALTER TABLE `kot_order_items`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
+
+--
 -- AUTO_INCREMENT for table `menus`
 --
 ALTER TABLE `menus`
@@ -2080,19 +2235,19 @@ ALTER TABLE `menu_categories`
 -- AUTO_INCREMENT for table `migrations`
 --
 ALTER TABLE `migrations`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=61;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=65;
 
 --
 -- AUTO_INCREMENT for table `orders`
 --
 ALTER TABLE `orders`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=129;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=213;
 
 --
 -- AUTO_INCREMENT for table `order_items`
 --
 ALTER TABLE `order_items`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=173;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=249;
 
 --
 -- AUTO_INCREMENT for table `pages`
@@ -2122,7 +2277,7 @@ ALTER TABLE `personal_access_tokens`
 -- AUTO_INCREMENT for table `products`
 --
 ALTER TABLE `products`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=46;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=47;
 
 --
 -- AUTO_INCREMENT for table `product_images`
@@ -2152,7 +2307,7 @@ ALTER TABLE `roles`
 -- AUTO_INCREMENT for table `seats`
 --
 ALTER TABLE `seats`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=61;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=67;
 
 --
 -- AUTO_INCREMENT for table `shipping_charges`
@@ -2161,10 +2316,16 @@ ALTER TABLE `shipping_charges`
   MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
 
 --
+-- AUTO_INCREMENT for table `table_types`
+--
+ALTER TABLE `table_types`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+
+--
 -- AUTO_INCREMENT for table `temp_images`
 --
 ALTER TABLE `temp_images`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=521;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=542;
 
 --
 -- AUTO_INCREMENT for table `users`
@@ -2207,6 +2368,13 @@ ALTER TABLE `category_menu`
 ALTER TABLE `customer_addresses`
   ADD CONSTRAINT `customer_addresses_country_id_foreign` FOREIGN KEY (`country_id`) REFERENCES `countries` (`id`) ON DELETE CASCADE,
   ADD CONSTRAINT `customer_addresses_user_id_foreign` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE;
+
+--
+-- Constraints for table `kot_order_items`
+--
+ALTER TABLE `kot_order_items`
+  ADD CONSTRAINT `kot_order_items_kot_order_id_foreign` FOREIGN KEY (`kot_order_id`) REFERENCES `kot_orders` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `kot_order_items_product_id_foreign` FOREIGN KEY (`product_id`) REFERENCES `products` (`id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `model_has_permissions`
@@ -2265,6 +2433,7 @@ ALTER TABLE `role_has_permissions`
 -- Constraints for table `seats`
 --
 ALTER TABLE `seats`
+  ADD CONSTRAINT `seats_type_id_foreign` FOREIGN KEY (`type_id`) REFERENCES `table_types` (`id`) ON DELETE CASCADE,
   ADD CONSTRAINT `tables_area_id_foreign` FOREIGN KEY (`area_id`) REFERENCES `areas` (`id`) ON DELETE CASCADE;
 
 --

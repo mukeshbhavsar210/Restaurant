@@ -84,19 +84,8 @@
                                                 @endif
                                             </label>
                                         @endif
-                                        
-                                        @if($field['type'] == 'text') 
-                                            <input type="{{ $field['type'] }}" name="{{ $field['name'] }}" id="{{ $field['name'] ?? '' }}" value="{{ $field['value'] ?? old($field['name']) }}"
-                                                    placeholder="{{ $field['placeholder'] ?? '' }}" class="form-control {{ $field['class'] ?? '' }}"    
 
-                                                    @if(isset($field['data']))
-                                                        @foreach($field['data'] as $key => $value)
-                                                            data-{{ $key }}="{{ $value }}"
-                                                        @endforeach
-                                                    @endif
-                                            >                                    
-
-                                        @elseif($field['type'] == 'price') 
+                                        @if($field['type'] == 'price') 
                                             <div class="form-group" id="original-price">
                                                 <input type="{{ $field['type'] }}" name="{{ $field['name'] }}" id="{{ $field['name'] }}" value="{{ $field['value'] ?? old($field['name']) }}"
                                                     placeholder="{{ $field['placeholder'] ?? '' }}" class="form-control {{ $field['class'] ?? '' }}" >
@@ -148,13 +137,7 @@
                                                         {{ ($field['value'] ?? old($field['name'])) == $option[$field['option_value']] ? 'selected' : '' }}>
                                                         {{ $option[$field['option_text']] }}
                                                     </option>
-                                                @endforeach
-                                                {{-- @foreach($field['options'] as $option)
-                                                    <option value="{{ $option[$field['option_value']] }}"
-                                                        {{ ($field['value'] ?? old($field['name'])) == $option[$field['option_text']] ? 'selected' : '' }}>
-                                                        {{ $option->{$field['option_text']} }}
-                                                    </option>                                            
-                                                @endforeach                                         --}}
+                                                @endforeach                                               
                                             </select> 
 
                                         @elseif($field['type'] == 'selectLoad')
@@ -162,23 +145,8 @@
                                                 <option value="">Select Menu</option>
                                             </select>
 
-                                        @elseif($field['type'] == 'email')
-                                            <input type="{{ $field['type'] }}" id="{{ $field['name'] }}" name="{{ $field['name'] }}" class="form-control" placeholder="{{ $field['placeholder'] ?? '' }}">
-
-                                        @elseif($field['type'] == 'password')
-                                            <input type="{{ $field['type'] }}" id="{{ $field['name'] }}" name="{{ $field['name'] }}" class="form-control" placeholder="{{ $field['placeholder'] ?? '' }}">
-
                                         @elseif($field['type'] == 'textarea')
                                             <textarea name="{{ $field['name'] }}" class="form-control {{ !empty($field['summer_class']) ? $field['summer_class'] : '' }}" rows="3"></textarea>
-                                            
-                                        @elseif($field['type'] == 'color')                                        
-                                            <input type="{{ $field['type'] }}" id="{{ $field['name'] }}" name="{{ $field['name'] }}" class="form-control" placeholder="{{ $field['placeholder'] ?? '' }}">
-
-                                        @elseif($field['type'] == 'date')                                        
-                                            <input type="{{ $field['type'] }}" id="{{ $field['name'] }}" name="{{ $field['name'] }}" class="form-control" placeholder="{{ $field['placeholder'] ?? '' }}">
-
-                                        @elseif($field['type'] == 'file')                                        
-                                            <input type="{{ $field['type'] }}" id="{{ $field['name'] }}" name="{{ $field['name'] }}" class="form-control" placeholder="{{ $field['placeholder'] ?? '' }}">
                                             
                                         @elseif($field['type'] == 'category')                                                                                
                                             <select name="sub_category_id" id="sub_category" class="form-select" >
@@ -246,33 +214,24 @@
                                                 @endif                                                                                                    
                                             </div>
                                             <div class="row" id="product-gallery"></div>
+                                        @else
+                                            <input type="{{ $field['type'] }}" name="{{ $field['name'] }}" class="form-control {{ $field['class'] ?? '' }}"
+                                                {{ !empty($field['required']) ? 'required' : '' }} 
 
-                                        {{-- @elseif($field['type'] == 'dropzone')
-                                            <input type="hidden" id="{{ $field['name'] }}_id" name="{{ $field['name'] }}_id" value=" ">
-                                            
-                                            <div id="{{ $field['name'] }}" data-input="{{ $field['name'] }}_id" class="dropzone custom-dropzone dz-clickable">
-                                                <div class="dz-message needsclick">
-                                                    Drop files here or click to upload
-                                                </div>
-                                            </div>   
-                                            
-                                            <div class="row mt-2">
-                                                @if(isset($product) && $product->images->isNotEmpty())                        
-                                                    <div id="product-gallery" class="row">                                    
-                                                        @foreach ($product->images as $index => $image)
-                                                            <div class="col-2 uploaded-images" id="image-row-{{ $image->id }}">                                        
-                                                                <input type="hidden" name="image_array[{{ $index }}][image_id]" value="{{ $image->id }}">
-                                                                <img src="{{ asset('uploads/product/small/'.$image->image) }}" class="rounded" />
+                                                @if(isset($field['data']))
+                                                    @foreach($field['data'] as $key => $value)
+                                                        data-{{ $key }}="{{ $value }}"
+                                                    @endforeach
+                                                @endif
 
-                                                                <a href="javascript:void(0)" class="deleteProductImg delete-icon-edit" data-id="{{ $image->id }}">
-                                                                    <span class="sprites"></span>
-                                                                </a>
-                                                            </div>
-                                                        @endforeach                                                            
-                                                    </div>                               
-                                                @endif                                                        
-                                                <div class="row" id="product-gallery"></div>         
-                                            </div> --}}
+                                                @if(isset($field['placeholder']))
+                                                    placeholder="{{ $field['placeholder'] ?? '' }}"
+                                                @endif
+
+                                                @if(isset($field['id']))
+                                                    id="{{ $field['name'] ?? '' }}"
+                                                @endif
+                                            >
                                         @endif
                                     </div>
                                 </div>
