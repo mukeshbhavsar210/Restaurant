@@ -1,9 +1,14 @@
 $(document).ready(function(){
+	$('.link').hover(
+		function () {
+			$(this).addClass('active');
+		},
+		function () {
+			$(this).removeClass('active');
+		}
+	);
 
-	
-
-
-	$('.kot-card').hover(
+	$('.product-card').hover(
 		function () {
 			$(this).addClass('active');
 		},

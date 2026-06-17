@@ -140,9 +140,9 @@ Route::group(['prefix' => 'admin'], function(){
             Route::post('/table', 'table_store')->name('table.store');            
             Route::get('/table/delete/{id}', 'table_delete')->name('delete.table');   
             
+            //Kot Edit
             Route::get('/kot/{seat_id}/edit', 'editKot')->name('admin.kot.edit');
-            Route::post('/kot/{seat_id}/update', 'updateKot')->name('admin.kot.update');
-            
+            Route::post('/kot/{seat_id}/update', 'updateKot')->name('admin.kot.update');            
         });
         
         //Permissions
