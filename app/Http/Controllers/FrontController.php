@@ -455,10 +455,7 @@ class FrontController extends Controller {
                 'total'       => $request->total,
                 'payment_status' => 'Pending',
                 'status'      => 'pending',
-            ]);     
-            
-            // $cartKey = session('role') == 1 ? 'kot_cart' : 'cart';
-            // $cart = session($cartKey, []);
+            ]);                         
 
             foreach ($cart as $item) {
                 OrderItem::create([
@@ -473,15 +470,14 @@ class FrontController extends Controller {
 
             Session::forget('cart');
         
-            if (session('role') == 1) {
-                Session::forget('kot_cart');
-                return redirect()->back()->with('success', 'Order placed successfully.');
-            }  
+            // if (session('role') == 1) {
+            //     Session::forget('kot_cart');
+            //     return redirect()->back()->with('success', 'Order placed successfully.');
+            // }  
             
             Session::flush();
           
             return redirect()->route('razorpay.checkout', $order->id); 
-
         } elseif($request->order_type === 'Dinein' && $request->filled('seat_id')) {
             $order = Order::create([
                 'who'         => $request->who,
@@ -497,10 +493,7 @@ class FrontController extends Controller {
                 'payment_method' => 'Pay at table',
                 'payment_status' => 'Pending',
                 'status' => 'running',
-            ]);        
-            
-            $cartKey = session('role') == 1 ? 'kot_cart' : 'cart';
-            $cart = session($cartKey, []);
+            ]);                            
 
             // Order Items
             foreach ($cart as $item) {
@@ -520,9 +513,11 @@ class FrontController extends Controller {
             Session::forget('cart');
             Session::forget('kot_cart');
 
-            return session('role') == 1
-                    ? redirect()->back()->with('success', 'Order placed successfully.')
-                    : redirect()->route('order.success', $order->id)->with('success', 'Order placed successfully.');
+            return redirect()->route('order.success', $order->id)->with('success', 'Order placed successfully.');
+
+            // return session('role') == 1
+            //         ? redirect()->back()->with('success', 'Order placed successfully.')
+            //         : redirect()->route('order.success', $order->id)->with('success', 'Order placed successfully.');
                         
         }               
     }

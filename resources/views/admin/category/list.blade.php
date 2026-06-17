@@ -41,11 +41,28 @@
                                     aria-expanded="{{ $loop->first ? 'true' : 'false' }}" 
                                     aria-controls="collapse_{{ $value->id }}">
                                     
-                                    {{ $value->name }}
+                                    <div class="container-fluid">
+                                        <div class="row">
+                                            <div class="col-11 px-0">
+                                                {{ $value->name }}
+                                                <span class="ms-2 badge bg-secondary">
+                                                    {{ $value->menus_count }}
+                                                </span>
+                                            </div>
+                                            <div class="col-1 px-0">
+                                                <a href="javascript:void(0)" class="delete-icon commonDeleteBtn"
+                                                    data-bs-toggle="modal" data-bs-target="#commonDeleteModal"
+                                                    data-url="{{ route('category.delete', $value->id) }}" data-title="{{ $value->name }}">
+                                                    <span class="sprites"></span>
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
 
-                                    <span class="ms-2 badge bg-secondary">
-                                        {{ $value->menus_count }}
-                                    </span>
+                                    <div class="flex-justify">
+                                        
+                                    </div>
                             </button>
                         </div>
                         
@@ -55,51 +72,31 @@
                             data-bs-parent="#categoryAccordion">
 
                             <div class="accordion-body">
-                                <div class="row">
-                                    <div class="col-md-2 col-12">
-                                        <div class="product-row">                                      
-                                            @if($value->image)
-                                                <img src="{{ asset('uploads/category/'.$value->image) }}" style="height: 70px; width:70px; margin-right:10px;" class="shadow-sm rounded" />
-                                            @endif 
-
-                                            <div class="flex">
-                                                <h5>{{ $value->name }}</h5>                                        
-                                                <a href="javascript:void(0)" class="delete-icon commonDeleteBtn"
-                                                    data-bs-toggle="modal" data-bs-target="#commonDeleteModal"
-                                                    data-url="{{ route('category.delete', $value->id) }}" data-title="{{ $value->name }}">
-                                                    <span class="sprites"></span>
-                                                </a>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-10 col-12">
-                                        <div class="chip-extra mt-2">
-                                            @if ($value->menus->count())                                    
-                                                @foreach ($value->menus as $menu)
-                                                    <div class="chip-unique">                                                                                                        
-                                                        <div>{{ $menu->name }}</div>
-                                                        <div class="icons">
-                                                            <p>
-                                                                @if($menu->veg_nonveg == 'Non-veg')
-                                                                    <span class="sprites nonveg-icon"></span>
-                                                                @elseif($menu->veg_nonveg == 'Egg')
-                                                                    <span class="sprites egg-icon"></span>
-                                                                @elseif($menu->veg_nonveg == 'Veg')
-                                                                    <span class="sprites veg-icon"></span>
-                                                                @else                                                                
-                                                                @endif
-                                                            </p>
-                                                            <p>
-                                                                <a href="{{ route('menu.delete', $menu->id) }}" class="delete-icon">
-                                                                    <span class="sprites"></span>
-                                                                </a>
-                                                            </p>
-                                                        </div>                                                    
-                                                    </div>                                                
-                                                @endforeach                                                                      
-                                            @endif                                                                                                    
-                                        </div>
-                                    </div>
+                                <div class="chip-extra">
+                                    @if ($value->menus->count())                                    
+                                        @foreach ($value->menus as $menu)
+                                            <div class="chip-unique">                                                                                                        
+                                                <div>{{ $menu->name }}</div>
+                                                <div class="icons">
+                                                    <p>
+                                                        @if($menu->veg_nonveg == 'Non-veg')
+                                                            <span class="sprites nonveg-icon"></span>
+                                                        @elseif($menu->veg_nonveg == 'Egg')
+                                                            <span class="sprites egg-icon"></span>
+                                                        @elseif($menu->veg_nonveg == 'Veg')
+                                                            <span class="sprites veg-icon"></span>
+                                                        @else                                                                
+                                                        @endif
+                                                    </p>
+                                                    <p>
+                                                        <a href="{{ route('menu.delete', $menu->id) }}" class="delete-icon">
+                                                            <span class="sprites"></span>
+                                                        </a>
+                                                    </p>
+                                                </div>                                                    
+                                            </div>                                                
+                                        @endforeach                                                                      
+                                    @endif                                                                                                    
                                 </div>
                             </div>
                         </div>
